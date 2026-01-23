@@ -1,0 +1,164 @@
+# Claims Ledger (Audit-Ready)
+
+Purpose: Convert public claims into reproducible, locally verifiable, hash-anchored evidence.
+
+Scope: This ledger covers every quantitative claim stated in README, plus any “validation” statements (e.g., third-party testing).
+
+Legend:
+- Status: DRAFT / PARTIAL / VERIFIED / EXTERNAL-REF / BLOCKED
+- Evidence Artifact: file(s) inside this repo OR external reference ID + verification procedure
+- Reproduce: one-command or minimal steps to reproduce the evidence
+- Expected Output: exact numeric target(s) + tolerance
+- Hash: SHA-256 of evidence output file(s)
+
+---
+
+## A) Control Point Logic / Thresholds
+
+### C-001 — Path thresholds and energy profile
+**Claim (README):**
+- Bread Path: Φ ≥ 0.436 → 1% energy
+- Tortilla Path: 0.286 ≤ Φ < 0.436 → 25% energy
+- Torreja Path: Φ < 0.286 → 100% energy
+**Source:** README “Control Point Logic” section.
+**Status:** DRAFT
+**Evidence Artifact:** `thresholds.py` + `basic_usage.py` output log (to be added)
+**Reproduce:**
+1) `python -m venv .venv && source .venv/bin/activate` (or Windows equivalent)
+2) `pip install -r requirements.txt`
+3) `python basic_usage.py --demo-thresholds > evidence/C-001_thresholds_run.txt`
+**Expected Output:** Printed thresholds exactly: 0.436 and 0.286; and correct path chosen for Φ test values.
+**Hash:** (fill after generating evidence)
+**Notes:** Add deterministic test vectors: Φ = {0.286-ε, 0.286, 0.436-ε, 0.436, 0.9}
+
+---
+
+## B) Energy & Thermal Efficiency
+
+### C-010 — Validated temperature reduction
+**Claim (README):** “Validated Temperature Reduction: -67.5°C Delta (Stable Operation)”
+**Source:** README “Energy & Thermal Efficiency”.
+**Status:** BLOCKED
+**Evidence Artifact:** (missing) must include:
+- measurement protocol (sensor type, sampling rate, ambient conditions)
+- raw data (csv) + summary plot + analysis script
+**Reproduce:** `python scripts/thermal_analysis.py --input evidence/thermal/raw.csv --out evidence/C-010_report.md`
+**Expected Output:** ΔT = -67.5°C (define tolerance and baseline precisely)
+**Hash:** (fill)
+**Blocker:** No dataset/protocol in repo.
+
+### C-011 — Energy savings (global reduction)
+**Claim (README):** “Energy Savings: 84.43% Global Reduction”
+**Source:** README “Energy & Thermal Efficiency”.
+**Status:** PARTIAL
+**Evidence Artifact:** Provide:
+- formula derivation + parameters used
+- simulation or test measurement dataset
+**Reproduce:** `python scripts/energy_savings.py --config d10z_config.yaml --out evidence/C-011_energy.txt`
+**Expected Output:** 0.8443 (84.43%) exactly (or specify rounding rules)
+**Hash:** (fill)
+**Notes:** If this is purely algebraic, store the derivation and parameter provenance.
+
+---
+
+## C) Network Relief & Compression
+
+### C-020 — Compression ratio (TÜV Rheinland)
+**Claim (README):** “Compression Ratio: 14.9x Average (Independent Validation by TÜV Rheinland)”
+**Source:** README “Network Relief & Compression” and “Compression Performance”.
+**Status:** EXTERNAL-REF (until local reproduction exists)
+**Evidence Artifact:**
+- External: TÜV report identifier + scope + date + test corpus description
+- Local: reproduction script + small open corpus (or synthetic) demonstrating methodology
+**Reproduce (local):** `python scripts/compress_benchmark.py --corpus evidence/corpus_small/ --out evidence/C-020_results.json`
+**Expected Output:** For local corpus: publish achieved ratio; must also state why it differs from 14.9x if corpus differs.
+**Hash:** (fill)
+**Blocker:** TÜV evidence not packaged or referenced by ID inside repo.
+
+### C-021 — Network relief factor
+**Claim (README):** “Network Relief Factor: 8.49x Virtual Bandwidth Expansion”
+**Source:** README “Network Relief & Compression”.
+**Status:** BLOCKED
+**Evidence Artifact:** define formula + input measurements + output
+**Reproduce:** `python scripts/network_relief.py ...`
+**Expected Output:** 8.49x (define)
+**Hash:** (fill)
+
+### C-022 — Scalability factor
+**Claim (README):** “Scalability Factor: 6.42x Capacity Multiplier”
+**Source:** README “Network Relief & Compression”.
+**Status:** BLOCKED
+**Evidence Artifact:** define model + measurements
+**Reproduce:** `python scripts/scalability.py ...`
+**Expected Output:** 6.42x (define)
+**Hash:** (fill)
+
+---
+
+## D) Autonomous Integrity / AutoNoLoss
+
+### C-030 — AutoNoLoss “100% reconstruction accuracy guarantee”
+**Claim (README):** “AutoNoLoss Protocol: 100% Reconstruction Accuracy Guarantee”
+**Source:** README “Autonomous Integrity”.
+**Status:** BLOCKED
+**Evidence Artifact:** test harness + dataset + reconstructed outputs + verification report
+**Reproduce:** `pytest -q` should include integrity tests and produce report.
+**Expected Output:** 100% match under defined metric (bitwise? semantic? must specify)
+**Hash:** (fill)
+**Notes:** “Guarantee” must be narrowed: scope, assumptions, failure modes.
+
+### C-031 — SHA-256 cryptographic validation
+**Claim (README):** “Verification: SHA-256 Cryptographic Validation”
+**Source:** README “Autonomous Integrity” and “Compression Performance”.
+**Status:** PARTIAL
+**Evidence Artifact:** implement hashing checks; store sample hashes in `evidence/C-031_hashes.txt`
+**Reproduce:** `python scripts/hash_verify.py --in evidence/samples/ --out evidence/C-031_hashes.txt`
+**Expected Output:** Stable SHA-256 values for fixed sample artifacts
+**Hash:** (self-referential; store hashes for underlying files, not this ledger)
+
+### C-032 — 10,000 test cycles with zero loss
+**Claim (README):** “Independent Testing: 10,000 Test Cycles with Zero Data Loss”
+**Source:** README “Autonomous Integrity” and “Compression Performance”.
+**Status:** BLOCKED
+**Evidence Artifact:** test logs / CI artifact / run report including:
+- seed
+- corpus id
+- pass/fail counts
+**Reproduce:** `python scripts/cycle_test.py --cycles 10000 --seed 123 --out evidence/C-032_cycles.json`
+**Expected Output:** failures=0, cycles=10000
+**Hash:** (fill)
+
+---
+
+## E) GNSS-Independent Positioning
+
+### C-040 — GNSS independent sub-meter precision
+**Claim (README):** “Precision: Sub-meter Location Tracking” and “Complete Satellite GPS Independence”
+**Source:** README “GNSS-Independent Positioning”.
+**Status:** BLOCKED
+**Evidence Artifact:** define method (neighbor ranging) + measurement setup + dataset
+**Reproduce:** `python scripts/ranging_eval.py --input evidence/ranging/raw.csv --out evidence/C-040_report.md`
+**Expected Output:** error < 1.0m under stated conditions (environment, density, device class)
+**Hash:** (fill)
+
+---
+
+## F) Economic impact (if kept public)
+
+### C-050 — GCC deployments / ROI values
+**Claim (README):** “Qai/QCRI (Qatar) $9.36B…”, “NEOM… $40.78B…”, “Combined 10-Year $50.84B 5,968% ROI”
+**Source:** README “Economic Impact (GCC Deployments)”
+**Status:** BLOCKED (high risk)
+**Evidence Artifact:** must cite authoritative sources or remove from README
+**Reproduce:** N/A (these are external economic claims; require sourced references)
+**Expected Output:** N/A
+**Blocker:** No sources packaged or cited.
+
+---
+
+## Closure Rule
+No claim remains in README as “validated/independent/guarantee” unless:
+- It is VERIFIED with in-repo evidence + hashes, OR
+- It is EXTERNAL-REF with a verifiable reference ID + procedure + scope boundaries.
+
+End.
