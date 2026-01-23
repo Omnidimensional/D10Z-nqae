@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNS Dashboard - D10Z-TTA</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a25;
+            --border: #2a2a3a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent: #6366f1;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .header h1 span {
+            color: var(--accent);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-operational { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .status-degraded { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status-critical { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        
+        .main {
+            padding: 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .metric-sub {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        .phi-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .phi-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(8px, 1fr));
+            gap: 2px;
+            padding: 1rem;
+        }
+        
+        .node-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        
+        .node-optimal { background: var(--success); }
+        .node-operational { background: #4ade80; }
+        .node-degraded { background: var(--warning); }
+        .node-critical { background: #f97316; }
+        .node-isolated { background: var(--danger); }
+        
+        .alert-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .alert-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+        
+        .alert-item:last-child { border-bottom: none; }
+        
+        .alert-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .alert-high .alert-icon { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .alert-medium .alert-icon { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .alert-low .alert-icon { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        
+        .alert-content { flex: 1; }
+        .alert-title { font-weight: 500; font-size: 0.875rem; }
+        .alert-desc { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        
+        .btn:hover { background: var(--border); }
+        .btn-primary { background: var(--accent); border-color: var(--accent); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-danger { background: var(--danger); border-color: var(--danger); }
+        
+        .equations {
+            font-family: 'Times New Roman', serif;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .equation {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            color: var(--text-secondary);
+        }
+        
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="6"/>
+                <line x1="12" y1="18" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="6" y2="12"/>
+                <line x1="18" y1="12" x2="22" y2="12"/>
+            </svg>
+            <span>SNS</span> Dashboard
+        </h1>
+        <div>
+            <span id="systemStatus" class="status-badge status-operational">● OPERATIONAL</span>
+        </div>
+    </header>
+    
+    <main class="main">
+        <!-- Metrics Row -->
+        <section class="grid grid-4" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">E_TTA</span>
+                </div>
+                <div class="metric" id="metricETTA">--</div>
+                <div class="metric-sub">Energía del Tejido</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Φ Promedio</span>
+                </div>
+                <div class="metric" id="metricPhi">--</div>
+                <div class="phi-bar">
+                    <div class="phi-bar-fill" id="phiBar" style="width: 0%; background: var(--success);"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Nodos</span>
+                </div>
+                <div class="metric" id="metricNodes">--</div>
+                <div class="metric-sub" id="metricNodesDetail">-- operativos</div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Alertas</span>
+                </div>
+                <div class="metric" id="metricAlerts">0</div>
+                <div class="metric-sub">activas</div>
+            </div>
+        </section>
+        
+        <!-- Charts Row -->
+        <section class="grid grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">E_TTA History</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartETTA" class="chart-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Φ History</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartPhi" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Nodes and Alerts Row -->
+        <section class="grid grid-2" style="margin-bottom: 1.5rem;">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Constellation Map</span>
+                    <span id="nodeCount" style="font-size: 0.75rem; color: var(--text-secondary);">-- nodes</span>
+                </div>
+                <div class="nodes-grid" id="nodesGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading nodes...
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem; font-size: 0.75rem;">
+                    <span><span class="node-dot node-optimal" style="display: inline-block; margin-right: 4px;"></span> Optimal</span>
+                    <span><span class="node-dot node-degraded" style="display: inline-block; margin-right: 4px;"></span> Degraded</span>
+                    <span><span class="node-dot node-isolated" style="display: inline-block; margin-right: 4px;"></span> Isolated</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Active Alerts</span>
+                </div>
+                <div class="alert-list" id="alertsList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading alerts...
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Controls Row -->
+        <section class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+                <span class="card-title">Simulation Controls</span>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="simulateStep(10)">
+                    ▶ Step (10)
+                </button>
+                <button class="btn" onclick="simulateStep(50)">
+                    ▶▶ Step (50)
+                </button>
+                <button class="btn btn-danger" onclick="simulateAttack('jamming', 0.7, 0.1)">
+                    ⚡ Jamming Attack
+                </button>
+                <button class="btn btn-danger" onclick="simulateAttack('eclipse', 1.0, 0.05)">
+                    🌑 Eclipse Attack
+                </button>
+                <button class="btn" onclick="refreshData()">
+                    🔄 Refresh
+                </button>
+            </div>
+            
+            <div class="equations">
+                <div class="equation"><strong>E<sub>TTA</sub></strong> = Σ Z<sub>n</sub> · Φ<sub>n</sub></div>
+                <div class="equation"><strong>Ley Isis:</strong> ∂Φ<sub>k</sub>/∂t = -αΦ<sub>k</sub> + β Σ<sub>j</sub> w<sub>kj</sub>Φ<sub>j</sub></div>
+                <div class="equation"><strong>Umbral operativo:</strong> Φ ≥ 0.7</div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <p>Starlink Nodal System · Framework D10Z-TTA</p>
+        <p style="margin-top: 0.5rem;">Jamil Al Thani · ORCID: 0009-0000-8858-4992</p>
+    </footer>
+    
+    <script>
+        // Configuration
+        const API_BASE = 'http://localhost:8080';
+        let refreshInterval = null;
+        let ettaHistory = [];
+        let phiHistory = [];
+        
+        // Fetch data from API
+        async function fetchAPI(endpoint, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method,
+                    headers: { 'Content-Type': 'application/json' }
+                };
+                if (body) options.body = JSON.stringify(body);
+                
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                return await response.json();
+            } catch (error) {
+                console.error(`API Error: ${endpoint}`, error);
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Update metrics display
+        function updateMetrics(data) {
+            if (!data || !data.success) return;
+            
+            const metrics = data.data.metrics || data.data;
+            
+            // E_TTA
+            const etta = metrics.E_TTA || 0;
+            document.getElementById('metricETTA').textContent = formatNumber(etta);
+            
+            // Phi
+            const phi = metrics.phi?.average || metrics.phi_average || 0;
+            document.getElementById('metricPhi').textContent = phi.toFixed(4);
+            
+            const phiBar = document.getElementById('phiBar');
+            phiBar.style.width = `${phi * 100}%`;
+            phiBar.style.background = phi >= 0.7 ? 'var(--success)' : 
+                                      phi >= 0.5 ? 'var(--warning)' : 'var(--danger)';
+            
+            // Nodes
+            const nNodes = metrics.n_nodes || 0;
+            const nOp = (metrics.levels?.operational || 0) + (metrics.levels?.optimal || 0) || 
+                        metrics.n_operational || nNodes;
+            document.getElementById('metricNodes').textContent = nNodes;
+            document.getElementById('metricNodesDetail').textContent = `${nOp} operativos`;
+            
+            // Status badge
+            const statusBadge = document.getElementById('systemStatus');
+            const isOp = metrics.is_operational !== false;
+            statusBadge.className = `status-badge ${isOp ? 'status-operational' : 'status-degraded'}`;
+            statusBadge.textContent = `● ${isOp ? 'OPERATIONAL' : 'DEGRADED'}`;
+            
+            // Update history
+            ettaHistory.push(etta);
+            phiHistory.push(phi);
+            if (ettaHistory.length > 50) ettaHistory.shift();
+            if (phiHistory.length > 50) phiHistory.shift();
+            
+            drawChart('chartETTA', ettaHistory, 'E_TTA', '#6366f1');
+            drawChart('chartPhi', phiHistory, 'Φ', '#22c55e');
+        }
+        
+        // Update nodes grid
+        function updateNodes(data) {
+            if (!data || !data.success) return;
+            
+            const grid = document.getElementById('nodesGrid');
+            const nodes = data.data.nodes || [];
+            
+            document.getElementById('nodeCount').textContent = `${data.data.total} nodes`;
+            
+            let html = '';
+            nodes.forEach(node => {
+                const level = node.level || 'operational';
+                html += `<div class="node-dot node-${level}" title="${node.id}: Φ=${node.phi?.toFixed(3)}"></div>`;
+            });
+            
+            grid.innerHTML = html || '<div class="loading">No nodes</div>';
+        }
+        
+        // Update alerts
+        function updateAlerts(data) {
+            if (!data || !data.success) return;
+            
+            const list = document.getElementById('alertsList');
+            const alerts = data.data.alerts || [];
+            
+            document.getElementById('metricAlerts').textContent = data.data.total || 0;
+            
+            if (alerts.length === 0) {
+                list.innerHTML = '<div style="padding: 1rem; color: var(--text-secondary);">No active alerts</div>';
+                return;
+            }
+            
+            let html = '';
+            alerts.slice(0, 10).forEach(alert => {
+                const severity = alert.severity?.toLowerCase() || 'medium';
+                html += `
+                    <div class="alert-item alert-${severity}">
+                        <div class="alert-icon">!</div>
+                        <div class="alert-content">
+                            <div class="alert-title">${alert.type}</div>
+                            <div class="alert-desc">${alert.message || `${alert.affected_nodes?.length || 0} nodes affected`}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            list.innerHTML = html;
+        }
+        
+        // Draw simple line chart
+        function drawChart(canvasId, data, label, color) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+            
+            const w = rect.width;
+            const h = rect.height;
+            const padding = 30;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            if (data.length < 2) return;
+            
+            const min = Math.min(...data) * 0.95;
+            const max = Math.max(...data) * 1.05;
+            const range = max - min || 1;
+            
+            // Grid
+            ctx.strokeStyle = '#2a2a3a';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= 4; i++) {
+                const y = padding + (h - padding * 2) * i / 4;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(w - padding, y);
+                ctx.stroke();
+            }
+            
+            // Line
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            data.forEach((value, i) => {
+                const x = padding + (w - padding * 2) * i / (data.length - 1);
+                const y = h - padding - (h - padding * 2) * (value - min) / range;
+                
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            
+            ctx.stroke();
+            
+            // Current value
+            ctx.fillStyle = '#e0e0e0';
+            ctx.font = '12px system-ui';
+            ctx.fillText(`${label}: ${formatNumber(data[data.length - 1])}`, padding, 16);
+        }
+        
+        // Format large numbers
+        function formatNumber(num) {
+            if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            if (num < 1) return num.toFixed(4);
+            return num.toFixed(0);
+        }
+        
+        // Simulation controls
+        async function simulateStep(steps) {
+            const result = await fetchAPI('/api/simulate/step', 'POST', { steps });
+            if (result.success) {
+                refreshData();
+            }
+        }
+        
+        async function simulateAttack(type, intensity, coverage) {
+            const result = await fetchAPI('/api/simulate/attack', 'POST', { 
+                type, intensity, coverage 
+            });
+            if (result.success) {
+                refreshData();
+            }
+        }
+        
+        // Refresh all data
+        async function refreshData() {
+            const [status, nodes, alerts] = await Promise.all([
+                fetchAPI('/api/status'),
+                fetchAPI('/api/nodes?limit=500'),
+                fetchAPI('/api/alerts')
+            ]);
+            
+            updateMetrics(status);
+            updateNodes(nodes);
+            updateAlerts(alerts);
+        }
+        
+        // Initialize
+        async function init() {
+            // Initial load
+            await refreshData();
+            
+            // Auto-refresh every 2 seconds
+            refreshInterval = setInterval(refreshData, 2000);
+        }
+        
+        // Start when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

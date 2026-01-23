@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>TERRA MESH - Nodo Resonante D10Z</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #12121a;
+            --card: #1a1a25;
+            --border: #2a2a3a;
+            --text: #f0f0f5;
+            --muted: #666;
+            --optimal: #22c55e;
+            --operational: #84cc16;
+            --degraded: #eab308;
+            --critical: #f97316;
+            --isolated: #ef4444;
+            --accent: #6366f1;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--muted);
+            transition: all 0.5s ease;
+        }
+        
+        .logo-icon.active {
+            animation: logoSpin 10s linear infinite;
+        }
+        
+        @keyframes logoSpin {
+            from { background: conic-gradient(from 0deg, var(--accent), var(--optimal), var(--accent)); }
+            to { background: conic-gradient(from 360deg, var(--accent), var(--optimal), var(--accent)); }
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+        
+        .logo span {
+            display: block;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+        
+        .status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--muted);
+            background: rgba(100,100,100,0.1);
+            color: var(--muted);
+            transition: all 0.3s ease;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+            transition: all 0.3s ease;
+        }
+        
+        /* Main */
+        .main {
+            padding: 20px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        
+        /* Resonance Visualizer */
+        .resonance-box {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resonance-svg {
+            width: 100%;
+            height: auto;
+        }
+        
+        .wave {
+            fill: none;
+            stroke: var(--muted);
+            stroke-width: 1;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .wave.active {
+            opacity: 0.3;
+            animation: wave 3s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.1; }
+        }
+        
+        .center-node {
+            fill: var(--muted);
+            transition: all 0.3s ease;
+        }
+        
+        .center-node.active {
+            filter: drop-shadow(0 0 20px var(--optimal));
+        }
+        
+        .neighbor-line {
+            stroke: var(--optimal);
+            stroke-width: 2;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .neighbor-dot {
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .phi-display {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        
+        .phi-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--muted);
+            transition: all 0.3s ease;
+        }
+        
+        .phi-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Main Button */
+        .btn-main {
+            width: 100%;
+            padding: 20px;
+            border-radius: 30px;
+            border: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #fff;
+            background: linear-gradient(135deg, #333, #444);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .btn-main.active {
+            background: linear-gradient(135deg, var(--optimal), var(--accent));
+            box-shadow: 0 10px 40px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        /* Neighbors */
+        .neighbors {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        
+        .neighbor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .neighbor {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg2);
+            border-radius: 12px;
+        }
+        
+        .neighbor-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .neighbor-info {
+            flex: 1;
+        }
+        
+        .neighbor-id {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .neighbor-meta {
+            font-size: 10px;
+            color: var(--muted);
+        }
+        
+        .neighbor-phi {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .no-neighbors {
+            text-align: center;
+            padding: 24px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-action {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-action:not(:disabled):active {
+            transform: scale(0.95);
+            background: var(--border);
+        }
+        
+        /* Log */
+        .log {
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            max-height: 140px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--card);
+            font-size: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .log-time {
+            font-family: 'JetBrains Mono', monospace;
+            color: #333;
+            flex-shrink: 0;
+        }
+        
+        .log-text {
+            color: var(--muted);
+        }
+        
+        .log-empty {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+            font-size: 12px;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(10, 10, 15, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .node-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            background: var(--card);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        .footer-text {
+            font-size: 9px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon" id="logoIcon"></div>
+            <div>
+                <h1>TERRA MESH</h1>
+                <span>Nodo Resonante D10Z</span>
+            </div>
+        </div>
+        <div class="status" id="status">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">INACTIVO</span>
+        </div>
+    </header>
+    
+    <main class="main">
+        <!-- Resonance Visualizer -->
+        <div class="resonance-box">
+            <svg class="resonance-svg" viewBox="0 0 300 300" id="resonanceSvg">
+                <!-- Ondas -->
+                <circle class="wave" id="wave1" cx="150" cy="150" r="60" />
+                <circle class="wave" id="wave2" cx="150" cy="150" r="90" />
+                <circle class="wave" id="wave3" cx="150" cy="150" r="120" />
+                
+                <!-- Conexiones (dinámicas) -->
+                <g id="connections"></g>
+                
+                <!-- Nodo central -->
+                <circle class="center-node" id="centerNode" cx="150" cy="150" r="30" />
+                <text x="150" y="155" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">TÚ</text>
+            </svg>
+            
+            <div class="phi-display">
+                <div class="phi-value" id="phiValue">Φ 0.500</div>
+                <div class="phi-label">Coherencia</div>
+            </div>
+        </div>
+        
+        <!-- Main Button -->
+        <button class="btn-main" id="btnMain" onclick="toggleNode()">
+            ▶ ACTIVAR NODO
+        </button>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="statNeighbors">0</div>
+                <div class="stat-label">Vecinos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statEtta">0</div>
+                <div class="stat-label">E_TTA</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statTx">0</div>
+                <div class="stat-label">TX</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="statRx">0</div>
+                <div class="stat-label">RX</div>
+            </div>
+        </div>
+        
+        <!-- Neighbors -->
+        <div class="neighbors">
+            <div class="section-title">Nodos Resonantes Cercanos</div>
+            <div class="neighbor-list" id="neighborList">
+                <div class="no-neighbors">Activa el nodo para detectar vecinos</div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn-action" id="btnPing" onclick="sendPing()" disabled>📡 Ping</button>
+            <button class="btn-action" id="btnScan" onclick="scanNeighbors()" disabled>🔍 Escanear</button>
+            <button class="btn-action" onclick="showInfo()">ℹ️ Info</button>
+        </div>
+        
+        <!-- Log -->
+        <div class="log" id="log">
+            <div class="log-empty">Los eventos aparecerán aquí</div>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <div class="node-id" id="nodeId">---</div>
+        <div class="footer-text">∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|</div>
+    </footer>
+    
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════
+        // D10Z-TTA TERRA MESH ENGINE
+        // ═══════════════════════════════════════════════════════════════════════
+        
+        const D10Z = {
+            ALPHA: 0.05,
+            BETA: 0.2,
+            PHI_OPT: 0.9,
+            PHI_OP: 0.7,
+            PHI_DEG: 0.5,
+            PHI_CRIT: 0.3,
+            INTERVAL: 100
+        };
+        
+        const LEVELS = {
+            optimal: { color: '#22c55e', label: 'RESONANDO' },
+            operational: { color: '#84cc16', label: 'ACTIVO' },
+            degraded: { color: '#eab308', label: 'BUSCANDO' },
+            critical: { color: '#f97316', label: 'DÉBIL' },
+            isolated: { color: '#ef4444', label: 'AISLADO' }
+        };
+        
+        // Estado
+        let state = {
+            nodeId: 'NODO-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+            phi: 0.5,
+            active: false,
+            neighbors: [],
+            etta: 0,
+            tx: 0,
+            rx: 0,
+            logs: []
+        };
+        
+        let intervalId = null;
+        
+        // ─────────────────────────────────────────────────────────────────────
+        // FUNCIONES D10Z
+        // ─────────────────────────────────────────────────────────────────────
+        
+        function getLevel(phi) {
+            if (phi >= D10Z.PHI_OPT) return 'optimal';
+            if (phi >= D10Z.PHI_OP) return 'operational';
+            if (phi >= D10Z.PHI_DEG) return 'degraded';
+            if (phi >= D10Z.PHI_CRIT) return 'critical';
+            return 'isolated';
+        }
+        
+        function propagateCoherence() {
+            if (state.neighbors.length === 0) {
+                const decay = D10Z.ALPHA * state.phi;
+                state.phi = Math.max(0, state.phi - decay * 0.1);
+                return;
+            }
+            
+            const decay = D10Z.ALPHA * state.phi;
+            let coupling = 0;
+            
+            state.neighbors.forEach(n => {
+                const weight = 1 / Math.max(1, n.distance / 10);
+                coupling += weight * n.phi;
+            });
+            
+            coupling = D10Z.BETA * coupling / state.neighbors.length;
+            state.phi = Math.max(0, Math.min(1, state.phi + (-decay + coupling) * 0.1));
+        }
+        
+        function computeEtta() {
+            let etta = state.phi * 1000;
+            state.neighbors.forEach(n => etta += n.phi * 100);
+            state.etta = Math.round(etta);
+        }
+        
+        function simulateNeighbors() {
+            const count = Math.floor(Math.random() * 6);
+            state.neighbors = [];
+            
+            for (let i = 0; i < count; i++) {
+                state.neighbors.push({
+                    id: `VECINO-${String.fromCharCode(65 + i)}${Math.floor(Math.random() * 100)}`,
+                    phi: 0.5 + Math.random() * 0.5,
+                    distance: 5 + Math.random() * 95,
+                    signal: -30 - Math.random() * 50
+                });
+            }
+        }
+        
+        // ─────────────────────────────────────────────────────────────────────
+        // UI
+        // ─────────────────────────────────────────────────────────────────────
+        
+        function updateUI() {
+            const level = getLevel(state.phi);
+            const levelInfo = LEVELS[level];
+            
+            // Status
+            document.getElementById('status').style.borderColor = state.active ? levelInfo.color : '#666';
+            document.getElementById('status').style.background = state.active ? `${levelInfo.color}22` : 'rgba(100,100,100,0.1)';
+            document.getElementById('status').style.color = state.active ? levelInfo.color : '#666';
+            document.getElementById('statusDot').style.background = state.active ? levelInfo.color : '#666';
+            document.getElementById('statusDot').style.boxShadow = state.active ? `0 0 10px ${levelInfo.color}` : 'none';
+            document.getElementById('statusText').textContent = state.active ? levelInfo.label : 'INACTIVO';
+            
+            // Logo
+            document.getElementById('logoIcon').className = state.active ? 'logo-icon active' : 'logo-icon';
+            document.getElementById('logoIcon').style.background = state.active 
+                ? `conic-gradient(from 0deg, ${levelInfo.color}, #6366f1, ${levelInfo.color})` 
+                : '#333';
+            
+            // Phi
+            document.getElementById('phiValue').textContent = `Φ ${state.phi.toFixed(3)}`;
+            document.getElementById('phiValue').style.color = state.active ? levelInfo.color : '#666';
+            document.getElementById('phiValue').style.textShadow = state.active ? `0 0 30px ${levelInfo.color}` : 'none';
+            
+            // Center node
+            const centerNode = document.getElementById('centerNode');
+            centerNode.style.fill = state.active ? levelInfo.color : '#333';
+            centerNode.className = state.active ? 'center-node active' : 'center-node';
+            centerNode.setAttribute('r', state.active ? 25 + state.phi * 15 : 25);
+            
+            // Waves
+            ['wave1', 'wave2', 'wave3'].forEach((id, i) => {
+                const wave = document.getElementById(id);
+                wave.className = state.active ? 'wave active' : 'wave';
+                wave.style.stroke = levelInfo.color;
+                wave.style.animationDelay = `${i * 0.5}s`;
+            });
+            
+            // Stats
+            document.getElementById('statNeighbors').textContent = state.neighbors.length;
+            document.getElementById('statEtta').textContent = state.etta > 1000 ? (state.etta / 1000).toFixed(1) + 'K' : state.etta;
+            document.getElementById('statTx').textContent = state.tx;
+            document.getElementById('statRx').textContent = state.rx;
+            
+            // Neighbors
+            renderNeighbors();
+            renderConnections();
+            
+            // Buttons
+            document.getElementById('btnMain').className = state.active ? 'btn-main active' : 'btn-main';
+            document.getElementById('btnMain').textContent = state.active ? '■ DETENER' : '▶ ACTIVAR NODO';
+            document.getElementById('btnPing').disabled = !state.active;
+            document.getElementById('btnScan').disabled = !state.active;
+            
+            // Node ID
+            document.getElementById('nodeId').textContent = state.nodeId;
+        }
+        
+        function renderNeighbors() {
+            const list = document.getElementById('neighborList');
+            
+            if (state.neighbors.length === 0) {
+                list.innerHTML = `<div class="no-neighbors">${state.active ? 'Buscando nodos cercanos...' : 'Activa el nodo para detectar vecinos'}</div>`;
+                return;
+            }
+            
+            list.innerHTML = state.neighbors.map(n => {
+                const level = getLevel(n.phi);
+                return `
+                    <div class="neighbor">
+                        <div class="neighbor-indicator" style="background: ${LEVELS[level].color}"></div>
+                        <div class="neighbor-info">
+                            <div class="neighbor-id">${n.id}</div>
+                            <div class="neighbor-meta">Φ ${n.phi.toFixed(2)} · ${n.distance.toFixed(0)}m · ${n.signal.toFixed(0)}dBm</div>
+                        </div>
+                        <div class="neighbor-phi" style="color: ${LEVELS[level].color}">${(n.phi * 100).toFixed(0)}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderConnections() {
+            const g = document.getElementById('connections');
+            
+            if (!state.active || state.neighbors.length === 0) {
+                g.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            state.neighbors.forEach((n, i) => {
+                const angle = (i / state.neighbors.length) * Math.PI * 2 - Math.PI / 2;
+                const dist = 60 + (1 - n.phi) * 60;
+                const x = 150 + Math.cos(angle) * dist;
+                const y = 150 + Math.sin(angle) * dist;
+                const level = getLevel(n.phi);
+                const color = LEVELS[level].color;
+                
+                html += `
+                    <line x1="150" y1="150" x2="${x}" y2="${y}" 
+                          stroke="${color}" stroke-width="2" 
+                          opacity="${n.phi}" 
+                          stroke-dasharray="${n.phi > 0.7 ? 'none' : '5,5'}" />
+                    <circle cx="${x}" cy="${y}" r="${6 + n.phi * 6}" fill="${color}" opacity="0.9" />
+                    <text x="${x}" y="${y + 20}" fill="#666" font-size="9" text-anchor="middle">${n.id.split('-')[1]}</text>
+                `;
+            });
+            
+            g.innerHTML = html;
+        }
+        
+        function addLog(text) {
+            const time = new Date().toLocaleTimeString();
+            state.logs.unshift({ time, text });
+            if (state.logs.length > 15) state.logs.pop();
+            
+            const log = document.getElementById('log');
+            log.innerHTML = state.logs.map(l => `
+                <div class="log-entry">
+                    <span class="log-time">${l.time}</span>
+                    <span class="log-text">${l.text}</span>
+                </div>
+            `).join('');
+        }
+        
+        // ─────────────────────────────────────────────────────────────────────
+        // HANDLERS
+        // ─────────────────────────────────────────────────────────────────────
+        
+        function toggleNode() {
+            state.active = !state.active;
+            
+            if (state.active) {
+                addLog('🟢 Nodo activado - Iniciando resonancia...');
+                startEngine();
+            } else {
+                addLog('🔴 Nodo desactivado');
+                stopEngine();
+            }
+            
+            updateUI();
+        }
+        
+        function startEngine() {
+            intervalId = setInterval(() => {
+                simulateNeighbors();
+                propagateCoherence();
+                computeEtta();
+                state.tx++;
+                state.rx += Math.floor(Math.random() * 3);
+                updateUI();
+            }, D10Z.INTERVAL);
+        }
+        
+        function stopEngine() {
+            if (intervalId) clearInterval(intervalId);
+            state.neighbors = [];
+        }
+        
+        function sendPing() {
+            if (state.neighbors.length > 0) {
+                const target = state.neighbors[Math.floor(Math.random() * state.neighbors.length)];
+                addLog(`📡 Ping enviado a ${target.id}`);
+                state.tx++;
+            } else {
+                addLog('⚠️ No hay vecinos para ping');
+            }
+            updateUI();
+        }
+        
+        function scanNeighbors() {
+            addLog('🔍 Escaneando red...');
+            simulateNeighbors();
+            if (state.neighbors.length > 0) {
+                addLog(`✓ Encontrados ${state.neighbors.length} nodos`);
+            } else {
+                addLog('No se encontraron nodos cercanos');
+            }
+            updateUI();
+        }
+        
+        function showInfo() {
+            addLog('ℹ️ TERRA MESH v1.0 - D10Z Institute');
+            addLog('   Ley Isis: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|');
+            addLog('   α=0.05, β=0.2, Φ≥0.7 operativo');
+        }
+        
+        // ─────────────────────────────────────────────────────────────────────
+        // INIT
+        // ─────────────────────────────────────────────────────────────────────
+        
+        updateUI();
+    </script>
+</body>
+</html>

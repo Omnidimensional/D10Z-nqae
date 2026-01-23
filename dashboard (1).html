@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS ORBITAL - D10Z Satellite Nodal System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a25;
+            --border: #2a2a3a;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888aa;
+            --accent: #6366f1;
+            --optimal: #22c55e;
+            --operational: #84cc16;
+            --degraded: #eab308;
+            --critical: #f97316;
+            --isolated: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo { display: flex; align-items: center; gap: 1rem; }
+        
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: conic-gradient(from 180deg, var(--accent), var(--optimal), var(--accent));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .logo-icon::before {
+            content: ''; width: 36px; height: 36px;
+            background: var(--bg-primary); border-radius: 50%;
+        }
+        
+        .logo-text h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; }
+        .logo-text span { font-size: 0.75rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+        
+        .status-badge {
+            padding: 0.5rem 1rem; border-radius: 2rem;
+            font-size: 0.875rem; font-weight: 600;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        
+        .status-badge.operational {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--optimal); border: 1px solid var(--optimal);
+        }
+        
+        .status-badge.degraded {
+            background: rgba(234, 179, 8, 0.15);
+            color: var(--degraded); border: 1px solid var(--degraded);
+        }
+        
+        .status-badge::before {
+            content: ''; width: 8px; height: 8px;
+            border-radius: 50%; background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1rem; padding: 1rem;
+            height: calc(100vh - 80px);
+        }
+        
+        .globe-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        
+        .globe-canvas { width: 100%; height: 100%; }
+        
+        .globe-overlay {
+            position: absolute; top: 1rem; left: 1rem;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        
+        .overlay-stat {
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1rem; border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .overlay-stat label { color: var(--text-secondary); font-size: 0.7rem; display: block; margin-bottom: 0.25rem; }
+        .overlay-stat .value { font-size: 1.25rem; font-weight: 700; }
+        .overlay-stat .value.optimal { color: var(--optimal); }
+        .overlay-stat .value.degraded { color: var(--degraded); }
+        
+        .sidebar { display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto; }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            padding: 1rem;
+        }
+        
+        .card-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 0.75rem;
+        }
+        
+        .card-title {
+            font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+        
+        .metric {
+            background: var(--bg-secondary);
+            border-radius: 0.5rem; padding: 0.75rem; text-align: center;
+        }
+        
+        .metric-value { font-size: 1.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .metric-label { font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        
+        .metric-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+        .metric-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s ease; }
+        
+        .chart-container { height: 100px; }
+        .chart-canvas { width: 100%; height: 100%; }
+        
+        .constellation-grid {
+            display: grid; grid-template-columns: repeat(22, 1fr);
+            gap: 2px; padding: 0.5rem;
+            background: var(--bg-secondary); border-radius: 0.5rem;
+        }
+        
+        .node-dot {
+            aspect-ratio: 1; border-radius: 2px;
+            transition: all 0.2s ease; cursor: pointer;
+        }
+        
+        .node-dot:hover { transform: scale(1.8); z-index: 10; }
+        .node-dot.optimal { background: var(--optimal); }
+        .node-dot.operational { background: var(--operational); }
+        .node-dot.degraded { background: var(--degraded); }
+        .node-dot.critical { background: var(--critical); }
+        .node-dot.isolated { background: var(--isolated); }
+        
+        .alerts-list { max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+        
+        .alert-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem; background: var(--bg-secondary);
+            border-radius: 0.4rem; font-size: 0.75rem;
+        }
+        
+        .alert-icon { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .alert-icon.high { background: var(--isolated); }
+        .alert-icon.medium { background: var(--degraded); }
+        .alert-icon.low { background: var(--operational); }
+        
+        .controls { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        
+        .btn {
+            padding: 0.5rem 0.75rem; border-radius: 0.4rem;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover { background: var(--border); }
+        .btn.primary { background: var(--accent); border-color: var(--accent); }
+        .btn.primary:hover { background: #5558e3; }
+        .btn.danger { background: rgba(239, 68, 68, 0.2); border-color: var(--isolated); color: var(--isolated); }
+        
+        .equations {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 0.6rem; border-radius: 0.4rem; line-height: 1.5;
+        }
+        
+        .equations .highlight { color: var(--accent); }
+        
+        .legend { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.65rem; margin-top: 0.5rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.25rem; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+        
+        .tooltip {
+            position: fixed; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 0.4rem;
+            padding: 0.5rem; font-size: 0.7rem;
+            pointer-events: none; z-index: 1000; display: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        
+        .tooltip.visible { display: block; }
+        
+        @media (max-width: 1024px) {
+            .main { grid-template-columns: 1fr; height: auto; }
+            .globe-container { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <div class="logo-text">
+                <h1>NEXUS ORBITAL</h1>
+                <span>D10Z Satellite Nodal System v1.0</span>
+            </div>
+        </div>
+        <div class="status-badge operational" id="systemStatus">OPERATIVO</div>
+    </header>
+    
+    <main class="main">
+        <div class="globe-container">
+            <canvas class="globe-canvas" id="globeCanvas"></canvas>
+            <div class="globe-overlay">
+                <div class="overlay-stat">
+                    <label>E_TTA Total</label>
+                    <div class="value optimal" id="overlayE_TTA">1,832,906</div>
+                </div>
+                <div class="overlay-stat">
+                    <label>Φ Promedio</label>
+                    <div class="value optimal" id="overlayPhi">0.9847</div>
+                </div>
+                <div class="overlay-stat">
+                    <label>Ciclo</label>
+                    <div class="value" id="overlayCycle">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card">
+                <div class="card-header"><span class="card-title">Métricas</span></div>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value" id="metricE_TTA" style="color: var(--optimal)">1.83M</div>
+                        <div class="metric-label">E_TTA</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" id="barE_TTA" style="width: 95%; background: var(--optimal)"></div></div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="metricPhi" style="color: var(--optimal)">0.985</div>
+                        <div class="metric-label">Φ Promedio</div>
+                        <div class="metric-bar"><div class="metric-bar-fill" id="barPhi" style="width: 98.5%; background: var(--optimal)"></div></div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="metricNodes">264</div>
+                        <div class="metric-label">Nodos</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="metricAlerts" style="color: var(--optimal)">0</div>
+                        <div class="metric-label">Alertas</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">E_TTA Histórico</span>
+                    <span id="chartValue" style="font-family: 'JetBrains Mono'; font-size: 0.75rem;">1.83M</span>
+                </div>
+                <div class="chart-container"><canvas class="chart-canvas" id="ettaChart"></canvas></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><span class="card-title">Constelación</span></div>
+                <div class="constellation-grid" id="constellationGrid"></div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--optimal)"></div><span>Óptimo</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--operational)"></div><span>Operativo</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--degraded)"></div><span>Degradado</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--critical)"></div><span>Crítico</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--isolated)"></div><span>Aislado</span></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><span class="card-title">Alertas</span><span id="alertCount">0</span></div>
+                <div class="alerts-list" id="alertsList">
+                    <div style="color: var(--text-secondary); text-align: center; padding: 0.5rem; font-size: 0.75rem;">Sin alertas</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><span class="card-title">Simulación</span></div>
+                <div class="controls">
+                    <button class="btn primary" onclick="runCycles(10)">▶ 10</button>
+                    <button class="btn primary" onclick="runCycles(50)">▶▶ 50</button>
+                    <button class="btn danger" onclick="injectJamming()">⚡ Jamming</button>
+                    <button class="btn danger" onclick="injectEclipse()">🌑 Eclipse</button>
+                    <button class="btn" onclick="runRecovery()">🔄 Recuperar</button>
+                    <button class="btn" onclick="resetSimulation()">↺ Reset</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><span class="card-title">D10Z Ecuaciones</span></div>
+                <div class="equations">
+                    <span class="highlight">E_TTA</span> = Σ |Zₙ| · Φₙ<br>
+                    <span class="highlight">Isis</span>: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|<br>
+                    α=0.05, β=0.2, Φ≥0.7
+                </div>
+            </div>
+        </aside>
+    </main>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <script>
+        const D10Z = { ALPHA: 0.05, BETA: 0.2, PHI_OPT: 0.9, PHI_OP: 0.7, PHI_DEG: 0.5, PHI_CRIT: 0.3 };
+        
+        let state = { nodes: [], edges: [], cycle: 0, E_TTA: 0, phi_avg: 0, alerts: [], history: { E_TTA: [], phi: [] }, attackActive: false };
+        
+        function initConstellation(planes = 12, satsPerPlane = 22, altitude = 550) {
+            state.nodes = []; state.edges = [];
+            let nodeId = 0;
+            
+            for (let p = 0; p < planes; p++) {
+                for (let s = 0; s < satsPerPlane; s++) {
+                    const raan = (p * 360 / planes) * Math.PI / 180;
+                    const ma = (s * 360 / satsPerPlane + p * 15) * Math.PI / 180;
+                    const r = 6371 + altitude;
+                    const inc = 53 * Math.PI / 180;
+                    
+                    const x = r * (Math.cos(raan) * Math.cos(ma) - Math.sin(raan) * Math.sin(ma) * Math.cos(inc));
+                    const y = r * (Math.sin(raan) * Math.cos(ma) + Math.cos(raan) * Math.sin(ma) * Math.cos(inc));
+                    const z = r * Math.sin(ma) * Math.sin(inc);
+                    
+                    state.nodes.push({
+                        id: `SAT-${String(nodeId).padStart(4, '0')}`,
+                        index: nodeId, plane: p, position: s,
+                        x, y, z,
+                        phi: 0.9 + Math.random() * 0.1,
+                        neighbors: [], level: 'optimal'
+                    });
+                    nodeId++;
+                }
+            }
+            
+            createTopology(planes, satsPerPlane);
+            computeMetrics();
+            renderConstellation();
+            renderGlobe();
+            updateUI();
+        }
+        
+        function createTopology(planes, spp) {
+            state.edges = [];
+            for (let i = 0; i < state.nodes.length; i++) {
+                const node = state.nodes[i];
+                const prevInPlane = node.plane * spp + ((node.position - 1 + spp) % spp);
+                const nextPlane = ((node.plane + 1) % planes) * spp + node.position;
+                
+                [prevInPlane, nextPlane].forEach(j => {
+                    if (j < state.nodes.length && !node.neighbors.includes(j)) {
+                        node.neighbors.push(j);
+                        state.nodes[j].neighbors.push(i);
+                        state.edges.push([i, j]);
+                    }
+                });
+            }
+        }
+        
+        function propagateCoherence() {
+            const newPhis = state.nodes.map(node => {
+                if (node.neighbors.length === 0) return Math.max(0, node.phi - D10Z.ALPHA * node.phi * 0.1);
+                
+                const decay = D10Z.ALPHA * node.phi;
+                let coupling = node.neighbors.reduce((sum, idx) => sum + state.nodes[idx].phi, 0);
+                coupling = D10Z.BETA * coupling / node.neighbors.length;
+                
+                return Math.max(0, Math.min(1, node.phi + (-decay + coupling) * 0.1));
+            });
+            
+            state.nodes.forEach((node, i) => {
+                node.phi = newPhis[i];
+                node.level = getLevel(newPhis[i]);
+            });
+        }
+        
+        function getLevel(phi) {
+            if (phi >= D10Z.PHI_OPT) return 'optimal';
+            if (phi >= D10Z.PHI_OP) return 'operational';
+            if (phi >= D10Z.PHI_DEG) return 'degraded';
+            if (phi >= D10Z.PHI_CRIT) return 'critical';
+            return 'isolated';
+        }
+        
+        function computeMetrics() {
+            let e_tta = 0, phi_sum = 0;
+            state.nodes.forEach(node => {
+                const mag = Math.sqrt(node.x**2 + node.y**2 + node.z**2) / 1000;
+                e_tta += mag * node.phi;
+                phi_sum += node.phi;
+            });
+            
+            state.E_TTA = e_tta;
+            state.phi_avg = phi_sum / state.nodes.length;
+            
+            state.history.E_TTA.push(e_tta);
+            state.history.phi.push(state.phi_avg);
+            if (state.history.E_TTA.length > 100) { state.history.E_TTA.shift(); state.history.phi.shift(); }
+        }
+        
+        function runCycles(n) {
+            for (let i = 0; i < n; i++) {
+                state.cycle++;
+                propagateCoherence();
+                computeMetrics();
+            }
+            renderConstellation(); renderChart(); updateUI();
+        }
+        
+        function injectJamming() {
+            state.attackActive = true;
+            const targets = Math.floor(state.nodes.length * 0.15);
+            for (let i = 0; i < targets; i++) {
+                const idx = Math.floor(Math.random() * state.nodes.length);
+                state.nodes[idx].phi *= 0.3;
+            }
+            addAlert('high', `JAMMING: ${targets} nodos afectados`);
+            runCycles(1);
+        }
+        
+        function injectEclipse() {
+            state.attackActive = true;
+            const centerPlane = Math.floor(Math.random() * 12);
+            let affected = 0;
+            state.nodes.forEach(node => {
+                if (Math.abs(node.plane - centerPlane) <= 1) { node.phi *= 0.2; affected++; }
+            });
+            addAlert('high', `ECLIPSE sector ${centerPlane}: ${affected} nodos`);
+            runCycles(1);
+        }
+        
+        function runRecovery() {
+            for (let i = 0; i < 30; i++) { propagateCoherence(); computeMetrics(); }
+            state.cycle += 30;
+            state.attackActive = false;
+            addAlert('low', `Recuperado: Φ=${state.phi_avg.toFixed(4)}`);
+            renderConstellation(); renderChart(); updateUI();
+        }
+        
+        function resetSimulation() {
+            state.cycle = 0; state.alerts = []; state.history = { E_TTA: [], phi: [] }; state.attackActive = false;
+            initConstellation();
+        }
+        
+        function addAlert(severity, message) {
+            state.alerts.unshift({ severity, message, time: new Date().toLocaleTimeString() });
+            if (state.alerts.length > 10) state.alerts.pop();
+        }
+        
+        function renderConstellation() {
+            const grid = document.getElementById('constellationGrid');
+            grid.innerHTML = '';
+            state.nodes.forEach(node => {
+                const dot = document.createElement('div');
+                dot.className = `node-dot ${node.level}`;
+                dot.dataset.id = node.id;
+                dot.dataset.phi = node.phi.toFixed(4);
+                dot.onmouseenter = showTooltip;
+                dot.onmouseleave = hideTooltip;
+                grid.appendChild(dot);
+            });
+        }
+        
+        function renderChart() {
+            const canvas = document.getElementById('ettaChart');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * 2; canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+            
+            const w = rect.width, h = rect.height, data = state.history.E_TTA;
+            if (data.length < 2) return;
+            
+            ctx.clearRect(0, 0, w, h);
+            ctx.strokeStyle = '#2a2a3a'; ctx.lineWidth = 0.5;
+            for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(0, h*i/3); ctx.lineTo(w, h*i/3); ctx.stroke(); }
+            
+            const min = Math.min(...data) * 0.95, max = Math.max(...data) * 1.05;
+            ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 2; ctx.beginPath();
+            data.forEach((v, i) => {
+                const x = (i / (data.length - 1)) * w;
+                const y = h - ((v - min) / (max - min)) * h;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+            ctx.fillStyle = 'rgba(99, 102, 241, 0.1)'; ctx.fill();
+        }
+        
+        function renderGlobe() {
+            const canvas = document.getElementById('globeCanvas');
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * 2; canvas.height = rect.height * 2;
+            ctx.scale(2, 2);
+            
+            const w = rect.width, h = rect.height, cx = w / 2, cy = h / 2;
+            const radius = Math.min(w, h) * 0.32;
+            const time = Date.now() / 40000;
+            
+            ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, w, h);
+            
+            // Earth
+            const grad = ctx.createRadialGradient(cx - radius*0.3, cy - radius*0.3, 0, cx, cy, radius);
+            grad.addColorStop(0, '#1e3a5f'); grad.addColorStop(1, '#0a1628');
+            ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.fillStyle = grad; ctx.fill();
+            
+            // Grid
+            ctx.strokeStyle = 'rgba(100, 150, 200, 0.15)'; ctx.lineWidth = 0.5;
+            for (let lat = -60; lat <= 60; lat += 30) {
+                const r = radius * Math.cos(lat * Math.PI / 180);
+                const y = cy + radius * Math.sin(lat * Math.PI / 180) * 0.3;
+                ctx.beginPath(); ctx.ellipse(cx, y, r, r * 0.3, 0, 0, Math.PI * 2); ctx.stroke();
+            }
+            
+            // Satellites
+            const colors = {
+                optimal: 'rgba(34, 197, 94, ', operational: 'rgba(132, 204, 22, ',
+                degraded: 'rgba(234, 179, 8, ', critical: 'rgba(249, 115, 22, ',
+                isolated: 'rgba(239, 68, 68, '
+            };
+            
+            state.nodes.forEach(node => {
+                const angle = time + node.index * 0.05;
+                const orbitR = radius * 1.35;
+                const x = cx + orbitR * Math.cos(angle + node.plane * Math.PI / 6) * 0.95;
+                const y = cy + orbitR * Math.sin(angle + node.plane * Math.PI / 6) * 0.5;
+                const z = Math.sin(angle + node.plane * Math.PI / 6);
+                
+                if (z < -0.2) return;
+                const size = 1.5 + z * 1.5;
+                const alpha = 0.4 + z * 0.6;
+                
+                ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = colors[node.level] + alpha + ')';
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(renderGlobe);
+        }
+        
+        function updateUI() {
+            document.getElementById('overlayE_TTA').textContent = formatNumber(state.E_TTA);
+            document.getElementById('overlayPhi').textContent = state.phi_avg.toFixed(4);
+            document.getElementById('overlayCycle').textContent = state.cycle;
+            
+            document.getElementById('metricE_TTA').textContent = formatNumber(state.E_TTA, true);
+            document.getElementById('metricPhi').textContent = state.phi_avg.toFixed(3);
+            document.getElementById('metricNodes').textContent = state.nodes.length;
+            document.getElementById('metricAlerts').textContent = state.alerts.length;
+            document.getElementById('chartValue').textContent = formatNumber(state.E_TTA, true);
+            
+            document.getElementById('barPhi').style.width = `${state.phi_avg * 100}%`;
+            
+            const color = state.phi_avg >= 0.9 ? 'var(--optimal)' : state.phi_avg >= 0.7 ? 'var(--operational)' : 'var(--degraded)';
+            document.getElementById('metricPhi').style.color = color;
+            document.getElementById('overlayPhi').className = `value ${getLevel(state.phi_avg)}`;
+            document.getElementById('barPhi').style.background = color;
+            
+            const alertsList = document.getElementById('alertsList');
+            alertsList.innerHTML = state.alerts.length === 0 
+                ? '<div style="color: var(--text-secondary); text-align: center; padding: 0.5rem; font-size: 0.75rem;">Sin alertas</div>'
+                : state.alerts.map(a => `<div class="alert-item"><div class="alert-icon ${a.severity}"></div><span>${a.message}</span></div>`).join('');
+            document.getElementById('alertCount').textContent = state.alerts.length;
+            
+            const badge = document.getElementById('systemStatus');
+            badge.className = state.phi_avg >= 0.7 ? 'status-badge operational' : 'status-badge degraded';
+            badge.textContent = state.phi_avg >= 0.9 ? 'ÓPTIMO' : state.phi_avg >= 0.7 ? 'OPERATIVO' : 'DEGRADADO';
+        }
+        
+        function formatNumber(n, short = false) {
+            if (short) { if (n >= 1e6) return (n/1e6).toFixed(2)+'M'; if (n >= 1e3) return (n/1e3).toFixed(1)+'K'; }
+            return n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+        }
+        
+        function showTooltip(e) {
+            const t = document.getElementById('tooltip');
+            t.innerHTML = `<strong>${e.target.dataset.id}</strong><br>Φ: ${e.target.dataset.phi}`;
+            t.style.left = `${e.pageX + 10}px`; t.style.top = `${e.pageY + 10}px`;
+            t.classList.add('visible');
+        }
+        
+        function hideTooltip() { document.getElementById('tooltip').classList.remove('visible'); }
+        
+        window.addEventListener('load', () => { initConstellation(); renderChart(); setInterval(renderChart, 1000); });
+    </script>
+</body>
+</html>
