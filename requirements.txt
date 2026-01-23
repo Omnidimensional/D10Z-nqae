@@ -1,0 +1,72 @@
+# D10Z Universal Nodal Architecture - Core Dependencies
+# Version: v18
+# Published: January 23, 2026
+
+# Core Scientific Computing
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+# Machine Learning Framework
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Time Series Analysis
+sktime>=0.20.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Configuration Management
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Testing Framework
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+
+# Type Hints and Code Quality
+mypy>=1.5.0
+pylint>=2.17.0
+black>=23.9.0
+
+# Documentation
+sphinx>=7.2.0
+sphinx-rtd-theme>=1.3.0
+myst-parser>=2.0.0
+
+# Benchmarking
+pytest-benchmark>=4.0.0
+
+# Statistical Analysis
+pymc>=5.7.0
+arviz>=0.16.0
+
+# Optional: GPU Support
+# CUDA-aware PyTorch is auto-detected when available
+# nvidia-cuda-runtime-cu11xx (platform-specific)
+
+# Development Tools
+ipython>=8.14.0
+jupyter>=1.0.0
+notebook>=7.0.0
+
+# Version Control
+gitpython>=3.1.0
+
+# Code Formatting
+isort>=5.12.0
+flake8>=6.1.0
+
+# Performance Profiling
+cProfileV>=1.1.0
+memory-profiler>=0.61.0
+line-profiler>=4.0.0
+
+# Security and Cryptography
+cryptography>=41.0.0
+hashlib-extensions>=1.0.0

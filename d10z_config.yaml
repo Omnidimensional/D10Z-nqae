@@ -1,0 +1,68 @@
+# D10Z Universal Nodal Architecture Configuration
+# Version: v18 | Published: January 23, 2026
+
+# Architecture Configuration
+architecture:
+  version: "18.0.0"
+  mode: "production"  # development, testing, production
+  author: "D10Z Institute"
+
+# Threshold Configuration
+thresholds:
+  bread_path: 0.436           # Φ >= 0.436
+  torreja_path: 0.286         # Φ < 0.286
+  
+# Energy Configuration
+energy:
+  target_savings: 0.8443       # 84.43% energy savings
+  thermal_delta: -67.5         # °C temperature reduction
+  
+# Compression Configuration
+compression:
+  target_ratio: 14.9          # TÜV validated
+  validation_cycles: 10000    # Independent test cycles
+  
+# Network Configuration
+network:
+  relief_factor: 8.49         # Bandwidth expansion
+  scalability_factor: 6.42    # Capacity multiplier
+  
+# Quantization Settings
+quantization:
+  scale: 127.0                # INT8 scale factor
+  precision: "int8"           # Quantization precision
+  
+# Energy Costs (relative to standard)
+energy_costs:
+  fast: 0.01                  # FAST path cost
+  quant: 0.25                 # QUANT path cost
+  deep: 1.0                   # DEEP path cost
+  
+# Processing Settings
+processing:
+  batch_size: 32
+  max_workers: 4
+  device: "auto"              # auto, cpu, cuda
+  
+# Logging Configuration
+logging:
+  level: "INFO"               # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+# Validation Settings
+validation:
+  checksum_algorithm: "sha256"
+  coherence_min: 0.0
+  coherence_max: 1.0
+  
+# Storage Configuration
+storage:
+  type: "nodal"               # nodal, traditional, hybrid
+  max_memory_gb: 10
+  compression_enabled: true
+  
+# Output Settings
+output:
+  directory: "./output"
+  format: "numpy"             # numpy, onnx, torchscript
+  save_intermediate: false

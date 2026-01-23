@@ -1,0 +1,80 @@
+Generar licencia para un repositorio
+Los repositorios públicos de GitHub se suelen utilizar para compartir software de código abierto. Para que tu repositorio sea verdaderamente de código abierto, tendrás que generarle una licencia. De este modo, las demás personas podrán usar, modificar y distribuir el software con libertad.
+
+En este artículo
+Elegir la licencia correcta
+Hemos creado choosealicense.com, para ayudarle a comprender las licencias para el código. Una licencia de software les informa a las demás personas lo que pueden y no pueden hacer con tu código fuente; por lo tanto, es importante tomar una decisión informada.
+
+No tienes la obligación de elegir una licencia. Sin embargo, sin una licencia, se aplican las leyes de derecho de autor predeterminadas, lo que implica que conservas todos los derechos de tu código fuente, y nadie puede reproducir, distribuir o crear trabajos a partir de tu trabajo. Si estás creando un proyecto de código abierto, te alentamos fuertemente a que incluyas una licencia de código abierto. En la Guía de código abierto se proporcionan instrucciones adicionales sobre cómo elegir la licencia correcta para el proyecto.
+
+Nota:
+
+Si publicas el código fuente en un repositorio público en GitHub, según los Términos del servicio, otros usuarios de GitHub.com tienen derecho a ver el repositorio y bifurcarlo. Si ya creaste un repositorio y no quieres que los usuarios tengan acceso a él, puedes hacer este repositorio privado. Cuando cambias la visibilidad de un repositorio a privada, las bifurcaciones existentes o copias locales que crean otros usuarios seguirán existiendo. Para más información, consulta Configurar la visibilidad de un repositorio.
+
+Determinar la ubicación de tu licencia
+La mayoría de lis usuarios personas colocan el texto de su licencia en un archivo denominado LICENSE.txt (o bien LICENSE.md o LICENSE.rst) en la raíz del repositorio; este es un ejemplo de Hubot.
+
+Algunos proyectos incluyen información acerca de sus licencias en sus README. Por ejemplo, el README de un proyecto puede incluir una nota que diga "Este proyecto cuenta con licencia conforme a los términos de la licencia MIT".
+
+Como buena práctica, te alentamos a que incluyas el archivo de licencia en tu proyecto.
+
+Buscar en GitHub por tipo de licencia
+Puede filtrar repositorios en función de su licencia o familia de licencias mediante el calificador license y la palabra clave exacta de la licencia.
+
+Licencia	Palabra clave de la licencia
+Licencia gratuita académica v3.0	AFL-3.0
+Licencia de Apache 2.0	Apache-2.0
+Licencia artística 2.0	Artistic-2.0
+Licencia de Boost Software 1.0	BSL-1.0
+Licencia "simplificada" de la cláusula 2 de BSD	BSD-2-Clause
+Licencia "nueva" o "revisada" de la cláusula 3 de BSD	BSD-3-Clause
+Licencia Clear de la cláusula 3 de BSD	BSD-3-Clause-Clear
+Licencia "original" o "antigua" de la cláusula 4 de BSD	BSD-4-Clause
+Licencia sin cláusulas de BSD	0BSD
+Familia de licencias de Creative Commons	CC
+Creative Commons Zero v1.0 Universal	CC0-1.0
+Creative Commons Attribution 4.0	CC-BY-4.0
+Creative Commons Attribution ShareAlike 4.0	CC-BY-SA-4.0
+Licencia pública Do What The F*ck You Want To	WTFPL
+Educational Community License v2.0	ECL-2.0
+Eclipse Public License 1.0	EPL-1.0
+Eclipse Public License 2.0	EPL-2.0
+Licencia pública de la Unión Europea 1.1	EUPL-1.1
+Licencia pública general de GNU Affero v3.0	AGPL-3.0
+Familia de licencias públicas generales de GNU	GPL
+Licencia pública general de GNU v2.0	GPL-2.0
+Licencia pública general de GNU v3.0	GPL-3.0
+Licencia Pública General Menor de GNU	LGPL
+Licencia Pública General Menor de GNU v2.1	LGPL-2.1
+Licencia Pública General Menor de GNU v3.0	LGPL-3.0
+ISC	ISC
+Licencia pública de LaTeX Project v1.3c	LPPL-1.3c
+Licencia pública de Microsoft	MS-PL
+MIT	MIT
+Licencia pública de Mozilla 2.0	MPL-2.0
+Licencia de Open Software 3.0	OSL-3.0
+Licencia de PostgreSQL	PostgreSQL
+Licencia de SIL Open Font 1.1	OFL-1.1
+Licencia de código abierto de la Universidad de Illinois/NCSA	NCSA
+The Unlicense	Unlicense
+Licencia de zLib	Zlib
+Cuando busques por una licencia de familia, los resultados incluirán todas las licencias de esa familia. Por ejemplo, al usar la consulta license:gpl los resultados incluirán los repositorios con la licencia GNU General Public License v2.0 y GNU General Public License v3.0. Para más información, consulta Buscar repositorios.
+
+Detectar una licencia
+El Licenciatario de código abierto de la gema de Ruby compara el archivo LICENSE del repositorio con una breve lista de licencias conocidas. El Licenciatario también proporciona Licenses API y ofrece información sobre cómo se conceden licencias a los repositorios de GitHub. Si el repositorio usa una licencia que no aparece en el sitio web Elegir una licencia, puede solicitar que se incluya la licencia.
+
+Si tu repositorio utiliza una licencia que está detallada en el sitio web Choose a License y no se muestra claramente en la parte superior de la página del repositorio, puede que contenga múltiples licencias u otra complejidad. Para que la licencia se detecte, simplifica el archivo LICENSE y anote la complejidad en otra parte, por ejemplo en el archivo README del repositorio.
+
+Aplicar una licencia a un repositorio con una licencia existente
+El selector de licencias solo está disponible cuando creas un proyecto en GitHub.
+
+Captura de pantalla de la sección "Elegir una licencia" de la página del nuevo repositorio, incluido un menú desplegable con la etiqueta "Licencia".
+
+Puedes agregar manualmente una licencia utilizando el buscador. Para más información sobre cómo agregar una licencia a un repositorio, consulta Agregar una licencia a un repositorio.
+
+Declinación de responsabilidades
+El objetivo de los esfuerzos de generación de licencias de código abierto de GitHub es proporcionar un punto de partida para ayudarte a hacer una elección informada. GitHub muestra información de licencias para ayudar a los usuarios a obtener información acerca de las licencias de código abierto y los proyectos que las utilizan. Esperamos que te sea útil, pero ten presente que no somos abogados y que cometemos errores como todo el mundo. Por ese motivo, GitHub proporciona la información sobre una base hipotética de "tal cual" y no da garantías al respecto de ninguna información o licencia proporcionada en función o a través de esta. Tampoco se hace responsable de los daños que surjan por el uso de la información de la licencia. Si tienes alguna pregunta al respecto de la licencia correcta para tu código o cualquier otro problema legal relacionado con esto, siempre es mejor consultar con un profesional.
+
+Información adicional
+La sección The Legal Side of Open Source (Aspectos legales del código abierto) de The Open Source Guides
+GitHub Skills

@@ -1,0 +1,79 @@
+# D10Z Universal Nodal Architecture Software
+
+version: 1.0
+
+message: "If you use this software, please cite it as below."
+
+authors:
+  - name: "Jamil Al Thani"
+    affiliation: "D10Z Institute"
+    orcid: "https://orcid.org/0009-0000-8858-4992"
+  - name: "Cisneros Grace"
+    affiliation: "D10Z Institute"
+  - name: "Sahana Amira Quintanilla"
+    affiliation: "D10Z Institute"
+  - name: "Isis Ra Quintanilla"
+    affiliation: "D10Z Institute"
+
+repository-code: "https://github.com/d10z-institute/d10z-nqae"
+
+url: "https://doi.org/10.5281/zenodo.18348037"
+
+date-released: 2026-01-23
+
+doi: "10.5281/zenodo.18348037"
+
+keywords:
+  - "nodal architecture"
+  - "coherence"
+  - "mesh network"
+  - "distributed computing"
+  - "edge computing"
+  - "energy efficiency"
+  - "sovereign AI"
+  - "smart cities"
+
+license: "CC-BY-NC-4.0"
+
+type: "software"
+
+version: "18.0.0"
+
+abstract: |
+  D10Z Universal Nodal Architecture (NQAE) represents a paradigm-shifting approach
+  to digital infrastructure sustainability. This software-defined implementation
+  framework for D10Z-TTA nodal networks inverts the traditional infrastructure
+  paradigm by utilizing existing terrestrial hardware—specifically smartphones
+  (7+ billion devices)—as the primary global infrastructure, rendering massive
+  satellite constellations redundant.
+
+  Key features include:
+  - Hardware-Software Bridge (L1-L3) for immediate global adoption
+  - Tri-modal processing (Bread, Tortilla, Torreja paths)
+  - Coherence-based routing and compression (14.9x average)
+  - AutoNoLoss Protocol for 100% reconstruction accuracy
+  - Energy savings of 84.43% with -67.5°C thermal delta
+  - GNSS-independent positioning via neighbor ranging
+
+references:
+  - type: "book"
+    title: "D10Z Universal Nodal Architecture: Implementation Framework & Hardware Integration"
+    authors:
+      - "Jamil Al Thani"
+      - "Cisneros Grace"
+      - "Sahana Amira Quintanilla"
+      - "Isis Ra Quintanilla"
+    year: 2026
+    doi: "10.5281/zenodo.18348037"
+
+  - type: "article"
+    title: "NQAE Implementation Specification (Nodal Quantum Architecture Engine)"
+    authors:
+      - "D10Z Institute"
+    year: 2026
+    doi: "10.5281/zenodo.18203648"
+
+  - type: "report"
+    title: "TÜV Rheinland Validation Report #TR-2025-11438"
+    institution: "TÜV Rheinland"
+    year: 2025

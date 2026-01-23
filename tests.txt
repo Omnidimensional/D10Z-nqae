@@ -1,0 +1,291 @@
+""
+Test suite for D10Z Core Module
+
+Tests coherence analysis, tri-modal routing, and threshold management.
+
+Version: v18
+"""
+
+import pytest
+import numpy as np
+import torch
+from d10z.core import (
+    AdaptiveNodalNetwork,
+    NodalTriModal,
+    CoherenceAnalyzer,
+    D10ZThresholds,
+    BREAD_PATH_THRESHOLD,
+    TORREJA_PATH_THRESHOLD,
+)
+
+
+class TestCoherenceAnalyzer:
+    """Test cases for CoherenceAnalyzer class."""
+    
+    def test_compute_phi_clean_signal(self):
+        """Test coherence computation for clean sinusoidal signal."""
+        analyzer = CoherenceAnalyzer()
+        
+        # Clean sinusoidal signal should have high coherence
+        clean_signal = np.sin(np.linspace(0, 10 * np.pi, 100))
+        phi = analyzer.compute_phi(clean_signal)
+        
+        assert 0 <= phi <= 1, "Coherence should be in [0, 1]"
+        assert phi > 0.5, "Clean signal should have high coherence"
+    
+    def test_compute_phi_noisy_signal(self):
+        """Test coherence computation for noisy signal."""
+        analyzer = CoherenceAnalyzer()
+        
+        # Noisy signal should have lower coherence
+        np.random.seed(42)
+        noisy_signal = np.random.randn(100)
+        phi = analyzer.compute_phi(noisy_signal)
+        
+        assert 0 <= phi <= 1, "Coherence should be in [0, 1]"
+        assert phi < 0.5, "Noisy signal should have lower coherence"
+    
+    def test_compute_phi_edge_cases(self):
+        """Test coherence computation edge cases."""
+        analyzer = CoherenceAnalyzer()
+        
+        # Empty/None input
+        assert analyzer.compute_phi(np.array([])) == 0.0
+        assert analyzer.compute_phi(None) == 0.0
+        
+        # Constant signal
+        constant = np.ones(100)
+        phi = analyzer.compute_phi(constant)
+        assert 0 <= phi <= 1
+    
+    def test_compute_phi_batch(self):
+        """Test batch coherence computation."""
+        analyzer = CoherenceAnalyzer()
+        
+        # Create batch of signals
+        batch = np.random.randn(10, 100)
+        phis = analyzer.compute_phi_batch(batch)
+        
+        assert len(phis) == 10, "Should return one coherence per signal"
+        assert all(0 <= p <= 1 for p in phis), "All values should be in [0, 1]"
+    
+    def test_classify_signal(self):
+        """Test signal classification."""
+        analyzer = CoherenceAnalyzer()
+        
+        assert analyzer.classify_signal(0.5) == "BREAD"
+        assert analyzer.classify_signal(0.35) == "TORTILLA"
+        assert analyzer.classify_signal(0.2) == "TORREJA"
+    
+    def test_get_recommended_path(self):
+        """Test path recommendation."""
+        analyzer = CoherenceAnalyzer()
+        
+        assert analyzer.get_recommended_path(0.5) == "FAST"
+        assert analyzer.get_recommended_path(0.35) == "QUANT"
+        assert analyzer.get_recommended_path(0.2) == "DEEP"
+
+
+class TestAdaptiveNodalNetwork:
+    """Test cases for AdaptiveNodalNetwork class."""
+    
+    def test_initialization(self):
+        """Test network initialization."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        assert model.input_dim == 96
+        assert model.output_dim == 2
+        assert model.t_high == 0.436
+        assert model.t_low == 0.286
+    
+    def test_forward_fast_path(self):
+        """Test forward pass with FAST path."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        # High coherence â†’ FAST path
+        data = torch.randn(1, 96)
+        phi = 0.5
+        
+        output, mode = model(data, phi)
+        
+        assert mode == "FAST"
+        assert output.shape == (1, 2)
+    
+    def test_forward_quant_path(self):
+        """Test forward pass with QUANT path."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        # Medium coherence â†’ QUANT path
+        data = torch.randn(1, 96)
+        phi = 0.35
+        
+        output, mode = model(data, phi)
+        
+        assert mode == "QUANT"
+        assert output.shape == (1, 2)
+    
+    def test_forward_deep_path(self):
+        """Test forward pass with DEEP path."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        # Low coherence â†’ DEEP path
+        data = torch.randn(1, 96)
+        phi = 0.2
+        
+        output, mode = model(data, phi)
+        
+        assert mode == "DEEP"
+        assert output.shape == (1, 2)
+    
+    def test_path_statistics(self):
+        """Test path usage statistics."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        data = torch.randn(1, 96)
+        
+        # Process with different coherences
+        model(torch.randn(1, 96), 0.5)  # FAST
+        model(torch.randn(1, 96), 0.35)  # QUANT
+        model(torch.randn(1, 96), 0.2)  # DEEP
+        
+        stats = model.get_path_statistics()
+        
+        assert "FAST" in stats
+        assert "QUANT" in stats
+        assert "DEEP" in stats
+        assert all(0 <= v <= 100 for v in stats.values())
+    
+    def test_reset_statistics(self):
+        """Test statistics reset."""
+        model = AdaptiveNodalNetwork(input_dim=96, output_dim=2)
+        
+        data = torch.randn(1, 96)
+        model(data, 0.5)
+        
+        stats_before = model.get_path_statistics()
+        model.reset_statistics()
+        stats_after = model.get_path_statistics()
+        
+        assert stats_after["FAST"] == 0.0
+
+
+class TestNodalTriModal:
+    """Test cases for NodalTriModal class."""
+    
+    def test_initialization(self):
+        """Test tri-modal network initialization."""
+        model = NodalTriModal(in_f=96, out_f=2)
+        
+        assert model.in_f == 96
+        assert model.out_f == 2
+    
+    def test_tri_modal_forward(self):
+        """Test tri-modal forward pass."""
+        model = NodalTriModal(in_f=96, out_f=2)
+        
+        data = torch.randn(1, 96)
+        
+        # Test all three paths
+        _, mode_fast = model(data, 0.5)
+        _, mode_quant = model(data, 0.35)
+        _, mode_deep = model(data, 0.2)
+        
+        assert mode_fast == "FAST"
+        assert mode_quant == "QUANT"
+        assert mode_deep == "DEEP"
+    
+    def test_custom_thresholds(self):
+        """Test with custom thresholds."""
+        model = NodalTriModal(in_f=96, out_f=2, t_high=0.5, t_low=0.3)
+        
+        data = torch.randn(1, 96)
+        
+        # With custom thresholds
+        _, mode = model(data, 0.4, t_high=0.5, t_low=0.3)
+        assert mode == "QUANT"
+
+
+class TestD10ZThresholds:
+    """Test cases for D10ZThresholds class."""
+    
+    def test_default_values(self):
+        """Test default threshold values."""
+        thresholds = D10ZThresholds()
+        
+        assert thresholds.bread_path == 0.436
+        assert thresholds.torreja_path == 0.286
+        assert thresholds.thermal_delta == -67.5
+        assert thresholds.scalability_factor == 6.42
+    
+    def test_to_from_dict(self):
+        """Test dictionary conversion."""
+        thresholds = D10ZThresholds()
+        data = thresholds.to_dict()
+        
+        restored = D10ZThresholds.from_dict(data)
+        
+        assert restored.bread_path == thresholds.bread_path
+        assert restored.torreja_path == thresholds.torreja_path
+    
+    def test_get_path_for_coherence(self):
+        """Test path determination."""
+        thresholds = D10ZThresholds()
+        
+        assert thresholds.get_path_for_coherence(0.5) == "FAST"
+        assert thresholds.get_path_for_coherence(0.35) == "QUANT"
+        assert thresholds.get_path_for_coherence(0.2) == "DEEP"
+    
+    def test_get_energy_cost_for_path(self):
+        """Test energy cost lookup."""
+        thresholds = D10ZThresholds()
+        
+        assert thresholds.get_energy_cost_for_path("FAST") == 0.01
+        assert thresholds.get_energy_cost_for_path("QUANT") == 0.25
+        assert thresholds.get_energy_cost_for_path("DEEP") == 1.0
+    
+    def test_calculate_energy_savings(self):
+        """Test energy savings calculation."""
+        thresholds = D10ZThresholds()
+        
+        result = thresholds.calculate_energy_savings(
+            fast_ratio=0.70,
+            quant_ratio=0.20,
+            deep_ratio=0.10
+        )
+        
+        assert result["savings_percent"] > 80  # Should be ~84%
+        assert result["virtual_capacity"] > 6  # Should be ~6.4x
+    
+    def test_validate(self):
+        """Test threshold validation."""
+        thresholds = D10ZThresholds()
+        
+        is_valid, errors = thresholds.validate()
+        
+        assert is_valid is True
+        assert len(errors) == 0
+    
+    def test_validate_invalid(self):
+        """Test validation with invalid values."""
+        thresholds = D10ZThresholds(bread_path=0.2, torreja_path=0.3)
+        
+        is_valid, errors = thresholds.validate()
+        
+        assert is_valid is False
+        assert len(errors) > 0
+
+
+class TestConstants:
+    """Test module constants."""
+    
+    def test_bread_path_threshold(self):
+        """Test Bread Path threshold constant."""
+        assert BREAD_PATH_THRESHOLD == 0.436
+    
+    def test_torreja_path_threshold(self):
+        """Test Torreja Path threshold constant."""
+        assert TORREJA_PATH_THRESHOLD == 0.286
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
