@@ -1,0 +1,42 @@
+name = "wop-superagent"
+main = "src/index.ts"
+account_id = "5e5cda83366e67183e135631c8273b39"
+compatibility_date = "2026-03-18"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "src/public"
+
+[ai]
+binding = "AI"
+
+# --- Durable Objects ---
+[[durable_objects.bindings]]
+name = "WOPSuperAgent"
+class_name = "WOPSuperAgent"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WOPSuperAgent"]
+
+# --- KV Namespace ---
+# Create with: npx wrangler kv namespace create WOP_KV
+# Then update the id below with the returned namespace ID
+[[kv_namespaces]]
+binding = "WOP_KV"
+id = "3a2623628ee6451d92aa6f2beb3fe14d"
+
+# --- D1 Database ---
+# Create with: npx wrangler d1 create wop-governance-db
+# Then update the database_id below with the returned database ID
+[[d1_databases]]
+binding = "WOP_DB"
+database_name = "wop-governance-db"
+database_id = "91de55f2-e6ff-49f4-bafb-eb012d3de87a"
+
+# --- Optional Secrets ---
+# Set with: npx wrangler secret put ANTHROPIC_API_KEY
+# Enables swap to claude-sonnet-4-20250514 model
+
+[vars]
+WOP_VERSION = "2.0.0"

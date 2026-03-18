@@ -129,6 +129,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Node.js / Cloudflare Workers
+node_modules/
+.wrangler/
+
 # IDEs
 .vscode/
 .idea/

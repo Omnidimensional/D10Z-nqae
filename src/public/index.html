@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WOP SuperAgent 2.0 — IntelliWeb-Internet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ========================================================================
+   DD7 Design System — WOP SuperAgent 2.0
+   ======================================================================== */
+:root {
+  --gold: #D4A843;
+  --glow: #FFF1C1;
+  --cyan: #00C6FF;
+  --teal: #00FFCC;
+  --wop: #FF9F1C;
+  --violet: #9B5DE5;
+  --ink: #020408;
+  --ink-light: #0a0e18;
+  --ink-mid: #111827;
+  --ink-soft: #1f2937;
+  --text: #e5e7eb;
+  --text-dim: #9ca3af;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--ink);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Canvas Background */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Layout */
+.app {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: 64px 1fr;
+  height: 100vh;
+  gap: 0;
+}
+
+/* Header */
+.header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(2, 4, 8, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+  z-index: 10;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-logo {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: 22px;
+  background: linear-gradient(135deg, var(--gold), var(--glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+}
+
+.header-sub {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ws-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--text-dim);
+}
+
+.ws-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  transition: background 0.3s;
+}
+
+.ws-dot.connected { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+
+.ig-header-score {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 1px;
+}
+
+/* Main Chat Area */
+.chat-area {
+  display: flex;
+  flex-direction: column;
+  background: rgba(2, 4, 8, 0.6);
+  overflow: hidden;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+.messages::-webkit-scrollbar { width: 6px; }
+.messages::-webkit-scrollbar-track { background: transparent; }
+.messages::-webkit-scrollbar-thumb { background: rgba(212, 168, 67, 0.3); border-radius: 3px; }
+
+/* Welcome Splash */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  padding: 40px;
+}
+
+.welcome-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 20px rgba(212, 168, 67, 0.4));
+}
+
+.welcome-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), var(--glow), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.welcome-desc {
+  font-size: 16px;
+  color: var(--text-dim);
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.suggestion-chip {
+  padding: 10px 18px;
+  background: rgba(155, 93, 229, 0.1);
+  border: 1px solid rgba(155, 93, 229, 0.3);
+  border-radius: 24px;
+  color: var(--violet);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.suggestion-chip:hover {
+  background: rgba(155, 93, 229, 0.2);
+  border-color: var(--violet);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 93, 229, 0.2);
+}
+
+/* Messages */
+.msg {
+  display: flex;
+  gap: 12px;
+  max-width: 85%;
+  animation: msgIn 0.3s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.msg.agent .msg-avatar {
+  background: linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(0, 198, 255, 0.2));
+  border: 1px solid rgba(212, 168, 67, 0.3);
+}
+
+.msg.user .msg-avatar {
+  background: rgba(155, 93, 229, 0.2);
+  border: 1px solid rgba(155, 93, 229, 0.3);
+}
+
+.msg-body {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.msg.agent .msg-body {
+  background: var(--ink-light);
+  border: 1px solid rgba(212, 168, 67, 0.15);
+}
+
+.msg.user .msg-body {
+  background: rgba(155, 93, 229, 0.15);
+  border: 1px solid rgba(155, 93, 229, 0.25);
+}
+
+.msg-body p { margin-bottom: 8px; }
+.msg-body p:last-child { margin-bottom: 0; }
+.msg-body strong { color: var(--gold); }
+.msg-body code {
+  font-family: 'Share Tech Mono', monospace;
+  background: rgba(0, 198, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--cyan);
+}
+
+/* Tool Call Display */
+.tool-call {
+  margin: 8px 0;
+  padding: 12px 16px;
+  background: rgba(155, 93, 229, 0.1);
+  border: 1px solid rgba(155, 93, 229, 0.3);
+  border-left: 3px solid var(--violet);
+  border-radius: var(--radius-sm);
+}
+
+.tool-call-header {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--violet);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tool-call-args {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Tool Result Display */
+.tool-result {
+  margin: 8px 0;
+  padding: 12px 16px;
+  background: rgba(0, 255, 204, 0.05);
+  border: 1px solid rgba(0, 255, 204, 0.2);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius-sm);
+}
+
+.tool-result-header {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--teal);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tool-result-body {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Typing Indicator */
+.typing {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px 16px;
+}
+
+.typing.active { display: flex; }
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.typing-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: bounce 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-8px); opacity: 1; }
+}
+
+.typing-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* Input Bar */
+.input-bar {
+  padding: 16px 24px;
+  background: rgba(2, 4, 8, 0.9);
+  border-top: 1px solid rgba(212, 168, 67, 0.15);
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.input-bar textarea {
+  flex: 1;
+  background: var(--ink-light);
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  resize: none;
+  outline: none;
+  min-height: 48px;
+  max-height: 120px;
+  transition: border-color 0.2s;
+}
+
+.input-bar textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.1);
+}
+
+.input-bar textarea::placeholder { color: var(--text-dim); }
+
+.send-btn {
+  width: 48px; height: 48px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--gold), var(--wop));
+  border: none;
+  color: var(--ink);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover { transform: scale(1.05); box-shadow: 0 4px 16px rgba(212, 168, 67, 0.4); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Side Panel */
+.side-panel {
+  background: rgba(2, 4, 8, 0.85);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(212, 168, 67, 0.15);
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.side-panel::-webkit-scrollbar { width: 4px; }
+.side-panel::-webkit-scrollbar-thumb { background: rgba(212, 168, 67, 0.2); border-radius: 2px; }
+
+/* I_G Meter */
+.ig-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ig-meter-label {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.ig-gauge {
+  position: relative;
+  width: 160px;
+  height: 160px;
+}
+
+.ig-gauge canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.ig-gauge-value {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.ig-gauge-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(212, 168, 67, 0.5);
+}
+
+.ig-gauge-unit {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.ig-classification {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.ig-classification.sovereign { background: rgba(0, 255, 204, 0.15); color: var(--teal); border: 1px solid rgba(0, 255, 204, 0.3); }
+.ig-classification.autonomous { background: rgba(0, 198, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 198, 255, 0.3); }
+.ig-classification.governed { background: rgba(212, 168, 67, 0.15); color: var(--gold); border: 1px solid rgba(212, 168, 67, 0.3); }
+.ig-classification.contested { background: rgba(255, 159, 28, 0.15); color: var(--wop); border: 1px solid rgba(255, 159, 28, 0.3); }
+.ig-classification.captured { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Metrics Bars */
+.metrics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.metrics-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+}
+
+.metric-name { color: var(--text-dim); }
+
+.metric-value {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.metric-bar {
+  height: 6px;
+  background: var(--ink-soft);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.metric-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 20px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+  animation: barGlow 2s infinite;
+}
+
+@keyframes barGlow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.metric-bar-fill.s_ai { background: linear-gradient(90deg, var(--cyan), var(--teal)); }
+.metric-bar-fill.q_bc { background: linear-gradient(90deg, var(--violet), var(--cyan)); }
+.metric-bar-fill.d_da { background: linear-gradient(90deg, var(--gold), var(--wop)); }
+.metric-bar-fill.g_sw { background: linear-gradient(90deg, #ef4444, #f97316); }
+.metric-bar-fill.e_sa { background: linear-gradient(90deg, #f97316, #eab308); }
+
+/* Protocol Layer Chips */
+.layers-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.layers-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.layer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.layer-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.layer-chip .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+.layer-chip.live {
+  background: rgba(0, 255, 204, 0.1);
+  border: 1px solid rgba(0, 255, 204, 0.25);
+  color: var(--teal);
+}
+.layer-chip.live .dot { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+
+.layer-chip.dev {
+  background: rgba(155, 93, 229, 0.1);
+  border: 1px solid rgba(155, 93, 229, 0.25);
+  color: var(--violet);
+}
+.layer-chip.dev .dot { background: var(--violet); box-shadow: 0 0 6px var(--violet); }
+
+.layer-chip.pending {
+  background: rgba(212, 168, 67, 0.1);
+  border: 1px solid rgba(212, 168, 67, 0.25);
+  color: var(--gold);
+}
+.layer-chip.pending .dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+/* DD7 Info */
+.dd7-info {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 168, 67, 0.1);
+  text-align: center;
+}
+
+.dd7-info p {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.dd7-info a { color: var(--gold); text-decoration: none; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 56px 1fr auto;
+  }
+  .side-panel {
+    display: none;
+  }
+  .header-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="app">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-logo">WOP SUPERAGENT</div>
+      <div class="header-sub">IntelliWeb-Internet · DD7 International GmbH</div>
+    </div>
+    <div class="header-status">
+      <div class="ws-indicator">
+        <div class="ws-dot" id="wsDot"></div>
+        <span id="wsLabel">DISCONNECTED</span>
+      </div>
+      <div class="ig-header-score" id="igHeaderScore">I_G = ---</div>
+    </div>
+  </header>
+
+  <!-- Chat Area -->
+  <main class="chat-area">
+    <div class="messages" id="messages">
+      <!-- Welcome Splash -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">&#x2726;</div>
+        <div class="welcome-title">WOP SuperAgent 2.0</div>
+        <div class="welcome-desc">
+          Sovereign AI governance agent for IntelliWeb-Internet (I-I-W).
+          Ask me about the WOP protocol, compute governance scores, register nodes,
+          or query the iScientist knowledge base.
+        </div>
+        <div class="suggestions">
+          <div class="suggestion-chip" data-msg="What is the WOP protocol and how does it work?">What is WOP?</div>
+          <div class="suggestion-chip" data-msg="Compute the I_G score with S_AI=0.85, Q_BC=0.78, D_DA=0.72, G_SW=0.25, E_SA=0.20">Compute I_G Score</div>
+          <div class="suggestion-chip" data-msg="Register a new WOP node: id=wop-eu-001, layer=SwarmCore, location=Frankfurt, owner=DD7 Labs">Register a Node</div>
+          <div class="suggestion-chip" data-msg="Show me the current WOP network status">Network Status</div>
+          <div class="suggestion-chip" data-msg="Check if the action 'Deploy centralized data collection' complies with iGJ governance">Governance Check</div>
+          <div class="suggestion-chip" data-msg="What is the iScientist Interface and how does it connect to Zenodo?">What is iScientist?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div class="typing" id="typing">
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+      <span class="typing-label">WOP SuperAgent is thinking...</span>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar">
+      <textarea id="userInput" placeholder="Ask WOP SuperAgent anything..." rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" title="Send message">&#x27A4;</button>
+    </div>
+  </main>
+
+  <!-- Side Panel -->
+  <aside class="side-panel">
+    <!-- I_G Meter -->
+    <div class="ig-meter">
+      <div class="ig-meter-label">Governance Score</div>
+      <div class="ig-gauge">
+        <canvas id="gaugeCanvas" width="320" height="320"></canvas>
+        <div class="ig-gauge-value">
+          <div class="ig-gauge-number" id="igNumber">0.00</div>
+          <div class="ig-gauge-unit">I_G INDEX</div>
+        </div>
+      </div>
+      <div class="ig-classification governed" id="igClass">GOVERNED</div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-section">
+      <div class="metrics-title">Sovereign Metrics</div>
+
+      <div class="metric-row">
+        <div class="metric-label">
+          <span class="metric-name">S_AI · Swarm Intelligence</span>
+          <span class="metric-value" id="valSAI" style="color: var(--cyan)">0.75</span>
+        </div>
+        <div class="metric-bar"><div class="metric-bar-fill s_ai" id="barSAI" style="width:75%"></div></div>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-label">
+          <span class="metric-name">Q_BC · Quantum Coherence</span>
+          <span class="metric-value" id="valQBC" style="color: var(--violet)">0.70</span>
+        </div>
+        <div class="metric-bar"><div class="metric-bar-fill q_bc" id="barQBC" style="width:70%"></div></div>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-label">
+          <span class="metric-name">D_DA · Data Autonomy</span>
+          <span class="metric-value" id="valDDA" style="color: var(--gold)">0.65</span>
+        </div>
+        <div class="metric-bar"><div class="metric-bar-fill d_da" id="barDDA" style="width:65%"></div></div>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-label">
+          <span class="metric-name">G_SW · Surveillance</span>
+          <span class="metric-value" id="valGSW" style="color: #ef4444">0.30</span>
+        </div>
+        <div class="metric-bar"><div class="metric-bar-fill g_sw" id="barGSW" style="width:30%"></div></div>
+      </div>
+
+      <div class="metric-row">
+        <div class="metric-label">
+          <span class="metric-name">E_SA · Extractive Arch</span>
+          <span class="metric-value" id="valESA" style="color: #f97316">0.25</span>
+        </div>
+        <div class="metric-bar"><div class="metric-bar-fill e_sa" id="barESA" style="width:25%"></div></div>
+      </div>
+    </div>
+
+    <!-- Protocol Layers -->
+    <div class="layers-section">
+      <div class="layers-title">Protocol Stack</div>
+      <div class="layer-chips">
+        <div class="layer-chip live"><span class="dot"></span>WOP-Core</div>
+        <div class="layer-chip live"><span class="dot"></span>RSFS</div>
+        <div class="layer-chip dev"><span class="dot"></span>QNSB</div>
+        <div class="layer-chip live"><span class="dot"></span>ICI</div>
+        <div class="layer-chip live"><span class="dot"></span>SwarmCore</div>
+        <div class="layer-chip live"><span class="dot"></span>Q-EJMF</div>
+        <div class="layer-chip dev"><span class="dot"></span>iGJ</div>
+        <div class="layer-chip dev"><span class="dot"></span>iSWARM</div>
+      </div>
+    </div>
+
+    <!-- DD7 Footer -->
+    <div class="dd7-info">
+      <p>DD7 International GmbH</p>
+      <p>Patent PCT/EP2025/080977</p>
+      <p>ORCID 0009-0003-5559-8185</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ========================================================================
+// WOP SuperAgent 2.0 — Frontend Controller
+// ========================================================================
+
+(function() {
+  'use strict';
+
+  // --- State ---
+  const state = {
+    ws: null,
+    connected: false,
+    streaming: false,
+    metrics: {
+      S_AI: 0.75, Q_BC: 0.70, D_DA: 0.65,
+      G_SW: 0.30, E_SA: 0.25
+    },
+    igScore: 0,
+    igTarget: 0,
+    messageId: 0,
+  };
+
+  // --- DOM Refs ---
+  const $ = id => document.getElementById(id);
+  const messagesEl = $('messages');
+  const welcomeEl = $('welcome');
+  const typingEl = $('typing');
+  const userInput = $('userInput');
+  const sendBtn = $('sendBtn');
+  const wsDot = $('wsDot');
+  const wsLabel = $('wsLabel');
+  const igHeaderScore = $('igHeaderScore');
+  const igNumber = $('igNumber');
+  const igClass = $('igClass');
+  const gaugeCanvas = $('gaugeCanvas');
+  const gaugeCtx = gaugeCanvas.getContext('2d');
+
+  // --- IntelliEquation ---
+  function computeIG(m) {
+    const num = m.S_AI + m.Q_BC + m.D_DA;
+    const den = m.G_SW + m.E_SA;
+    return den > 0 ? num / den : 0;
+  }
+
+  function classifyIG(score) {
+    if (score >= 1.5) return { label: 'SOVEREIGN', cls: 'sovereign' };
+    if (score >= 1.0) return { label: 'AUTONOMOUS', cls: 'autonomous' };
+    if (score >= 0.77) return { label: 'GOVERNED', cls: 'governed' };
+    if (score >= 0.5) return { label: 'CONTESTED', cls: 'contested' };
+    return { label: 'CAPTURED', cls: 'captured' };
+  }
+
+  // --- Gauge Drawing ---
+  function drawGauge(score) {
+    const w = gaugeCanvas.width, h = gaugeCanvas.height;
+    const cx = w / 2, cy = h / 2, r = w * 0.38;
+    gaugeCtx.clearRect(0, 0, w, h);
+
+    // Background arc
+    const startAngle = 0.75 * Math.PI;
+    const endAngle = 2.25 * Math.PI;
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(cx, cy, r, startAngle, endAngle);
+    gaugeCtx.strokeStyle = 'rgba(212, 168, 67, 0.1)';
+    gaugeCtx.lineWidth = 12;
+    gaugeCtx.lineCap = 'round';
+    gaugeCtx.stroke();
+
+    // Score arc (capped at 3.0 for display)
+    const maxScore = 3.0;
+    const pct = Math.min(score / maxScore, 1);
+    const scoreAngle = startAngle + pct * (endAngle - startAngle);
+
+    const { cls } = classifyIG(score);
+    const colors = {
+      sovereign: '#00FFCC', autonomous: '#00C6FF',
+      governed: '#D4A843', contested: '#FF9F1C', captured: '#ef4444'
+    };
+
+    const grad = gaugeCtx.createLinearGradient(0, h, w, 0);
+    grad.addColorStop(0, colors[cls] || '#D4A843');
+    grad.addColorStop(1, '#FFF1C1');
+
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(cx, cy, r, startAngle, scoreAngle);
+    gaugeCtx.strokeStyle = grad;
+    gaugeCtx.lineWidth = 12;
+    gaugeCtx.lineCap = 'round';
+    gaugeCtx.stroke();
+
+    // Glow
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(cx, cy, r, startAngle, scoreAngle);
+    gaugeCtx.strokeStyle = colors[cls] || '#D4A843';
+    gaugeCtx.lineWidth = 12;
+    gaugeCtx.lineCap = 'round';
+    gaugeCtx.globalAlpha = 0.15;
+    gaugeCtx.filter = 'blur(8px)';
+    gaugeCtx.stroke();
+    gaugeCtx.globalAlpha = 1;
+    gaugeCtx.filter = 'none';
+
+    // Threshold line at 0.77
+    const threshPct = 0.77 / maxScore;
+    const threshAngle = startAngle + threshPct * (endAngle - startAngle);
+    gaugeCtx.beginPath();
+    gaugeCtx.arc(cx, cy, r, threshAngle - 0.02, threshAngle + 0.02);
+    gaugeCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    gaugeCtx.lineWidth = 18;
+    gaugeCtx.stroke();
+  }
+
+  // --- Update UI ---
+  function updateMetricsUI() {
+    const m = state.metrics;
+
+    $('valSAI').textContent = m.S_AI.toFixed(2);
+    $('barSAI').style.width = (m.S_AI * 100) + '%';
+    $('valQBC').textContent = m.Q_BC.toFixed(2);
+    $('barQBC').style.width = (m.Q_BC * 100) + '%';
+    $('valDDA').textContent = m.D_DA.toFixed(2);
+    $('barDDA').style.width = (m.D_DA * 100) + '%';
+    $('valGSW').textContent = m.G_SW.toFixed(2);
+    $('barGSW').style.width = (m.G_SW * 100) + '%';
+    $('valESA').textContent = m.E_SA.toFixed(2);
+    $('barESA').style.width = (m.E_SA * 100) + '%';
+  }
+
+  function updateIGDisplay() {
+    // Smooth animation toward target
+    const diff = state.igTarget - state.igScore;
+    state.igScore += diff * 0.08;
+
+    const display = state.igScore.toFixed(2);
+    igNumber.textContent = display;
+    igHeaderScore.textContent = 'I_G = ' + display;
+
+    const { label, cls } = classifyIG(state.igScore);
+    igClass.textContent = label;
+    igClass.className = 'ig-classification ' + cls;
+
+    drawGauge(state.igScore);
+  }
+
+  // --- I_G Animation Loop (100ms) ---
+  function startIGLoop() {
+    state.igTarget = computeIG(state.metrics);
+    updateIGDisplay();
+    updateMetricsUI();
+
+    setInterval(() => {
+      // Gentle fluctuation
+      const m = state.metrics;
+      m.S_AI = clamp(m.S_AI + (Math.random() - 0.5) * 0.005, 0, 1);
+      m.Q_BC = clamp(m.Q_BC + (Math.random() - 0.5) * 0.004, 0, 1);
+      m.D_DA = clamp(m.D_DA + (Math.random() - 0.5) * 0.003, 0, 1);
+      m.G_SW = clamp(m.G_SW + (Math.random() - 0.5) * 0.002, 0.01, 1);
+      m.E_SA = clamp(m.E_SA + (Math.random() - 0.5) * 0.002, 0.01, 1);
+
+      state.igTarget = computeIG(m);
+      updateIGDisplay();
+      updateMetricsUI();
+    }, 100);
+  }
+
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  // --- WebSocket Connection ---
+  function connectWS() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const url = proto + '//' + location.host + '/agent';
+
+    try {
+      state.ws = new WebSocket(url);
+    } catch(e) {
+      console.warn('WebSocket creation failed:', e);
+      setWSStatus(false);
+      return;
+    }
+
+    state.ws.onopen = () => {
+      setWSStatus(true);
+    };
+
+    state.ws.onclose = () => {
+      setWSStatus(false);
+      // Reconnect after 3s
+      setTimeout(connectWS, 3000);
+    };
+
+    state.ws.onerror = () => {
+      setWSStatus(false);
+    };
+
+    state.ws.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+        handleWSMessage(data);
+      } catch(e) {
+        // Plain text fallback
+        handlePlainText(ev.data);
+      }
+    };
+  }
+
+  function setWSStatus(connected) {
+    state.connected = connected;
+    wsDot.className = 'ws-dot' + (connected ? ' connected' : '');
+    wsLabel.textContent = connected ? 'CONNECTED' : 'DISCONNECTED';
+  }
+
+  // --- Message Handling ---
+  function handleWSMessage(data) {
+    // Agents SDK sends various message types
+    if (data.type === 'cf-agent-use-chat-response-start') {
+      showTyping(true);
+      state.streaming = true;
+      createAgentMessage();
+    } else if (data.type === 'cf-agent-use-chat-response-chunk') {
+      appendToCurrentMessage(data.text || '');
+    } else if (data.type === 'cf-agent-use-chat-response-tool-call') {
+      showToolCall(data.toolName, data.args);
+    } else if (data.type === 'cf-agent-use-chat-response-tool-result') {
+      showToolResult(data.toolName, data.result);
+      // Extract metrics from tool results
+      extractMetrics(data.result);
+    } else if (data.type === 'cf-agent-use-chat-response-end') {
+      showTyping(false);
+      state.streaming = false;
+    } else if (Array.isArray(data)) {
+      // Messages array from agent
+      handleMessagesArray(data);
+    }
+  }
+
+  function handleMessagesArray(messages) {
+    for (const msg of messages) {
+      if (msg.role === 'assistant' && msg.content) {
+        const text = typeof msg.content === 'string' ? msg.content :
+          msg.content.filter(c => c.type === 'text').map(c => c.text).join('');
+        if (text) {
+          showTyping(false);
+          addMessage('agent', text);
+        }
+        // Handle tool calls
+        if (Array.isArray(msg.content)) {
+          for (const part of msg.content) {
+            if (part.type === 'tool-call') {
+              showToolCall(part.toolName, part.args);
+            }
+          }
+        }
+      }
+      if (msg.role === 'tool' && msg.content) {
+        const results = Array.isArray(msg.content) ? msg.content : [msg.content];
+        for (const r of results) {
+          if (r.type === 'tool-result') {
+            showToolResult(r.toolName || 'tool', r.result);
+            extractMetrics(r.result);
+          }
+        }
+      }
+    }
+  }
+
+  function handlePlainText(text) {
+    if (text.trim()) {
+      showTyping(false);
+      addMessage('agent', text);
+    }
+  }
+
+  function extractMetrics(result) {
+    if (!result || typeof result !== 'object') return;
+    try {
+      const obj = typeof result === 'string' ? JSON.parse(result) : result;
+      if (obj.I_G !== undefined) {
+        state.igTarget = obj.I_G;
+      }
+      if (obj.metrics) {
+        const m = obj.metrics;
+        if (m.S_AI !== undefined) state.metrics.S_AI = m.S_AI;
+        if (m.Q_BC !== undefined) state.metrics.Q_BC = m.Q_BC;
+        if (m.D_DA !== undefined) state.metrics.D_DA = m.D_DA;
+        if (m.G_SW !== undefined) state.metrics.G_SW = m.G_SW;
+        if (m.E_SA !== undefined) state.metrics.E_SA = m.E_SA;
+      }
+      // From compute_ig tool
+      if (obj.S_AI !== undefined || obj.s_ai !== undefined) {
+        // Try to extract individual metrics
+        const keys = ['S_AI', 'Q_BC', 'D_DA', 'G_SW', 'E_SA'];
+        for (const k of keys) {
+          if (obj[k] !== undefined) state.metrics[k] = obj[k];
+        }
+      }
+    } catch {}
+  }
+
+  // --- DOM Manipulation ---
+  let currentMsgEl = null;
+  let currentMsgText = '';
+
+  function hideWelcome() {
+    if (welcomeEl) welcomeEl.style.display = 'none';
+  }
+
+  function addMessage(role, text) {
+    hideWelcome();
+    const msg = document.createElement('div');
+    msg.className = 'msg ' + role;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.innerHTML = role === 'agent' ? '&#x2726;' : '&#x25C6;';
+
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+    body.innerHTML = formatMarkdown(text);
+
+    msg.appendChild(avatar);
+    msg.appendChild(body);
+    messagesEl.appendChild(msg);
+    scrollToBottom();
+
+    return body;
+  }
+
+  function createAgentMessage() {
+    hideWelcome();
+    currentMsgText = '';
+    const msg = document.createElement('div');
+    msg.className = 'msg agent';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.innerHTML = '&#x2726;';
+
+    const body = document.createElement('div');
+    body.className = 'msg-body';
+    currentMsgEl = body;
+
+    msg.appendChild(avatar);
+    msg.appendChild(body);
+    messagesEl.appendChild(msg);
+    scrollToBottom();
+  }
+
+  function appendToCurrentMessage(text) {
+    if (!currentMsgEl) createAgentMessage();
+    currentMsgText += text;
+    currentMsgEl.innerHTML = formatMarkdown(currentMsgText);
+    scrollToBottom();
+  }
+
+  function showToolCall(name, args) {
+    hideWelcome();
+    const el = document.createElement('div');
+    el.className = 'tool-call';
+    el.innerHTML = `
+      <div class="tool-call-header">&#x2699; Tool Call: ${escHTML(name)}</div>
+      <div class="tool-call-args">${escHTML(typeof args === 'string' ? args : JSON.stringify(args, null, 2))}</div>
+    `;
+    messagesEl.appendChild(el);
+    scrollToBottom();
+  }
+
+  function showToolResult(name, result) {
+    const el = document.createElement('div');
+    el.className = 'tool-result';
+    const resultStr = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+    el.innerHTML = `
+      <div class="tool-result-header">&#x2713; Result: ${escHTML(name)}</div>
+      <div class="tool-result-body">${escHTML(resultStr)}</div>
+    `;
+    messagesEl.appendChild(el);
+    scrollToBottom();
+  }
+
+  function showTyping(show) {
+    typingEl.className = 'typing' + (show ? ' active' : '');
+  }
+
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  // --- Simple Markdown ---
+  function formatMarkdown(text) {
+    return text
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`(.+?)`/g, '<code>$1</code>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^(.*)$/, '<p>$1</p>');
+  }
+
+  function escHTML(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // --- Send Message ---
+  function sendMessage(text) {
+    text = text.trim();
+    if (!text) return;
+
+    addMessage('user', text);
+    userInput.value = '';
+    autoResize();
+
+    if (state.connected && state.ws && state.ws.readyState === 1) {
+      // Send via Agents SDK WebSocket protocol
+      state.ws.send(JSON.stringify({
+        type: 'cf-agent-use-chat-message',
+        content: text,
+      }));
+      showTyping(true);
+    } else {
+      // Fallback: simulate response
+      simulateResponse(text);
+    }
+  }
+
+  // --- Fallback Simulation ---
+  function simulateResponse(query) {
+    showTyping(true);
+    const q = query.toLowerCase();
+
+    let response;
+    if (q.includes('wop') && q.includes('protocol')) {
+      response = `The **World Open Protocol (WOP)** is a 7-layer sovereign internet stack developed by DD7 International GmbH:\n\n1. **WOP-Core** — Sovereign transport layer\n2. **RSFS** — Resonant Sovereign File System\n3. **QNSB** — Quantum Nodal Sovereign Blockchain\n4. **ICI** — Inter-Chain Interface\n5. **SwarmCore** — AI swarm intelligence\n6. **Q-EJMF** — Quantum energy framework\n7. **iGJ** — Intelligent Governance by Justice\n\nTogether they form IntelliWeb-Internet (I-I-W), a decentralized, sovereign alternative to the extractive internet paradigm.\n\nPatent: PCT/EP2025/080977 · DOI: 10.5281/zenodo.18348037\n\n**WOP Status · I_G = ${state.igScore.toFixed(2)}**`;
+    } else if (q.includes('i_g') || q.includes('score') || q.includes('intelli')) {
+      const ig = computeIG(state.metrics);
+      response = `**IntelliEquation Computation:**\n\nI_G = [(S_AI + Q_BC + D_DA) / (G_SW + E_SA)]^α\nI_G = [(${state.metrics.S_AI.toFixed(2)} + ${state.metrics.Q_BC.toFixed(2)} + ${state.metrics.D_DA.toFixed(2)}) / (${state.metrics.G_SW.toFixed(2)} + ${state.metrics.E_SA.toFixed(2)})]^1.0\nI_G = **${ig.toFixed(4)}**\n\nClassification: **${classifyIG(ig).label}**\nGovernance Threshold Φ = 0.77: ${ig >= 0.77 ? '✓ COMPLIANT' : '✗ NON-COMPLIANT'}\n\n**WOP Status · I_G = ${ig.toFixed(2)}**`;
+    } else if (q.includes('node') || q.includes('register')) {
+      response = `**Node Registration** (simulated — connect to backend for live KV storage)\n\nTo register a WOP node, I need:\n- **id**: Unique identifier (e.g., wop-eu-west-001)\n- **layer**: Protocol layer (WOP-Core, RSFS, QNSB, ICI, SwarmCore, Q-EJMF, iGJ)\n- **location**: Geographic location\n- **owner**: Operator name\n\nExample: "Register node wop-eu-001 on SwarmCore in Frankfurt, owned by DD7 Labs"\n\n**WOP Status · I_G = ${state.igScore.toFixed(2)}**`;
+    } else if (q.includes('network') || q.includes('status')) {
+      response = `**WOP Network Status** (simulated)\n\n| Layer | Status |\n|-------|--------|\n| WOP-Core | LIVE |\n| RSFS | LIVE |\n| QNSB | DEV |\n| ICI | LIVE |\n| SwarmCore | LIVE |\n| Q-EJMF | LIVE |\n| iGJ | DEV |\n\nTotal Nodes: Awaiting backend connection\nI_G Score: ${state.igScore.toFixed(4)}\n\n**WOP Status · I_G = ${state.igScore.toFixed(2)}**`;
+    } else if (q.includes('governance') || q.includes('igj') || q.includes('check')) {
+      const ig = computeIG(state.metrics);
+      response = `**iGJ Governance Check** (simulated)\n\nGovernance Threshold: Φ = 0.77\nCurrent I_G: ${ig.toFixed(4)}\nVerdict: ${ig >= 0.77 ? '**APPROVED** ✓' : '**DENIED** ✗'}\n\nThe iGJ (Intelligent Governance by Justice) layer ensures all network actions maintain a minimum I_G score of 0.77, protecting sovereign intelligence from extractive capture.\n\n**WOP Status · I_G = ${ig.toFixed(2)}**`;
+    } else if (q.includes('iscientist') || q.includes('zenodo')) {
+      response = `**iScientist Interface**\n\nThe iScientist Interface is DD7's evidence-first research tool that anchors all scientific claims to Zenodo DOI references.\n\nKey publications:\n- D10Z-TTA Architecture: DOI 10.5281/zenodo.18356012\n- WOP Protocol Specification: DOI 10.5281/zenodo.18348037\n- Quantum Nodal Framework: DOI 10.5281/zenodo.15405981\n\nOrcid: 0009-0003-5559-8185\nPatent: PCT/EP2025/080977\n\n**WOP Status · I_G = ${state.igScore.toFixed(2)}**`;
+    } else {
+      response = `I am **WOP SuperAgent 2.0**, the sovereign AI of IntelliWeb-Internet (I-I-W), developed by DD7 International GmbH.\n\nI can help you with:\n- **IntelliEquation** — Compute I_G governance scores\n- **Node Management** — Register and monitor WOP network nodes\n- **Governance** — Check actions against iGJ policy\n- **iScientist** — Evidence-first scientific queries with DOI anchors\n- **Protocol Knowledge** — Everything about the 7-layer WOP stack\n\nWhat would you like to explore?\n\n**WOP Status · I_G = ${state.igScore.toFixed(2)}**`;
+    }
+
+    setTimeout(() => {
+      showTyping(false);
+      addMessage('agent', response);
+    }, 800 + Math.random() * 1200);
+  }
+
+  // --- Auto-resize textarea ---
+  function autoResize() {
+    userInput.style.height = 'auto';
+    userInput.style.height = Math.min(userInput.scrollHeight, 120) + 'px';
+  }
+
+  // --- Starfield + Circuit Grid Background ---
+  function initBackground() {
+    const canvas = $('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Stars
+    const stars = Array.from({ length: 150 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.5 + 0.5,
+      speed: Math.random() * 0.3 + 0.05,
+      phase: Math.random() * Math.PI * 2,
+    }));
+
+    // Circuit nodes
+    const nodes = Array.from({ length: 20 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+    }));
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      t += 0.01;
+
+      // Stars
+      for (const s of stars) {
+        const alpha = 0.3 + 0.3 * Math.sin(t * 2 + s.phase);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212, 168, 67, ${alpha})`;
+        ctx.fill();
+        s.y -= s.speed;
+        if (s.y < -5) { s.y = h + 5; s.x = Math.random() * w; }
+      }
+
+      // Circuit grid lines
+      ctx.strokeStyle = 'rgba(0, 198, 255, 0.04)';
+      ctx.lineWidth = 1;
+      const gridSize = 80;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Circuit node connections
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > w) n.vx *= -1;
+        if (n.y < 0 || n.y > h) n.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 198, 255, 0.3)';
+        ctx.fill();
+
+        // Connect nearby nodes
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[j].x - n.x;
+          const dy = nodes[j].y - n.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 200) {
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(0, 198, 255, ${0.08 * (1 - d / 200)})`;
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  }
+
+  // --- Event Listeners ---
+  sendBtn.addEventListener('click', () => sendMessage(userInput.value));
+
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(userInput.value);
+    }
+  });
+
+  userInput.addEventListener('input', autoResize);
+
+  // Suggestion chips
+  document.querySelectorAll('.suggestion-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      sendMessage(chip.dataset.msg);
+    });
+  });
+
+  // --- Init ---
+  initBackground();
+  startIGLoop();
+  connectWS();
+
+})();
+</script>
+</body>
+</html>
