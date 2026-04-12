@@ -1,4 +1,4 @@
-# D10Z-TTA v18: ESPECIFICACIÓN TÉCNICA COMPLETA
+# Pyraclaw-TTA v18: ESPECIFICACIÓN TÉCNICA COMPLETA
 
 **Sistema Nodal Universal para Infraestructura Post-Cloud**
 
@@ -11,7 +11,7 @@
 | **Versión** | 18.0.0 |
 | **Fecha** | 23 Enero 2026 |
 | **DOI** | 10.5281/zenodo.18356012 |
-| **GitHub** | https://github.com/Omnidimensional/D10Z-nqae |
+| **GitHub** | https://github.com/Omnidimensional/Pyraclaw-nqae |
 | **ORCID** | 0009-0000-8858-4992 |
 | **Status** | PCT Priority Window Active |
 | **Validación** | TÜV Rheinland #TR-2025-11438 |
@@ -20,7 +20,7 @@
 
 ## RESUMEN EJECUTIVO
 
-D10Z-TTA es una arquitectura nodal que reemplaza la infraestructura de internet tradicional mediante:
+Pyraclaw-TTA es una arquitectura nodal que reemplaza la infraestructura de internet tradicional mediante:
 
 1. **Inversión de paradigma**: 7+ mil millones de smartphones como infraestructura primaria
 2. **Compresión basada en coherencia**: 14.9x promedio validado
@@ -35,7 +35,7 @@ D10Z-TTA es una arquitectura nodal que reemplaza la infraestructura de internet 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PUNTOS DE CONTROL D10Z                           │
+│                    PUNTOS DE CONTROL Pyraclaw                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   T_HIGH (Bread Path)  = 0.436    →  Φ ≥ 0.436: 1% energía         │
@@ -152,7 +152,7 @@ Donde:
 ## ESTRUCTURA DEL SISTEMA
 
 ```
-d10z_system/
+pyraclaw_system/
 ├── core/
 │   ├── __init__.py
 │   └── engine.py           # Motor principal + constantes
@@ -169,7 +169,7 @@ d10z_system/
 │   ├── __init__.py
 │   └── bridge_node.py      # Conexión internet legacy
 │
-├── d10z.py                 # Sistema integrado + CLI
+├── pyraclaw.py                 # Sistema integrado + CLI
 └── terra_mesh_dashboard.jsx # Interfaz React
 ```
 
@@ -201,7 +201,7 @@ Content-Addressable Storage con chunks de 1MB:
 - Fragmentación automática
 - Replicación adaptativa por demanda
 
-### 4. D10ZNode
+### 4. PyraclawNode
 
 Nodo completo con:
 - LinkLayer: Vecinos + heartbeat
@@ -253,23 +253,23 @@ Nodo completo con:
 
 ```bash
 # Clonar
-git clone https://github.com/Omnidimensional/D10Z-nqae.git
-cd D10Z-nqae
+git clone https://github.com/Omnidimensional/Pyraclaw-nqae.git
+cd Pyraclaw-nqae
 
 # Instalar dependencias
 pip install numpy
 
 # Ejecutar demo
-python d10z.py demo
+python pyraclaw.py demo
 
 # Ver estado
-python d10z.py status
+python pyraclaw.py status
 
 # Simular despliegue
-python d10z.py simulate --nodes 2490000
+python pyraclaw.py simulate --nodes 2490000
 
 # Test de estrés
-python d10z.py stress
+python pyraclaw.py stress
 ```
 
 ---
@@ -277,10 +277,10 @@ python d10z.py stress
 ## API BÁSICA
 
 ```python
-from d10z import D10ZSystem
+from pyraclaw import PyraclawSystem
 
 # Crear sistema
-system = D10ZSystem(data_path="./d10z_data")
+system = PyraclawSystem(data_path="./pyraclaw_data")
 
 # Almacenar contenido
 hash = system.store(data, name="mi-archivo")
@@ -288,7 +288,7 @@ hash = system.store(data, name="mi-archivo")
 # Recuperar
 data = system.retrieve("mi-archivo")
 # o por hash
-data = system.retrieve("D10Z://Qm...")
+data = system.retrieve("PYRACLAW://Qm...")
 
 # Analizar datos
 analysis = system.analyze(data)
@@ -316,18 +316,18 @@ CC BY-NC 4.0 (No Comercial)
 
 ## CONTACTO
 
-- **Instituto**: D10Z Institute
-- **Email**: codexlexd10z@gmail.com
+- **Instituto**: Byron Callaghan / Pyraclaw
+- **Email**: contact@pyraclaw.institute
 - **ORCID**: 0009-0000-8858-4992
 
 ---
 
 ## REFERENCIAS
 
-1. D10Z-NQAE v18 (DOI: 10.5281/zenodo.18356012)
-2. D10Z-NQAE v17 (DOI: 10.5281/zenodo.18348037)
+1. Pyraclaw-NQAE v18 (DOI: 10.5281/zenodo.18356012)
+2. Pyraclaw-NQAE v17 (DOI: 10.5281/zenodo.18348037)
 3. TÜV Rheinland Report #TR-2025-11438
 
 ---
 
-**© 2026 D10Z Institute | All Rights Reserved**
+**© 2026 Byron Callaghan / Pyraclaw | All Rights Reserved**

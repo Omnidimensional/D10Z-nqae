@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-STARLINK NODAL SYSTEM (SNS) - IMPLEMENTACIÓN D10Z-TTA
-Autor: Jamil Al Thani | ORCID: 0009-0000-8858-4992
+STARLINK NODAL SYSTEM (SNS) - IMPLEMENTACIÓN Pyraclaw-TTA
+Autor: Byron Callaghan | Rights Holder: Byron Callaghan
 Licencia: CC0 1.0 (Dominio Público)
 """
 
@@ -14,7 +14,7 @@ from enum import Enum
 import heapq
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# CONSTANTES D10Z
+# CONSTANTES Pyraclaw
 # ═══════════════════════════════════════════════════════════════════════════════
 
 GM_10_51 = 1e-51
@@ -36,7 +36,7 @@ class NodeState(Enum):
 
 @dataclass
 class SatelliteNode:
-    """Nodo satelital bajo ontología D10Z."""
+    """Nodo satelital bajo ontología Pyraclaw."""
     id: str
     shell: int = 1
     plane: int = 0
@@ -281,7 +281,7 @@ class StarlinkNodalSystem:
 
 def demo():
     print("=" * 70)
-    print("STARLINK NODAL SYSTEM - D10Z-TTA DEMO")
+    print("STARLINK NODAL SYSTEM - Pyraclaw-TTA DEMO")
     print("=" * 70)
     
     sns = StarlinkNodalSystem("SNS-DEMO")

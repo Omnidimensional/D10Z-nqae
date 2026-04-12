@@ -1,11 +1,11 @@
-# D10Z NODAL NETWORK: Reemplazo Total de Internet
+# Pyraclaw NODAL NETWORK: Reemplazo Total de Internet
 
 ## VISIÓN
 
 **No es mejorar internet. Es REEMPLAZARLO.**
 
 ```
-INTERNET ACTUAL                    RED NODAL D10Z
+INTERNET ACTUAL                    RED NODAL Pyraclaw
 ─────────────────                  ───────────────
 Servidores centrales         →     Todo es nodo
 ISPs controlan               →     Nadie controla
@@ -39,7 +39,7 @@ Datos en la nube             →     Datos distribuidos en nodos
 
 ### Frecuencias Utilizadas (Hardware Existente)
 
-| Banda | Frecuencia | Alcance | Uso en D10Z |
+| Banda | Frecuencia | Alcance | Uso en Pyraclaw |
 |-------|------------|---------|-------------|
 | WiFi 2.4 GHz | 2.4 GHz | 100-200m | Mesh urbano denso |
 | WiFi 5 GHz | 5 GHz | 50-100m | Alta velocidad local |
@@ -50,7 +50,7 @@ Datos en la nube             →     Datos distribuidos en nodos
 | LTE Direct | 700-2600 MHz | 500m-1km | Móvil sin torre |
 | V2X | 5.9 GHz | 300-1000m | Vehículos |
 
-**CLAVE: No necesitas nuevo hardware. Solo software que coordine las frecuencias existentes como NODOS D10Z.**
+**CLAVE: No necesitas nuevo hardware. Solo software que coordine las frecuencias existentes como NODOS Pyraclaw.**
 
 ---
 
@@ -210,12 +210,12 @@ def necesita_satelite(origen, destino, mesh_terrestre):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    PAQUETE NODAL D10Z                           │
+│                    PAQUETE NODAL Pyraclaw                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  HEADER (32 bytes)                                              │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │ Magic: 0xD10Z (4B)                                      │   │
+│  │ Magic: 0xPyraclaw (4B)                                      │   │
 │  │ Version: 1 (1B)                                         │   │
 │  │ Type: DATA|HEARTBEAT|ROUTE|CONSENSUS (1B)               │   │
 │  │ TTL: Hops restantes (1B)                                │   │
@@ -276,33 +276,33 @@ FASE 1a (Mes 1-6): Starlink como backbone
 - App TERRA MESH lanzada
 - Usuarios descargan, forman clusters locales
 - Clusters conectan via Starlink existente
-- Satélites D10Z: 0
+- Satélites Pyraclaw: 0
 
-FASE 1b (Mes 6-12): Primeros satélites D10Z
+FASE 1b (Mes 6-12): Primeros satélites Pyraclaw
 ─────────────────────────────────────────
-- 20-50 satélites D10Z lanzados
-- Clusters grandes conectan directo a D10Z
+- 20-50 satélites Pyraclaw lanzados
+- Clusters grandes conectan directo a Pyraclaw
 - Starlink como backup
-- Satélites D10Z: 50
+- Satélites Pyraclaw: 50
 
 FASE 2 (Año 1-2): Independencia parcial
 ─────────────────────────────────────────
-- 100-150 satélites D10Z
-- Mayoría de tráfico intercontinental via D10Z
-- Starlink solo para zonas sin cobertura D10Z
-- Satélites D10Z: 150
+- 100-150 satélites Pyraclaw
+- Mayoría de tráfico intercontinental via Pyraclaw
+- Starlink solo para zonas sin cobertura Pyraclaw
+- Satélites Pyraclaw: 150
 
 FASE 3 (Año 2-3): Independencia total
 ─────────────────────────────────────────
-- 200 satélites D10Z
+- 200 satélites Pyraclaw
 - Red completamente autónoma
 - Starlink opcional/legacy
-- Satélites D10Z: 200
+- Satélites Pyraclaw: 200
 
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
 │  Adopción        Dependencia          Satélites                │
-│  TERRA MESH      Starlink             D10Z                      │
+│  TERRA MESH      Starlink             Pyraclaw                      │
 │                                                                 │
 │  ▓▓▓▓▓░░░░░      ▓▓▓▓▓▓▓▓▓░           ░░░░░░░░░░   Fase 1a    │
 │  ▓▓▓▓▓▓▓▓░░      ▓▓▓▓▓▓░░░░           ▓▓░░░░░░░░   Fase 1b    │
@@ -319,7 +319,7 @@ FASE 3 (Año 2-3): Independencia total
 ### ¿Cómo funcionan los "sitios web" sin servidores?
 
 ```
-INTERNET ACTUAL                    RED NODAL D10Z
+INTERNET ACTUAL                    RED NODAL Pyraclaw
 ─────────────────                  ───────────────
 
 google.com vive en                 "google" vive en TODOS los nodos
@@ -371,13 +371,13 @@ Lima → ISP → cable submarino → nodos intermedios → Tokyo
 Latencia: 180-250 ms
 Saltos: 15-25 routers
 
-RED NODAL D10Z (solo terrestre):
+RED NODAL Pyraclaw (solo terrestre):
 Lima → mesh Perú → mesh México → mesh USA → mesh Japón → Tokyo
 Latencia: 150-200 ms (muchos saltos pequeños)
 Saltos: 50-100 nodos
 
-RED NODAL D10Z (con satélite):
-Lima → mesh local → satélite D10Z → ISL → satélite → mesh Tokyo
+RED NODAL Pyraclaw (con satélite):
+Lima → mesh local → satélite Pyraclaw → ISL → satélite → mesh Tokyo
 Latencia: 50-80 ms
 Saltos: 5-8
 
@@ -386,10 +386,10 @@ Saltos: 5-8
 │  COMPARACIÓN DE LATENCIA (Lima → Tokyo)                        │
 │                                                                 │
 │  Internet cable     ████████████████████████░░░░░░  200ms      │
-│  D10Z terrestre     ████████████████████░░░░░░░░░░  170ms      │
-│  D10Z con satélite  ████████░░░░░░░░░░░░░░░░░░░░░░   65ms      │
+│  Pyraclaw terrestre     ████████████████████░░░░░░░░░░  170ms      │
+│  Pyraclaw con satélite  ████████░░░░░░░░░░░░░░░░░░░░░░   65ms      │
 │                                                                 │
-│  El satélite D10Z es OPCIONAL pero reduce latencia 3x          │
+│  El satélite Pyraclaw es OPCIONAL pero reduce latencia 3x          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -422,7 +422,7 @@ Saltos: 5-8
 ### Ecuaciones Fundamentales
 
 ```
-Red Nodal D10Z:
+Red Nodal Pyraclaw:
 
 E_TTA = Σ |Zₙ| · Φₙ                    (Energía total del sistema)
 
@@ -437,7 +437,7 @@ Cobertura = N_terrestres + 200_sats    (Terrestre + orbital)
 
 ### Timeline
 
-| Fase | Tiempo | Satélites D10Z | Dependencia Starlink |
+| Fase | Tiempo | Satélites Pyraclaw | Dependencia Starlink |
 |------|--------|----------------|----------------------|
 | 1a | 0-6 meses | 0 | 100% (bootstrap) |
 | 1b | 6-12 meses | 50 | 70% |

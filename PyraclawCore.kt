@@ -1,23 +1,23 @@
 /*
  * ══════════════════════════════════════════════════════════════════════════════
- * TERRA MESH - D10Z Nodal Network App
+ * TERRA MESH - Pyraclaw Nodal Network App
  * ══════════════════════════════════════════════════════════════════════════════
  * 
- * Core Engine para Android - Implementación D10Z-TTA
+ * Core Engine para Android - Implementación Pyraclaw-TTA
  * 
  * Arquitectura:
- *   - D10ZNode: Estado nodal Zₙ y coherencia Φₙ
+ *   - PyraclawNode: Estado nodal Zₙ y coherencia Φₙ
  *   - IsisLaw: Propagación de coherencia
  *   - CoherenceRouter: Enrutamiento por Φ
  *   - NeighborDiscovery: WiFi Direct + BLE + mDNS
  *   - ConsensusEngine: E_TTA distribuido
  * 
- * Autor: D10Z Institute
+ * Autor: Byron Callaghan / Pyraclaw
  * Licencia: CC BY-NC 4.0
  * ══════════════════════════════════════════════════════════════════════════════
  */
 
-package org.d10z.terramesh.core
+package org.pyraclaw.terramesh.core
 
 import kotlin.math.*
 import java.util.concurrent.ConcurrentHashMap
@@ -26,10 +26,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONSTANTES D10Z
+// CONSTANTES Pyraclaw
 // ═══════════════════════════════════════════════════════════════════════════════
 
-object D10ZConstants {
+object PyraclawConstants {
     // Escala universal
     const val GM_SCALE = 1e-51
     
@@ -127,11 +127,11 @@ data class NodalState(
     /**
      * ¿Está operativo?
      */
-    val isOperational: Boolean get() = phi >= D10ZConstants.PHI_OPERATIONAL
+    val isOperational: Boolean get() = phi >= PyraclawConstants.PHI_OPERATIONAL
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// NODO D10Z
+// NODO Pyraclaw
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -146,7 +146,7 @@ data class NeighborInfo(
     val connectionType: ConnectionType
 ) {
     val isActive: Boolean get() = 
-        System.currentTimeMillis() - lastSeen < D10ZConstants.SIGNAL_TIMEOUT_MS
+        System.currentTimeMillis() - lastSeen < PyraclawConstants.SIGNAL_TIMEOUT_MS
     
     /**
      * Peso del enlace (inversamente proporcional a distancia)
@@ -175,9 +175,9 @@ data class HeartbeatMessage(
 )
 
 /**
- * Nodo D10Z principal
+ * Nodo Pyraclaw principal
  */
-class D10ZNode(
+class PyraclawNode(
     val nodeId: String = UUID.randomUUID().toString()
 ) {
     // Estado actual
@@ -238,7 +238,7 @@ class D10ZNode(
      */
     fun registerNeighbor(neighbor: NeighborInfo) {
         // Limitar número de vecinos
-        if (_neighbors.size >= D10ZConstants.MAX_NEIGHBORS && 
+        if (_neighbors.size >= PyraclawConstants.MAX_NEIGHBORS && 
             !_neighbors.containsKey(neighbor.nodeId)) {
             // Remover el vecino más antiguo
             val oldest = _neighbors.values.minByOrNull { it.lastSeen }
@@ -256,7 +256,7 @@ class D10ZNode(
     fun pruneInactiveNeighbors() {
         val now = System.currentTimeMillis()
         _neighbors.entries.removeIf { (_, info) ->
-            now - info.lastSeen > D10ZConstants.SIGNAL_TIMEOUT_MS
+            now - info.lastSeen > PyraclawConstants.SIGNAL_TIMEOUT_MS
         }
     }
     
@@ -317,8 +317,8 @@ class D10ZNode(
  * ∂Φₖ/∂t = -αΦₖ + β Σⱼ wₖⱼ Φⱼ / |Nₖ|
  */
 class IsisLawEngine(
-    private val alpha: Double = D10ZConstants.ALPHA_DECAY,
-    private val beta: Double = D10ZConstants.BETA_COUPLING
+    private val alpha: Double = PyraclawConstants.ALPHA_DECAY,
+    private val beta: Double = PyraclawConstants.BETA_COUPLING
 ) {
     /**
      * Calcula nuevo Φ para un nodo dado sus vecinos
@@ -358,7 +358,7 @@ class IsisLawEngine(
     /**
      * Propaga coherencia en todo el grafo local
      */
-    fun propagate(node: D10ZNode, dt: Double = 0.1) {
+    fun propagate(node: PyraclawNode, dt: Double = 0.1) {
         val newPhi = computeNewPhi(
             currentPhi = node.state.value.phi,
             neighbors = node.neighbors.values,
@@ -404,19 +404,19 @@ sealed class RouteResult {
  * Router basado en coherencia
  */
 class CoherenceRouter(
-    private val minPhi: Double = D10ZConstants.PHI_OPERATIONAL
+    private val minPhi: Double = PyraclawConstants.PHI_OPERATIONAL
 ) {
     /**
      * Determina el siguiente salto para un paquete
      */
-    fun route(packet: DataPacket, node: D10ZNode): RouteResult {
+    fun route(packet: DataPacket, node: PyraclawNode): RouteResult {
         // ¿Llegó al destino?
         if (packet.destinationId == node.nodeId) {
             return RouteResult.Delivered
         }
         
         // ¿Excedió saltos máximos?
-        if (packet.hopCount >= D10ZConstants.MAX_HOP_COUNT) {
+        if (packet.hopCount >= PyraclawConstants.MAX_HOP_COUNT) {
             return RouteResult.Failed("Max hop count exceeded")
         }
         
@@ -453,8 +453,8 @@ class CoherenceRouter(
     fun findPath(
         sourceId: String,
         destinationId: String,
-        nodes: Map<String, D10ZNode>,
-        maxDepth: Int = D10ZConstants.MAX_HOP_COUNT
+        nodes: Map<String, PyraclawNode>,
+        maxDepth: Int = PyraclawConstants.MAX_HOP_COUNT
     ): List<String>? {
         // BFS con prioridad por coherencia
         val visited = mutableSetOf<String>()
@@ -516,7 +516,7 @@ data class ConsensusVote(
  * Motor de consenso distribuido
  */
 class ConsensusEngine(
-    private val node: D10ZNode
+    private val node: PyraclawNode
 ) {
     private var currentRound = 0
     private val votes = ConcurrentHashMap<String, ConsensusVote>()
@@ -608,7 +608,7 @@ class TerraMeshEngine(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) {
     // Componentes
-    val node = D10ZNode()
+    val node = PyraclawNode()
     private val isisEngine = IsisLawEngine()
     private val router = CoherenceRouter()
     private val consensus = ConsensusEngine(node)
@@ -645,7 +645,7 @@ class TerraMeshEngine(
             while (isActive) {
                 val heartbeat = node.createHeartbeat()
                 onSendHeartbeat?.invoke(heartbeat)
-                delay(D10ZConstants.HEARTBEAT_INTERVAL_MS)
+                delay(PyraclawConstants.HEARTBEAT_INTERVAL_MS)
             }
         }
         
@@ -655,7 +655,7 @@ class TerraMeshEngine(
                 node.pruneInactiveNeighbors()
                 isisEngine.propagate(node)
                 updateMetrics()
-                delay(D10ZConstants.HEARTBEAT_INTERVAL_MS)
+                delay(PyraclawConstants.HEARTBEAT_INTERVAL_MS)
             }
         }
         
@@ -663,7 +663,7 @@ class TerraMeshEngine(
         consensusJob = scope.launch {
             while (isActive) {
                 runConsensusRound()
-                delay(D10ZConstants.CONSENSUS_INTERVAL_MS)
+                delay(PyraclawConstants.CONSENSUS_INTERVAL_MS)
             }
         }
         
@@ -818,7 +818,7 @@ data class EngineMetrics(
  * engine.start()
  * 
  * // Enviar datos
- * engine.sendPacket("destination-node-id", "Hello D10Z".toByteArray())
+ * engine.sendPacket("destination-node-id", "Hello Pyraclaw".toByteArray())
  * 
  * // Observar métricas
  * engine.metrics.collect { metrics ->

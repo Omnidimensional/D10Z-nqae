@@ -1,9 +1,9 @@
-# D10Z-TTA: PROTOCOLO TÉCNICO COMPLETO
+# Pyraclaw-TTA: PROTOCOLO TÉCNICO COMPLETO
 ## Comunicación Hz Nodal · Contenido Distribuido · Nodos Puente · Sistema de Hashes
 
 **Versión:** 1.0.0  
 **Fecha:** Enero 2026  
-**Autor:** D10Z Institute  
+**Autor:** Byron Callaghan / Pyraclaw  
 **ORCID:** 0009-0000-8858-4992  
 
 ---
@@ -14,7 +14,7 @@
 2. Protocolo de Comunicación Hz Nodal
 3. Capas del Protocolo
 4. Sistema de Contenido Distribuido
-5. Sistema de Hashes D10Z
+5. Sistema de Hashes Pyraclaw
 6. Protocolo de Nodos Puente
 7. Enrutamiento y Descubrimiento
 8. Consenso y Validación
@@ -77,7 +77,7 @@ E_TTA = Σₙ |Zₙ| · Φₙ = constante
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  COMUNICACIÓN TRADICIONAL    │    COMUNICACIÓN NODAL D10Z      │
+│  COMUNICACIÓN TRADICIONAL    │    COMUNICACIÓN NODAL Pyraclaw      │
 │  ─────────────────────────   │    ───────────────────────      │
 │  Emisor → canal → Receptor   │    Nodo A ≋≋≋≋≋ Nodo B          │
 │  (datos viajan)              │    (estados se sincronizan)     │
@@ -87,15 +87,15 @@ E_TTA = Σₙ |Zₙ| · Φₙ = constante
 
 ## 2.2 Bandas de Frecuencia
 
-| Banda | Frecuencia | Uso D10Z | Alcance |
+| Banda | Frecuencia | Uso Pyraclaw | Alcance |
 |-------|------------|----------|---------|
-| D10Z-ULTRA | 6 GHz (WiFi6E) | Ultra-baja latencia | 30-50m |
-| D10Z-HIGH | 5 GHz | Alta velocidad | 50-100m |
-| D10Z-STANDARD | 2.4 GHz | Mesh general | 100-200m |
-| D10Z-BLE | 2.4 GHz (BLE) | IoT, bajo consumo | 10-100m |
-| D10Z-LORA | 868/915 MHz | Largo alcance | 2-15 km |
-| D10Z-UWB | 3.1-10.6 GHz | Posicionamiento | 10-200m |
-| D10Z-SAT | Ku/Ka band | Enlace satelital | 550 km |
+| Pyraclaw-ULTRA | 6 GHz (WiFi6E) | Ultra-baja latencia | 30-50m |
+| Pyraclaw-HIGH | 5 GHz | Alta velocidad | 50-100m |
+| Pyraclaw-STANDARD | 2.4 GHz | Mesh general | 100-200m |
+| Pyraclaw-BLE | 2.4 GHz (BLE) | IoT, bajo consumo | 10-100m |
+| Pyraclaw-LORA | 868/915 MHz | Largo alcance | 2-15 km |
+| Pyraclaw-UWB | 3.1-10.6 GHz | Posicionamiento | 10-200m |
+| Pyraclaw-SAT | Ku/Ka band | Enlace satelital | 550 km |
 
 ## 2.3 Modulación Adaptativa por Φ
 
@@ -111,10 +111,10 @@ E_TTA = Σₙ |Zₙ| · Φₙ = constante
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    TRAMA NODAL D10Z                             │
+│                    TRAMA NODAL Pyraclaw                             │
 ├─────────────────────────────────────────────────────────────────┤
 │ PREÁMBULO (16 bytes)                                            │
-│ ├─ Sync: 0xD10Z D10Z D10Z D10Z (8B)                            │
+│ ├─ Sync: 0xPyraclaw Pyraclaw Pyraclaw Pyraclaw (8B)                            │
 │ ├─ Versión: 0x0100 (2B)                                        │
 │ ├─ Tipo: HEARTBEAT|DATA|ROUTE|CONSENSUS (1B)                   │
 │ ├─ Φ_emisor: 0-65535 (2B)                                      │
@@ -207,7 +207,7 @@ RECEPTOR: Deduplica por (Source ID + Sequence)
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ CAPA 7: APLICACIÓN                                              │
-│ D10Z-APP: Mensajería, streaming, archivos, servicios           │
+│ Pyraclaw-APP: Mensajería, streaming, archivos, servicios           │
 ├─────────────────────────────────────────────────────────────────┤
 │ CAPA 6: PRESENTACIÓN                                            │
 │ Cifrado E2E, Compresión (LZ4), Serialización (CBOR)            │
@@ -216,13 +216,13 @@ RECEPTOR: Deduplica por (Source ID + Sequence)
 │ Conexiones lógicas, Multiplexación, Control de flujo por Φ     │
 ├─────────────────────────────────────────────────────────────────┤
 │ CAPA 4: TRANSPORTE                                              │
-│ D10Z-TP: Fragmentación, Deduplicación, ACK selectivo           │
+│ Pyraclaw-TP: Fragmentación, Deduplicación, ACK selectivo           │
 ├─────────────────────────────────────────────────────────────────┤
 │ CAPA 3: RED                                                     │
-│ D10Z-NET: Enrutamiento por Φ, Direccionamiento hash, DHT       │
+│ Pyraclaw-NET: Enrutamiento por Φ, Direccionamiento hash, DHT       │
 ├─────────────────────────────────────────────────────────────────┤
 │ CAPA 2: ENLACE                                                  │
-│ D10Z-LINK: Vecinos, Heartbeat, Adaptación modulación           │
+│ Pyraclaw-LINK: Vecinos, Heartbeat, Adaptación modulación           │
 ├─────────────────────────────────────────────────────────────────┤
 │ CAPA 1: FÍSICA                                                  │
 │ WiFi, BLE, LoRa, UWB, Satélite                                 │
@@ -247,7 +247,7 @@ PARADIGMA:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    OBJETO NODAL D10Z                            │
+│                    OBJETO NODAL Pyraclaw                            │
 ├─────────────────────────────────────────────────────────────────┤
 │ MANIFEST (metadatos)                                            │
 │ ├─ object_hash: SHA3-256 del contenido                         │
@@ -267,7 +267,7 @@ PARADIGMA:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## 4.3 DHT Kademlia-D10Z
+## 4.3 DHT Kademlia-Pyraclaw
 
 ```python
 class NodalDHT:
@@ -353,15 +353,15 @@ def get_target_replicas(content_hash):
 
 ---
 
-# 5. SISTEMA DE HASHES D10Z
+# 5. SISTEMA DE HASHES Pyraclaw
 
 ## 5.1 Formato de Hash
 
 ```
-D10Z://<prefijo><hash_base58>/<versión>?<parámetros>
+PYRACLAW://<prefijo><hash_base58>/<versión>?<parámetros>
 
 Ejemplo:
-D10Z://Qm7x9kL2mN4pR8tV3wY6zA1bC5dE9fG2hJ4kM6nP8qS0u/v1?chunk=5
+PYRACLAW://Qm7x9kL2mN4pR8tV3wY6zA1bC5dE9fG2hJ4kM6nP8qS0u/v1?chunk=5
 ```
 
 ## 5.2 Tipos de Hash
@@ -408,9 +408,9 @@ class NameRegistry:
         return None
 
 # Ejemplos:
-# "wikipedia" → D10Z://Qm8x2kL9mN4pR8tV3w...
-# "@jamil" → D10Z://Pk5a6bC7dE8fG9h...
-# "d10z.institute" → D10Z://Mn3x4yZ5aB6cD7e...
+# "wikipedia" → PYRACLAW://Qm8x2kL9mN4pR8tV3w...
+# "@pyraclaw" → PYRACLAW://Pk5a6bC7dE8fG9h...
+# "pyraclaw.institute" → PYRACLAW://Mn3x4yZ5aB6cD7e...
 ```
 
 ---
@@ -421,9 +421,9 @@ class NameRegistry:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      NODO PUENTE D10Z                           │
+│                      NODO PUENTE Pyraclaw                           │
 ├─────────────────────────────────────────────────────────────────┤
-│  INTERFAZ RED NODAL D10Z                                        │
+│  INTERFAZ RED NODAL Pyraclaw                                        │
 │  └─ Recibe solicitudes, publica contenido, participa en DHT    │
 ├─────────────────────────────────────────────────────────────────┤
 │  MOTOR DE TRADUCCIÓN                                            │
@@ -443,7 +443,7 @@ class NameRegistry:
    ¿Lo tenemos? → Retornar
 
 2. VERIFICAR RED NODAL
-   ¿Existe en D10Z? → Retornar hash
+   ¿Existe en Pyraclaw? → Retornar hash
 
 3. DESCARGAR DE INTERNET LEGACY
    HTTP GET → Datos
@@ -536,10 +536,10 @@ class APIProxy:
 
 # 7. ENRUTAMIENTO Y DESCUBRIMIENTO
 
-## 7.1 D10Z-AODV-Φ (Ad-hoc On-demand con Coherencia)
+## 7.1 Pyraclaw-AODV-Φ (Ad-hoc On-demand con Coherencia)
 
 ```python
-class D10ZRouter:
+class PyraclawRouter:
     ROUTE_TTL = 30000  # 30 segundos
     MAX_HOPS = 10
     
@@ -724,7 +724,7 @@ class E2ECrypto:
 ## 10.1 Estructura
 
 ```
-d10z-protocol/
+pyraclaw-protocol/
 ├── core/          # Nodo, identidad, coherencia
 ├── network/       # Link, router, discovery
 ├── storage/       # DHT, objetos, chunks
@@ -770,7 +770,7 @@ MIN_VALIDATORS = 3
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   D10Z-TTA PROTOCOL STACK                       │
+│                   Pyraclaw-TTA PROTOCOL STACK                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  COMUNICACIÓN Hz NODAL                                         │
@@ -784,12 +784,12 @@ MIN_VALIDATORS = 3
 │  └─ Replicación adaptativa por demanda                         │
 │                                                                 │
 │  SISTEMA DE HASHES                                             │
-│  └─ D10Z://<tipo><hash>                                        │
+│  └─ PYRACLAW://<tipo><hash>                                        │
 │  └─ Nombres/alias firmados criptográficamente                  │
 │  └─ DHT Kademlia con distancia modificada por Φ               │
 │                                                                 │
 │  NODOS PUENTE                                                  │
-│  └─ Traducen entre D10Z e internet legacy                      │
+│  └─ Traducen entre Pyraclaw e internet legacy                      │
 │  └─ Cache + conversión + publicación DHT                       │
 │  └─ Migración automática de contenido                          │
 │                                                                 │
@@ -806,5 +806,5 @@ MIN_VALIDATORS = 3
 
 ---
 
-**D10Z Institute | Versión 1.0.0 | Enero 2026**  
-**ORCID: 0009-0000-8858-4992**
+**Byron Callaghan / Pyraclaw | Versión 1.0.0 | Enero 2026**  
+**Rights Holder: Byron Callaghan**

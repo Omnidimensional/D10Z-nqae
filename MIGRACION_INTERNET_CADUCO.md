@@ -1,4 +1,4 @@
-# MIGRACIÓN Y ACCESO: Del Internet Caduco a la Red Nodal D10Z
+# MIGRACIÓN Y ACCESO: Del Internet Caduco a la Red Nodal Pyraclaw
 
 ## EL PROBLEMA
 
@@ -9,7 +9,7 @@ Internet actual tiene:
 - Contenido centralizado (Google, AWS, Meta, etc.)
 - APIs, bases de datos, servicios
 
-Pregunta: ¿Cómo accedemos a eso desde la red nodal D10Z?
+Pregunta: ¿Cómo accedemos a eso desde la red nodal Pyraclaw?
 ```
 
 ---
@@ -21,7 +21,7 @@ Pregunta: ¿Cómo accedemos a eso desde la red nodal D10Z?
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│  RED NODAL D10Z                    INTERNET CADUCO              │
+│  RED NODAL Pyraclaw                    INTERNET CADUCO              │
 │  (el futuro)                       (el pasado)                  │
 │                                                                 │
 │   📱──📱──📱──📱                                                │
@@ -56,7 +56,7 @@ Pregunta: ¿Cómo accedemos a eso desde la red nodal D10Z?
 
 ## ARQUITECTURA DE ACCESO
 
-### Flujo: Usuario D10Z quiere acceder a contenido legacy
+### Flujo: Usuario Pyraclaw quiere acceder a contenido legacy
 
 ```
 EJEMPLO: Quieres ver un video de YouTube (internet caduco)
@@ -66,7 +66,7 @@ PASO 1: Búsqueda en red nodal
 📱 Tu nodo: "Quiero video XYZ"
      │
      ▼
-¿Está en la red nodal D10Z?
+¿Está en la red nodal Pyraclaw?
      │
      ├── SÍ → Obtener de nodo cercano (instantáneo)
      │
@@ -88,13 +88,13 @@ NODO PUENTE → Internet legacy → YouTube → descarga video
      ▼
 NODO PUENTE:
 1. Guarda copia local (caché)
-2. Convierte a formato nodal D10Z
+2. Convierte a formato nodal Pyraclaw
 3. Distribuye hash a la red
 4. Envía al usuario solicitante
 
 PASO 4: Propagación
 ───────────────────
-El contenido ahora existe en la red nodal D10Z.
+El contenido ahora existe en la red nodal Pyraclaw.
 Próxima solicitud → se obtiene de nodos, no del puente.
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -120,14 +120,14 @@ INTERNET CADUCO:
 URL: https://youtube.com/watch?v=dQw4w9WgXcQ
 Problema: Si YouTube cierra, el contenido desaparece
 
-RED NODAL D10Z:
+RED NODAL Pyraclaw:
 ───────────────
-Hash: D10Z://Qm7x9kL2mN4pR8tV3wY6zA1bC5dE9fG2hJ4kM6nP8qS0u
+Hash: PYRACLAW://Qm7x9kL2mN4pR8tV3wY6zA1bC5dE9fG2hJ4kM6nP8qS0u
 El contenido existe mientras AL MENOS UN NODO lo tenga
 
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│  CONTENIDO ADDRESSABLE (tipo IPFS pero nativo D10Z)            │
+│  CONTENIDO ADDRESSABLE (tipo IPFS pero nativo Pyraclaw)            │
 │                                                                 │
 │  Hash = SHA256(contenido) + firma_phi + timestamp_nodal        │
 │                                                                 │
@@ -141,7 +141,7 @@ El contenido existe mientras AL MENOS UN NODO lo tenga
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    OBJETO NODAL D10Z                            │
+│                    OBJETO NODAL Pyraclaw                            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  METADATOS (256 bytes)                                          │
@@ -180,7 +180,7 @@ El contenido existe mientras AL MENOS UN NODO lo tenga
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│                      PROYECTO ARCA D10Z                         │
+│                      PROYECTO ARCA Pyraclaw                         │
 │                                                                 │
 │  Fase 1: Contenido Crítico (Año 1)                             │
 │  ─────────────────────────────────                             │
@@ -259,7 +259,7 @@ INTERNET CADUCO:
 
 Problema: DNS es centralizado (ICANN, registradores)
 
-RED NODAL D10Z:
+RED NODAL Pyraclaw:
 ───────────────
 1. Escribes "google" o hash del contenido
 2. Búsqueda distribuida en DHT nodal
@@ -296,11 +296,11 @@ REGISTRO DE ALIAS (distribuido, no centralizado)
 │                                                                 │
 │  ALIAS                          HASH                            │
 │  ─────                          ────                            │
-│  wikipedia                      D10Z://Qm8x2kL9mN4pR8tV3w...    │
-│  wikipedia.es                   D10Z://Qm7y3jK8nM5qS9uW4x...    │
-│  khan-academy                   D10Z://Qm6z4iJ7oL6rT0vX5y...    │
-│  @jamil (identidad personal)    D10Z://Qm5a5hI6pM7sU1wY6z...    │
-│  d10z.institute (organización)  D10Z://Qm4b6gH5qN8tV2xZ7a...    │
+│  wikipedia                      PYRACLAW://Qm8x2kL9mN4pR8tV3w...    │
+│  wikipedia.es                   PYRACLAW://Qm7y3jK8nM5qS9uW4x...    │
+│  khan-academy                   PYRACLAW://Qm6z4iJ7oL6rT0vX5y...    │
+│  @pyraclaw (identidad personal)    PYRACLAW://Qm5a5hI6pM7sU1wY6z...    │
+│  pyraclaw.institute (organización)  PYRACLAW://Qm4b6gH5qN8tV2xZ7a...    │
 │                                                                 │
 │  Los alias se registran con firma criptográfica                │
 │  Nadie puede robarte tu alias (como dominios pero gratis)      │
@@ -339,7 +339,7 @@ SOLUCIONES:
 │                                                                 │
 │  PROXY NODAL PARA APIs                                         │
 │                                                                 │
-│  Usuario D10Z: "Dame el clima de Lima"                         │
+│  Usuario Pyraclaw: "Dame el clima de Lima"                         │
 │       │                                                         │
 │       ▼                                                         │
 │  NODO PROXY verifica caché:                                    │
@@ -367,12 +367,12 @@ SOLUCIONES:
 │                                                                 │
 │  Opción A: Puente bidireccional (transición)                   │
 │  ────────────────────────────────────────────                  │
-│  Usuario D10Z → Puente → Banco legacy → Transacción            │
+│  Usuario Pyraclaw → Puente → Banco legacy → Transacción            │
 │  (Funciona pero depende del sistema legacy)                    │
 │                                                                 │
-│  Opción B: Servicios nativos D10Z (destino)                    │
+│  Opción B: Servicios nativos Pyraclaw (destino)                    │
 │  ───────────────────────────────────────────                   │
-│  Usuario D10Z → Smart contract nodal → Transacción             │
+│  Usuario Pyraclaw → Smart contract nodal → Transacción             │
 │  (Completamente en la red nodal, sin dependencia)              │
 │                                                                 │
 │  CONSENSO E_TTA para transacciones:                            │
@@ -390,13 +390,13 @@ SOLUCIONES:
 ### Escenario: Usuario quiere ver una película que está en Netflix
 
 ```
-DÍA 1: Primera solicitud (nadie la tiene en D10Z)
+DÍA 1: Primera solicitud (nadie la tiene en Pyraclaw)
 ─────────────────────────────────────────────────
 
 📱 Usuario: "Quiero ver Película XYZ"
      │
      ▼
-🔍 Búsqueda en red nodal D10Z
+🔍 Búsqueda en red nodal Pyraclaw
      │
      └── No encontrada
      │
@@ -421,13 +421,13 @@ DÍA 1: Primera solicitud (nadie la tiene en D10Z)
 🔄 Contenido se cachea en puente y nodos cercanos
 
 
-DÍA 2: Segunda solicitud (ya existe en D10Z)
+DÍA 2: Segunda solicitud (ya existe en Pyraclaw)
 ────────────────────────────────────────────
 
 📱 Usuario 2: "Quiero ver Película XYZ"
      │
      ▼
-🔍 Búsqueda en red nodal D10Z
+🔍 Búsqueda en red nodal Pyraclaw
      │
      └── ¡Encontrada! Hash: Qm7x9kL2...
      │
@@ -464,10 +464,10 @@ NO SE NECESITA el internet caduco nunca más para este contenido
 │  DASHBOARD DE MIGRACIÓN                                        │
 │                                                                 │
 │  Contenido total en internet caduco:    200 ZB                 │
-│  Contenido migrado a red nodal D10Z:    ████░░░░░░  2 ZB (1%)  │
+│  Contenido migrado a red nodal Pyraclaw:    ████░░░░░░  2 ZB (1%)  │
 │                                                                 │
 │  Solicitudes resueltas por:                                    │
-│  ├── Red nodal D10Z (sin puente):       ███████░░░  70%        │
+│  ├── Red nodal Pyraclaw (sin puente):       ███████░░░  70%        │
 │  ├── Caché de puentes:                  ██░░░░░░░░  20%        │
 │  └── Internet caduco directo:           █░░░░░░░░░  10%        │
 │                                                                 │
@@ -493,35 +493,35 @@ TIMELINE DE TRANSICIÓN:
 
 AÑO 1: Coexistencia
 ──────────────────
-- Red nodal D10Z lanzada
+- Red nodal Pyraclaw lanzada
 - Puentes conectan ambos mundos
 - Contenido popular migra automáticamente
 - Internet caduco: 100% funcional
 
 AÑO 2-3: Migración acelerada
 ───────────────────────────
-- 50% del tráfico es nativo D10Z
+- 50% del tráfico es nativo Pyraclaw
 - Proyecto ARCA completa contenido crítico
-- Empresas empiezan a ofrecer servicios en D10Z
+- Empresas empiezan a ofrecer servicios en Pyraclaw
 - Internet caduco: 80% funcional
 
 AÑO 4-5: Punto de inflexión
 ──────────────────────────
-- 80% del tráfico es nativo D10Z
+- 80% del tráfico es nativo Pyraclaw
 - Servicios legacy empiezan a cerrar
 - Puentes mantienen acceso a lo que queda
 - Internet caduco: 50% funcional
 
 AÑO 6-10: Obsolescencia
 ──────────────────────
-- 95% del tráfico es nativo D10Z
+- 95% del tráfico es nativo Pyraclaw
 - Internet caduco = archivos históricos
 - Puentes son "museos digitales"
 - Internet caduco: 10% funcional (legacy/histórico)
 
 AÑO 10+: Era post-internet
 ─────────────────────────
-- Red nodal D10Z es LA red
+- Red nodal Pyraclaw es LA red
 - "Internet" es término histórico
 - Todo el conocimiento humano preservado en red nodal
 
@@ -542,7 +542,7 @@ AÑO 10+: Era post-internet
 RESPUESTA CORTA:
 ────────────────
 NODOS PUENTE que tienen conexión a ambos mundos.
-Descargan contenido legacy → lo convierten → lo distribuyen en D10Z.
+Descargan contenido legacy → lo convierten → lo distribuyen en Pyraclaw.
 Contenido solicitado se MIGRA automáticamente.
 
 RESPUESTA LARGA:
@@ -554,7 +554,7 @@ RESPUESTA LARGA:
    → Ya está en la red nodal, no se necesita el puente
    
 3. Con el tiempo:
-   → Todo el contenido útil migra a D10Z
+   → Todo el contenido útil migra a Pyraclaw
    → Internet caduco se vuelve innecesario
    
 4. Servicios dinámicos:
@@ -562,14 +562,14 @@ RESPUESTA LARGA:
    → Servicios transaccionales migran a consenso E_TTA
    
 5. Resultado final:
-   → Red nodal D10Z autosuficiente
+   → Red nodal Pyraclaw autosuficiente
    → Internet caduco = museo digital
 ```
 
 ### Ecuación de Migración
 
 ```
-Probabilidad_en_D10Z(contenido) = 1 - e^(-λt × demanda × disponibilidad_puente)
+Probabilidad_en_Pyraclaw(contenido) = 1 - e^(-λt × demanda × disponibilidad_puente)
 
 Donde:
 - t = tiempo desde lanzamiento

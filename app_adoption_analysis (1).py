@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 ══════════════════════════════════════════════════════════════════════════════════
-D10Z-TTA: ADOPCIÓN INMEDIATA VÍA APP
+Pyraclaw-TTA: ADOPCIÓN INMEDIATA VÍA APP
 ══════════════════════════════════════════════════════════════════════════════════
 
 Premisa:
     - NO se requiere cambiar hardware
     - Los dispositivos actuales YA tienen las frecuencias necesarias
-    - Solo se necesita una APP que implemente el protocolo nodal D10Z
+    - Solo se necesita una APP que implemente el protocolo nodal Pyraclaw
     - La industria puede optimizar hardware DESPUÉS
 
 Fases:
@@ -65,14 +65,14 @@ class ExistingDeviceCapabilities:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# ESPECIFICACIÓN DE LA APP D10Z
+# ESPECIFICACIÓN DE LA APP Pyraclaw
 # ═══════════════════════════════════════════════════════════════════════════════
 
 @dataclass
-class D10ZAppSpec:
+class PyraclawAppSpec:
     """Especificación de la app de conexión nodal."""
     
-    name: str = "D10Z Node"
+    name: str = "Pyraclaw Node"
     version: str = "1.0.0"
     
     # Plataformas
@@ -251,7 +251,7 @@ def implementation_phases():
         'Fase 3 - Hardware Nativo': {
             'duración': '18-36 meses',
             'requisito_usuario': 'Comprar nuevo dispositivo (ciclo natural)',
-            'cambio_hardware': 'Nuevo chip D10Z',
+            'cambio_hardware': 'Nuevo chip Pyraclaw',
             'tecnología': [
                 'Radio dedicada para mesh',
                 'Coprocesador de coherencia',
@@ -283,7 +283,7 @@ def analyze_app_adoption():
     """Análisis completo de adopción vía app."""
     
     print("=" * 80)
-    print("D10Z-TTA: ADOPCIÓN INMEDIATA VÍA APP")
+    print("Pyraclaw-TTA: ADOPCIÓN INMEDIATA VÍA APP")
     print("=" * 80)
     
     # ─────────────────────────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ def analyze_app_adoption():
     print("2. ESPECIFICACIÓN DE LA APP")
     print("─" * 40)
     
-    app = D10ZAppSpec()
+    app = PyraclawAppSpec()
     
     print(f"""
     App: {app.name} v{app.version}
@@ -420,7 +420,7 @@ def analyze_app_adoption():
     
     print("""
     ┌────────────────────────────────────────────────────────────────────────────┐
-    │                        │ D10Z App    │ Hardware    │ Satélites  │ 5G/ISP  │
+    │                        │ Pyraclaw App    │ Hardware    │ Satélites  │ 5G/ISP  │
     ├────────────────────────┼─────────────┼─────────────┼────────────┼─────────┤
     │ Tiempo despliegue      │ Inmediato   │ 2-5 años    │ 5-10 años  │ Existe  │
     │ Costo usuario          │ $0          │ $200-500    │ $50-100/m  │ $30-80/m│
@@ -445,7 +445,7 @@ def analyze_app_adoption():
     
     print("""
     ┌─────────────────────────────────────────────────────────────────────────┐
-    │                         D10Z NODE APP                                   │
+    │                         Pyraclaw NODE APP                                   │
     ├─────────────────────────────────────────────────────────────────────────┤
     │                                                                         │
     │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │
@@ -454,7 +454,7 @@ def analyze_app_adoption():
     │         └─────────────────┴─────────────────┴─────────────────┘         │
     │                                   │                                     │
     │  ┌────────────────────────────────┴────────────────────────────────┐   │
-    │  │                      D10Z CORE ENGINE                            │   │
+    │  │                      Pyraclaw CORE ENGINE                            │   │
     │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐            │   │
     │  │  │ Estado Zₙ│ │Coherencia│ │ Ley Isis │ │ Consenso │            │   │
     │  │  │          │ │    Φₙ    │ │∂Φ/∂t=... │ │ E_TTA    │            │   │
@@ -513,7 +513,7 @@ def analyze_app_adoption():
     print("""
     ┌─────────────────────────────────────────────────────────────────────────────┐
     │                                                                             │
-    │  LA ADOPCIÓN DE D10Z-TTA NO REQUIERE:                                      │
+    │  LA ADOPCIÓN DE Pyraclaw-TTA NO REQUIERE:                                      │
     │                                                                             │
     │  ✗ Cambiar teléfonos                                                       │
     │  ✗ Comprar hardware nuevo                                                  │
@@ -557,20 +557,20 @@ def show_app_pseudocode():
     """Muestra pseudocódigo del core de la app."""
     
     print("\n" + "=" * 80)
-    print("PSEUDOCÓDIGO DEL CORE (D10Z Node Engine)")
+    print("PSEUDOCÓDIGO DEL CORE (Pyraclaw Node Engine)")
     print("=" * 80)
     
     code = '''
     // ═══════════════════════════════════════════════════════════════════════
-    // D10Z NODE ENGINE - Core Loop
+    // Pyraclaw NODE ENGINE - Core Loop
     // ═══════════════════════════════════════════════════════════════════════
     
-    class D10ZNode {
+    class PyraclawNode {
         state: NodalState       // Zₙ = [position, velocity, energy, phi, ...]
         neighbors: Map<NodeID, NeighborInfo>
         phi: float = 0.5        // Coherencia inicial
         
-        // Constantes D10Z
+        // Constantes Pyraclaw
         ALPHA_DECAY = 0.05
         BETA_COUPLING = 0.2
         PHI_THRESHOLD = 0.7
@@ -607,13 +607,13 @@ def show_app_pseudocode():
         
         func discoverNeighbors() {
             // WiFi Aware (NAN)
-            wifiAware.startSubscribe("d10z-node")
+            wifiAware.startSubscribe("pyraclaw-node")
             
             // Bluetooth LE Scan
-            bleScanner.startScan(filter: "D10Z")
+            bleScanner.startScan(filter: "Pyraclaw")
             
             // mDNS
-            mdns.browse("_d10z._udp.local")
+            mdns.browse("_pyraclaw._udp.local")
         }
         
         // ─────────────────────────────────────────────────────────────────
@@ -703,7 +703,7 @@ if __name__ == "__main__":
     print("""
     ┌─────────────────────────────────────────────────────────────────────────────┐
     │                                                                             │
-    │  D10Z-TTA: ADOPCIÓN INMEDIATA VÍA APP                                      │
+    │  Pyraclaw-TTA: ADOPCIÓN INMEDIATA VÍA APP                                      │
     │                                                                             │
     │  • Tiempo a MVP: 5 meses                                                   │
     │  • Costo usuario: $0 (solo descargar app)                                  │

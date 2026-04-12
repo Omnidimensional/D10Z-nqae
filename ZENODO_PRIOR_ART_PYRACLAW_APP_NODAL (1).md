@@ -1,12 +1,12 @@
-# D10Z-TTA Nodal Network: Software-First Adoption via Existing Device Frequencies
+# Pyraclaw-TTA Nodal Network: Software-First Adoption via Existing Device Frequencies
 
 **Technical Disclosure & Prior Art Record**
 
 ---
 
 **Authors:**  
-Jamil Al Thani¹  
-¹D10Z Institute | jamil@d10z.org | ORCID: 0009-0000-8858-4992
+Byron Callaghan¹  
+¹Byron Callaghan / Pyraclaw | contact@pyraclaw.institute | Rights Holder: Byron Callaghan
 
 **Date:** January 23, 2026  
 **Version:** 1.0.0  
@@ -17,9 +17,9 @@ Jamil Al Thani¹
 
 ## Abstract
 
-This disclosure establishes prior art for a software-only implementation of D10Z-TTA nodal networks using existing device hardware (WiFi Direct, Bluetooth LE Mesh, WiFi Aware). The approach enables immediate global adoption without hardware changes, achieving coherence-based mesh networking through downloadable applications. We demonstrate that current smartphones (7+ billion devices) already possess the frequency transmission capabilities required for nodal coherence propagation. This inverts the traditional infrastructure paradigm: terrestrial device networks become primary infrastructure while satellites reduce to minimal backup (~100-300 units vs. 20,000-50,000 projected). Key innovations include: (1) Ley Isis coherence propagation via existing P2P protocols, (2) E_TTA computation distributed across consumer devices, (3) GNSS-independent positioning through neighbor ranging, (4) graceful fallback to traditional internet. Implementation requires only app download (~15MB), no hardware purchase, enabling immediate utility in local clusters (family, office, events) scaling to global coverage with adoption.
+This disclosure establishes prior art for a software-only implementation of Pyraclaw-TTA nodal networks using existing device hardware (WiFi Direct, Bluetooth LE Mesh, WiFi Aware). The approach enables immediate global adoption without hardware changes, achieving coherence-based mesh networking through downloadable applications. We demonstrate that current smartphones (7+ billion devices) already possess the frequency transmission capabilities required for nodal coherence propagation. This inverts the traditional infrastructure paradigm: terrestrial device networks become primary infrastructure while satellites reduce to minimal backup (~100-300 units vs. 20,000-50,000 projected). Key innovations include: (1) Ley Isis coherence propagation via existing P2P protocols, (2) E_TTA computation distributed across consumer devices, (3) GNSS-independent positioning through neighbor ranging, (4) graceful fallback to traditional internet. Implementation requires only app download (~15MB), no hardware purchase, enabling immediate utility in local clusters (family, office, events) scaling to global coverage with adoption.
 
-**Keywords:** D10Z, TTA, nodal network, mesh, WiFi Direct, Bluetooth mesh, coherence, prior art
+**Keywords:** Pyraclaw, TTA, nodal network, mesh, WiFi Direct, Bluetooth mesh, coherence, prior art
 
 ---
 
@@ -27,7 +27,7 @@ This disclosure establishes prior art for a software-only implementation of D10Z
 
 ### 1.1 Core Equations
 
-The D10Z-TTA framework operates on:
+The Pyraclaw-TTA framework operates on:
 
 **Nodal State:**
 ```
@@ -66,7 +66,7 @@ Current consumer devices include:
 ### 2.1 App Specification
 
 ```
-Name: D10Z Node
+Name: Pyraclaw Node
 Size: ~15 MB (app), ~2 MB (IoT SDK)
 Platforms: Android 8+, iOS 14+, Windows 10+, macOS 11+, Linux
 Battery Impact: +3%
@@ -89,7 +89,7 @@ Background Data: 10 MB/day
 
 ```
 ┌─────────────────────────────────────┐
-│ Application Layer (D10Z Core)       │
+│ Application Layer (Pyraclaw Core)       │
 │ - State Zₙ, Coherence Φₙ, E_TTA    │
 ├─────────────────────────────────────┤
 │ Network Layer                       │
@@ -110,11 +110,11 @@ Background Data: 10 MB/day
 ### 3.1 Paradigm Inversion
 
 Traditional: Satellites = Primary, Devices = Consumers  
-D10Z: Devices = Primary (nodal mesh), Satellites = Backup
+Pyraclaw: Devices = Primary (nodal mesh), Satellites = Backup
 
 ### 3.2 Reduction Calculation
 
-With 85% D10Z adoption:
+With 85% Pyraclaw adoption:
 - Active nodes: 38.7 billion
 - Terrestrial coverage: 95%
 - Satellites needed: 100-300 (vs. 20,000-50,000)
@@ -128,7 +128,7 @@ Satellites serve only:
 
 ### 3.3 Economic Impact (10-year)
 
-| Metric | Traditional | D10Z Hybrid | Savings |
+| Metric | Traditional | Pyraclaw Hybrid | Savings |
 |--------|-------------|-------------|---------|
 | Satellites | 20,000 | ~300 | 19,700 |
 | CAPEX | $16B | $0.2B | $15.8B |
@@ -153,7 +153,7 @@ Satellites serve only:
 
 ### Phase 3: Native Hardware (18-36 months)
 - Requirement: Natural device replacement
-- Hardware change: D10Z chip
+- Hardware change: Pyraclaw chip
 - Φ achievable: 1.0
 - Use cases: Global coverage
 
@@ -178,7 +178,7 @@ No global adoption required. Functions in local clusters:
 
 This disclosure establishes prior art for:
 
-1. **Software implementation of D10Z-TTA** on existing consumer devices without hardware modification
+1. **Software implementation of Pyraclaw-TTA** on existing consumer devices without hardware modification
 
 2. **Coherence propagation (Ley Isis)** via WiFi Direct, Bluetooth LE Mesh, and WiFi Aware protocols
 
@@ -200,7 +200,7 @@ This disclosure establishes prior art for:
 
 Accompanying this disclosure:
 
-- `core.py` - D10Z nodal state and coherence (898 lines)
+- `core.py` - Pyraclaw nodal state and coherence (898 lines)
 - `graph.py` - Constellation graph and E_TTA (986 lines)
 - `protocol.py` - PCIS inter-node protocol (471 lines)
 - `system.py` - Integrated system (825 lines)
@@ -217,9 +217,9 @@ Accompanying this disclosure:
 
 ## 8. References
 
-1. Al Thani, J. (2026). D10Z Universal Nodal Architecture. Zenodo. DOI: 10.5281/zenodo.18203648
+1. Al Thani, J. (2026). Pyraclaw Universal Nodal Architecture. Zenodo. DOI: 10.5281/zenodo.18203648
 
-2. Al Thani, J. (2026). D10Z Universal Nodal Architecture: Implementation Framework & Hardware Integration v14.0.0. Zenodo. DOI: 10.5281/zenodo.18260016
+2. Al Thani, J. (2026). Pyraclaw Universal Nodal Architecture: Implementation Framework & Hardware Integration v14.0.0. Zenodo. DOI: 10.5281/zenodo.18260016
 
 3. Al Thani, J. (2026). NQAE Implementation Specification. Zenodo. DOI: 10.5281/zenodo.18280279
 
@@ -236,7 +236,7 @@ This disclosure is made without prejudice to the rights holder's ability to file
 All intellectual property rights are expressly reserved.  
 No license—express or implied—is granted by this publication.
 
-**Copyright:** © 2026 Jamil Al Thani. All rights reserved.  
+**Copyright:** © 2026 Byron Callaghan. All rights reserved.  
 **License:** CC BY-NC 4.0 (Non-Commercial use only)  
 Commercial implementation requires written authorization.
 
@@ -244,10 +244,10 @@ Commercial implementation requires written authorization.
 
 ## Contact
 
-Jamil Al Thani  
-D10Z Institute  
-Email: jamil@d10z.org  
-ORCID: 0009-0000-8858-4992
+Byron Callaghan  
+Byron Callaghan / Pyraclaw  
+Email: contact@pyraclaw.institute  
+Rights Holder: Byron Callaghan
 
 ---
 

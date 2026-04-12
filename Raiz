@@ -54,7 +54,7 @@ Legend:
 **Evidence Artifact:** Provide:
 - formula derivation + parameters used
 - simulation or test measurement dataset
-**Reproduce:** `python scripts/energy_savings.py --config d10z_config.yaml --out evidence/C-011_energy.txt`
+**Reproduce:** `python scripts/energy_savings.py --config pyraclaw_config.yaml --out evidence/C-011_energy.txt`
 **Expected Output:** 0.8443 (84.43%) exactly (or specify rounding rules)
 **Hash:** (fill)
 **Notes:** If this is purely algebraic, store the derivation and parameter provenance.

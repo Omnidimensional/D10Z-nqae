@@ -3,7 +3,7 @@
  * TERRA MESH - Tu Teléfono es un Nodo Resonante
  * ══════════════════════════════════════════════════════════════════════════════
  * 
- * App que transforma cualquier smartphone en un nodo D10Z-TTA
+ * App que transforma cualquier smartphone en un nodo Pyraclaw-TTA
  * Sin hardware adicional - usa WiFi Direct + Bluetooth existentes
  * 
  * "Resuena con tus vecinos, construye la red del futuro"
@@ -14,10 +14,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// CONSTANTES D10Z
+// CONSTANTES Pyraclaw
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const D10Z = {
+const Pyraclaw = {
   ALPHA_DECAY: 0.05,
   BETA_COUPLING: 0.2,
   PHI_OPTIMAL: 0.9,
@@ -36,7 +36,7 @@ const LEVELS = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// MOTOR D10Z (simplificado para demo)
+// MOTOR Pyraclaw (simplificado para demo)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const createNode = (id) => ({
@@ -52,20 +52,20 @@ const createNode = (id) => ({
 });
 
 const getLevel = (phi) => {
-  if (phi >= D10Z.PHI_OPTIMAL) return 'optimal';
-  if (phi >= D10Z.PHI_OPERATIONAL) return 'operational';
-  if (phi >= D10Z.PHI_DEGRADED) return 'degraded';
-  if (phi >= D10Z.PHI_CRITICAL) return 'critical';
+  if (phi >= Pyraclaw.PHI_OPTIMAL) return 'optimal';
+  if (phi >= Pyraclaw.PHI_OPERATIONAL) return 'operational';
+  if (phi >= Pyraclaw.PHI_DEGRADED) return 'degraded';
+  if (phi >= Pyraclaw.PHI_CRITICAL) return 'critical';
   return 'isolated';
 };
 
 const propagateCoherence = (node, neighbors) => {
   if (neighbors.length === 0) {
-    const decay = D10Z.ALPHA_DECAY * node.phi;
+    const decay = Pyraclaw.ALPHA_DECAY * node.phi;
     return Math.max(0, node.phi - decay * 0.1);
   }
   
-  const decay = D10Z.ALPHA_DECAY * node.phi;
+  const decay = Pyraclaw.ALPHA_DECAY * node.phi;
   let coupling = 0;
   
   neighbors.forEach(n => {
@@ -73,7 +73,7 @@ const propagateCoherence = (node, neighbors) => {
     coupling += weight * n.phi;
   });
   
-  coupling = D10Z.BETA_COUPLING * coupling / neighbors.length;
+  coupling = Pyraclaw.BETA_COUPLING * coupling / neighbors.length;
   const dPhi = -decay + coupling;
   
   return Math.max(0, Math.min(1, node.phi + dPhi * 0.1));
@@ -122,7 +122,7 @@ export default function TerraMeshApp() {
   }, []);
   
   // ─────────────────────────────────────────────────────────────────────────────
-  // CICLO PRINCIPAL D10Z
+  // CICLO PRINCIPAL Pyraclaw
   // ─────────────────────────────────────────────────────────────────────────────
   
   useEffect(() => {
@@ -155,7 +155,7 @@ export default function TerraMeshApp() {
       });
       
       setPulsePhase(p => (p + 1) % 100);
-    }, D10Z.HEARTBEAT_MS);
+    }, Pyraclaw.HEARTBEAT_MS);
     
     return () => clearInterval(intervalRef.current);
   }, [isActive, neighbors, simulateNeighbors]);
@@ -208,7 +208,7 @@ export default function TerraMeshApp() {
           }} />
           <div>
             <h1 style={styles.logoText}>TERRA MESH</h1>
-            <span style={styles.logoSubtext}>Nodo Resonante D10Z</span>
+            <span style={styles.logoSubtext}>Nodo Resonante Pyraclaw</span>
           </div>
         </div>
         <div style={{
@@ -422,7 +422,7 @@ export default function TerraMeshApp() {
         <div style={styles.footerInfo}>
           <span style={styles.nodeId}>{node.id}</span>
           <span style={styles.footerText}>
-            D10Z-TTA · Ley Isis: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|
+            Pyraclaw-TTA · Ley Isis: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|
           </span>
         </div>
       </footer>

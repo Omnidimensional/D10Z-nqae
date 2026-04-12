@@ -1,7 +1,7 @@
 """
-D10Z Planetary Mesh Simulation
+Pyraclaw Planetary Mesh Simulation
 
-Comprehensive simulation of D10Z Nodal Architecture at planetary scale.
+Comprehensive simulation of Pyraclaw Nodal Architecture at planetary scale.
 Demonstrates energy savings, scalability, and resilience.
 
 Version: v18
@@ -26,11 +26,11 @@ class SimulationConfig:
     thermal_delta: float = -67.5
 
 
-class D10ZPlanetaryMesh:
+class PyraclawPlanetaryMesh:
     """
-    D10Z Planetary Mesh Simulator.
+    Pyraclaw Planetary Mesh Simulator.
     
-    Simulates the behavior of a D10Z nodal network at planetary scale,
+    Simulates the behavior of a Pyraclaw nodal network at planetary scale,
     demonstrating energy savings, scalability, and resilience.
     """
     
@@ -85,21 +85,21 @@ class D10ZPlanetaryMesh:
         # Traditional cost (100% for all nodes)
         traditional_cost = self.node_count * 1.0
         
-        # D10Z cost (adaptive based on path)
-        d10z_cost = (
+        # Pyraclaw cost (adaptive based on path)
+        pyraclaw_cost = (
             (self.node_count * self.fast_ratio * self.config.energy_cost_fast) +
             (self.node_count * self.quant_ratio * self.config.energy_cost_quant) +
             (self.node_count * self.deep_ratio * self.config.energy_cost_deep)
         )
         
         # Calculate savings
-        savings_percent = (1 - (d10z_cost / traditional_cost)) * 100
-        virtual_capacity = traditional_cost / d10z_cost
+        savings_percent = (1 - (pyraclaw_cost / traditional_cost)) * 100
+        virtual_capacity = traditional_cost / pyraclaw_cost
         thermal_reduction = savings_percent * 0.8  # Factor of disipación
         
         return {
             "traditional_cost": traditional_cost,
-            "d10z_cost": d10z_cost,
+            "pyraclaw_cost": pyraclaw_cost,
             "savings_percent": savings_percent,
             "virtual_capacity": virtual_capacity,
             "thermal_reduction": thermal_reduction,
@@ -149,7 +149,7 @@ class D10ZPlanetaryMesh:
         """
         energy_savings = self.calculate_energy_metrics()["savings_percent"] / 100
         
-        # Energy to life conversion (based on D10Z methodology)
+        # Energy to life conversion (based on Pyraclaw methodology)
         homes_powered = int(energy_savings * 53360 * 100)  # Scaled for simulation
         
         # Water recovery (35% reduction in losses)
@@ -172,7 +172,7 @@ class D10ZPlanetaryMesh:
             Dictionary with all simulation results
         """
         print("\n" + "=" * 70)
-        print("D10Z PLANETARY MESH SIMULATION")
+        print("Pyraclaw PLANETARY MESH SIMULATION")
         print("=" * 70)
         print(f"\nConfiguration:")
         print(f"  Total Nodes: {self.node_count:,}")
@@ -191,7 +191,7 @@ class D10ZPlanetaryMesh:
         print("Calculating Energy Metrics...")
         energy = self.calculate_energy_metrics()
         print(f"  Traditional Cost: {energy['traditional_cost']:,.0f}")
-        print(f"  D10Z Cost: {energy['d10z_cost']:,.0f}")
+        print(f"  Pyraclaw Cost: {energy['pyraclaw_cost']:,.0f}")
         print(f"  Energy Savings: {energy['savings_percent']:.2f}%")
         print(f"  Virtual Capacity: {energy['virtual_capacity']:.2f}x")
         print(f"  Thermal Reduction: {energy['thermal_reduction']:.1f}°C")
@@ -247,7 +247,7 @@ class D10ZPlanetaryMesh:
 def run_planetary_simulation():
     """Main entry point for planetary simulation."""
     config = SimulationConfig()
-    simulator = D10ZPlanetaryMesh(config)
+    simulator = PyraclawPlanetaryMesh(config)
     results = simulator.run_full_simulation()
     
     # Save results

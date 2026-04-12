@@ -4,7 +4,7 @@
 ANÁLISIS: REDUCCIÓN DE SATÉLITES MEDIANTE TRANSMISIÓN NODAL
 ══════════════════════════════════════════════════════════════════════════════════
 
-Pregunta: ¿En qué % reduce la cantidad de satélites el enfoque nodal D10Z?
+Pregunta: ¿En qué % reduce la cantidad de satélites el enfoque nodal Pyraclaw?
 
 Marco teórico:
     - Sistema tradicional: Capacidad = N × C_sat
@@ -66,7 +66,7 @@ class TraditionalConstellation:
 
 @dataclass
 class NodalConstellation:
-    """Modelo de constelación nodal D10Z."""
+    """Modelo de constelación nodal Pyraclaw."""
     
     n_nodes: int
     capacity_per_node: float  # Gbps base
@@ -112,7 +112,7 @@ def analyze_reduction():
     """Análisis de reducción de satélites."""
     
     print("=" * 80)
-    print("ANÁLISIS: REDUCCIÓN DE SATÉLITES MEDIANTE TRANSMISIÓN NODAL D10Z")
+    print("ANÁLISIS: REDUCCIÓN DE SATÉLITES MEDIANTE TRANSMISIÓN NODAL Pyraclaw")
     print("=" * 80)
     
     # ─────────────────────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ def analyze_reduction():
         phi_average=phi_avg
     )
     
-    print(f"\n[NODAL D10Z - MISMA CAPACIDAD]")
+    print(f"\n[NODAL Pyraclaw - MISMA CAPACIDAD]")
     print(f"  Nodos requeridos: {nodal.n_nodes}")
     print(f"  Φ promedio: {nodal.phi_average}")
     print(f"  Boost de coherencia: {coherence_boost:.2f}x")
@@ -197,7 +197,7 @@ def analyze_reduction():
     
     nodal_min = int(target_capacity / (traditional.capacity_per_sat * 2.0))  # Con Φ=1.0
     
-    print(f"\n[NODAL D10Z]")
+    print(f"\n[NODAL Pyraclaw]")
     print(f"  Nodos mínimos (Φ=1.0): {nodal_min}")
     print(f"  Nodos con margen (Φ=0.9): {nodal.n_nodes}")
     print(f"  Redundancia inherente: Ley Isis recupera Φ automáticamente")
@@ -225,7 +225,7 @@ def analyze_reduction():
     print(f"  Capacidad después: {trad_after:.0f} Gbps")
     print(f"  Pérdida: {(1 - trad_after/traditional.effective_capacity)*100:.1f}%")
     
-    print(f"\n[NODAL D10Z]")
+    print(f"\n[NODAL Pyraclaw]")
     nodal_lost = int(nodal.n_nodes * 0.1)
     print(f"  Nodos perdidos: {nodal_lost}")
     print(f"  Capacidad antes: {nodal.effective_capacity:.0f} Gbps")
@@ -255,7 +255,7 @@ def analyze_reduction():
     # ─────────────────────────────────────────────────────────────────────────
     
     print("\n" + "=" * 80)
-    print("RESUMEN: REDUCCIÓN DE SATÉLITES POR TRANSMISIÓN NODAL D10Z")
+    print("RESUMEN: REDUCCIÓN DE SATÉLITES POR TRANSMISIÓN NODAL Pyraclaw")
     print("=" * 80)
     
     print(f"""
@@ -286,7 +286,7 @@ def analyze_reduction():
 │  • Óptima (Φ=1.0):        50-55%                                            │
 │                                                                              │
 │  ════════════════════════════════════════════════════════════════════════   │
-│  CONCLUSIÓN: El enfoque nodal D10Z permite reducir la cantidad de           │
+│  CONCLUSIÓN: El enfoque nodal Pyraclaw permite reducir la cantidad de           │
 │  satélites en un 45-50% manteniendo la misma capacidad y MEJORANDO          │
 │  la resiliencia.                                                            │
 │  ════════════════════════════════════════════════════════════════════════   │
@@ -306,7 +306,7 @@ def analyze_reduction():
     TRADICIONAL:
         Capacidad = N_trad × C_sat × (1 - failure_rate)
         
-    NODAL D10Z:
+    NODAL Pyraclaw:
         Capacidad = N_nodal × C_sat × (1 + Φ²)
         
     EQUIVALENCIA:
@@ -431,7 +431,7 @@ if __name__ == "__main__":
     print("RESPUESTA FINAL")
     print("=" * 80)
     print(f"""
-    La transmisión nodal D10Z reduce la cantidad de satélites en:
+    La transmisión nodal Pyraclaw reduce la cantidad de satélites en:
     
     ┌────────────────────────────────────────┐
     │                                        │

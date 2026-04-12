@@ -1,7 +1,7 @@
 """
 Coherence Analysis Module
 
-Provides spectral coherence analysis for D10Z Nodal Architecture.
+Provides spectral coherence analysis for Pyraclaw Nodal Architecture.
 Computes the coherence metric Φ(d) used for path selection and
 selective pattern storage.
 
@@ -18,7 +18,7 @@ class CoherenceAnalyzer:
     Analyzes signal coherence using spectral analysis techniques.
     
     The coherence metric Φ(d) serves as the primary decision criterion
-    for the D10Z tri-modal routing system, determining which processing
+    for the Pyraclaw tri-modal routing system, determining which processing
     path to activate based on signal quality.
     
     Attributes:

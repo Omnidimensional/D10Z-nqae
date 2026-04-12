@@ -1,4 +1,4 @@
-# D10Z Universal Nodal Architecture - Core Dependencies
+# Pyraclaw Universal Nodal Architecture - Core Dependencies
 # Version: v18
 # Published: January 23, 2026
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-D10Z-TTA DISTRIBUTED CONTENT SYSTEM
+Pyraclaw-TTA DISTRIBUTED CONTENT SYSTEM
 ====================================
 Sistema de contenido distribuido con:
 - Content-Addressable Storage (CAS)
@@ -25,7 +25,7 @@ from pathlib import Path
 
 import sys
 sys.path.insert(0, '..')
-from core.engine import D10ZConstants, compute_hash, hash_to_base58
+from core.engine import PyraclawConstants, compute_hash, hash_to_base58
 
 
 # =============================================================================
@@ -62,29 +62,29 @@ class EncryptionType(Enum):
 
 
 # =============================================================================
-# HASH D10Z
+# HASH Pyraclaw
 # =============================================================================
 
 @dataclass
-class D10ZHash:
+class PyraclawHash:
     """
-    Hash D10Z con tipo y codificación Base58.
+    Hash Pyraclaw con tipo y codificación Base58.
     
-    Formato: D10Z://<prefijo><hash_base58>
+    Formato: PYRACLAW://<prefijo><hash_base58>
     """
     hash_bytes: bytes
     prefix: bytes = HASH_PREFIX_CONTENT
     
     @classmethod
-    def from_content(cls, data: bytes) -> 'D10ZHash':
+    def from_content(cls, data: bytes) -> 'PyraclawHash':
         """Crea hash desde contenido."""
         h = hashlib.sha3_256(data).digest()
         return cls(hash_bytes=h, prefix=HASH_PREFIX_CONTENT)
     
     @classmethod
-    def from_string(cls, s: str) -> 'D10ZHash':
+    def from_string(cls, s: str) -> 'PyraclawHash':
         """Parsea hash desde string."""
-        if s.startswith('D10Z://'):
+        if s.startswith('PYRACLAW://'):
             s = s[7:]
         
         prefix = s[:2].encode()
@@ -114,7 +114,7 @@ class D10ZHash:
     
     def to_string(self) -> str:
         """Convierte a string."""
-        return f"D10Z://{self.prefix.decode()}{hash_to_base58(self.hash_bytes)}"
+        return f"PYRACLAW://{self.prefix.decode()}{hash_to_base58(self.hash_bytes)}"
     
     def short(self) -> str:
         """Versión corta."""
@@ -122,7 +122,7 @@ class D10ZHash:
         return f"{full[:15]}...{full[-6:]}"
     
     def __eq__(self, other):
-        if isinstance(other, D10ZHash):
+        if isinstance(other, PyraclawHash):
             return self.hash_bytes == other.hash_bytes
         return False
     
@@ -141,7 +141,7 @@ class D10ZHash:
 class ChunkInfo:
     """Información de un chunk."""
     index: int
-    hash: D10ZHash
+    hash: PyraclawHash
     size: int
     
     def to_dict(self) -> Dict:
@@ -155,7 +155,7 @@ class ChunkInfo:
     def from_dict(cls, d: Dict) -> 'ChunkInfo':
         return cls(
             index=d['index'],
-            hash=D10ZHash.from_string(d['hash']),
+            hash=PyraclawHash.from_string(d['hash']),
             size=d['size']
         )
 
@@ -167,12 +167,12 @@ class ChunkInfo:
 @dataclass
 class Manifest:
     """
-    Manifest de un objeto nodal D10Z.
+    Manifest de un objeto nodal Pyraclaw.
     
     Contiene metadatos y lista de chunks.
     """
-    object_hash: D10ZHash
-    manifest_hash: Optional[D10ZHash] = None
+    object_hash: PyraclawHash
+    manifest_hash: Optional[PyraclawHash] = None
     content_type: ContentType = ContentType.FILE
     mime_type: str = "application/octet-stream"
     size: int = 0
@@ -193,14 +193,14 @@ class Manifest:
     @classmethod
     def from_data(cls, data: bytes, **kwargs) -> 'Manifest':
         """Crea manifest desde datos."""
-        object_hash = D10ZHash.from_content(data)
+        object_hash = PyraclawHash.from_content(data)
         chunk_size = kwargs.get('chunk_size', DEFAULT_CHUNK_SIZE)
         
         # Crear chunks
         chunks = []
         for i in range(0, len(data), chunk_size):
             chunk_data = data[i:i + chunk_size]
-            chunk_hash = D10ZHash(
+            chunk_hash = PyraclawHash(
                 hash_bytes=hashlib.sha3_256(chunk_data).digest(),
                 prefix=HASH_PREFIX_CHUNK
             )
@@ -219,7 +219,7 @@ class Manifest:
         )
         
         # Calcular hash del manifest
-        manifest.manifest_hash = D10ZHash(
+        manifest.manifest_hash = PyraclawHash(
             hash_bytes=hashlib.sha3_256(manifest.to_bytes()).digest(),
             prefix=HASH_PREFIX_MANIFEST
         )
@@ -256,8 +256,8 @@ class Manifest:
         d = json.loads(data.decode())
         
         return cls(
-            object_hash=D10ZHash.from_string(d['object_hash']),
-            manifest_hash=D10ZHash.from_string(d['manifest_hash']) if d.get('manifest_hash') else None,
+            object_hash=PyraclawHash.from_string(d['object_hash']),
+            manifest_hash=PyraclawHash.from_string(d['manifest_hash']) if d.get('manifest_hash') else None,
             content_type=ContentType(d['content_type']),
             mime_type=d['mime_type'],
             size=d['size'],
@@ -282,7 +282,7 @@ class LocalStorage:
     Almacenamiento local de chunks y manifests.
     """
     
-    def __init__(self, path: str = "./d10z_storage"):
+    def __init__(self, path: str = "./pyraclaw_storage"):
         self.path = Path(path)
         self.chunks_path = self.path / "chunks"
         self.manifests_path = self.path / "manifests"
@@ -315,7 +315,7 @@ class LocalStorage:
         
         return manifest
     
-    def get_object(self, object_hash: D10ZHash) -> Optional[bytes]:
+    def get_object(self, object_hash: PyraclawHash) -> Optional[bytes]:
         """
         Recupera un objeto completo.
         """
@@ -334,12 +334,12 @@ class LocalStorage:
         data = b''.join(chunks)
         
         # Verificar hash
-        if D10ZHash.from_content(data).hash_bytes != object_hash.hash_bytes:
+        if PyraclawHash.from_content(data).hash_bytes != object_hash.hash_bytes:
             return None  # Hash no coincide
         
         return data
     
-    def has_object(self, object_hash: D10ZHash) -> bool:
+    def has_object(self, object_hash: PyraclawHash) -> bool:
         """Verifica si tenemos un objeto."""
         manifest = self.get_manifest(object_hash)
         if not manifest:
@@ -352,7 +352,7 @@ class LocalStorage:
         
         return True
     
-    def get_manifest(self, object_hash: D10ZHash) -> Optional[Manifest]:
+    def get_manifest(self, object_hash: PyraclawHash) -> Optional[Manifest]:
         """Obtiene manifest por hash de objeto."""
         # Cache
         if object_hash.hash_bytes in self._manifest_cache:
@@ -456,7 +456,7 @@ class ReplicationManager:
             return 0.0
         
         info = self.demand_tracker[content_hash]
-        manifest = self.storage.get_manifest(D10ZHash(content_hash, HASH_PREFIX_CONTENT))
+        manifest = self.storage.get_manifest(PyraclawHash(content_hash, HASH_PREFIX_CONTENT))
         
         if not manifest:
             return 0.0
@@ -494,13 +494,13 @@ class ReplicationManager:
 class NameRecord:
     """Registro de nombre/alias."""
     name: str
-    content_hash: D10ZHash
+    content_hash: PyraclawHash
     owner_pubkey: bytes
     created_at: int
     expires_at: int
     version: int = 1
     signature: Optional[bytes] = None
-    previous_hash: Optional[D10ZHash] = None
+    previous_hash: Optional[PyraclawHash] = None
     
     def to_bytes(self) -> bytes:
         """Serializa para firma."""
@@ -519,8 +519,8 @@ class NameRegistry:
     Registro de nombres/alias distribuido.
     
     Mapea nombres legibles a hashes:
-    - "wikipedia" → D10Z://Qm...
-    - "@jamil" → D10Z://Pk...
+    - "wikipedia" → PYRACLAW://Qm...
+    - "@pyraclaw" → PYRACLAW://Pk...
     """
     
     NAME_TTL_MS = 365 * 24 * 3600 * 1000  # 1 año
@@ -538,7 +538,7 @@ class NameRegistry:
             for name, record_data in data.items():
                 self.local_names[name] = NameRecord(
                     name=record_data['name'],
-                    content_hash=D10ZHash.from_string(record_data['content_hash']),
+                    content_hash=PyraclawHash.from_string(record_data['content_hash']),
                     owner_pubkey=bytes.fromhex(record_data['owner_pubkey']),
                     created_at=record_data['created_at'],
                     expires_at=record_data['expires_at'],
@@ -559,7 +559,7 @@ class NameRegistry:
             }
         self._names_file.write_text(json.dumps(data, indent=2))
     
-    def register(self, name: str, content_hash: D10ZHash, 
+    def register(self, name: str, content_hash: PyraclawHash, 
                  owner_pubkey: bytes) -> NameRecord:
         """Registra un nombre."""
         if not self._validate_name(name):
@@ -580,7 +580,7 @@ class NameRegistry:
         
         return record
     
-    def resolve(self, name: str) -> Optional[D10ZHash]:
+    def resolve(self, name: str) -> Optional[PyraclawHash]:
         """Resuelve nombre a hash."""
         if name in self.local_names:
             record = self.local_names[name]
@@ -614,7 +614,7 @@ class ChunkDownloader:
     """
     Descargador de chunks en paralelo.
     
-    Similar a BitTorrent pero integrado con D10Z.
+    Similar a BitTorrent pero integrado con Pyraclaw.
     """
     
     MAX_PARALLEL = 10
@@ -652,7 +652,7 @@ class ChunkDownloader:
         data = b''.join(chunks)
         
         # Verificar
-        if D10ZHash.from_content(data).hash_bytes != manifest.object_hash.hash_bytes:
+        if PyraclawHash.from_content(data).hash_bytes != manifest.object_hash.hash_bytes:
             return None
         
         return data
@@ -664,7 +664,7 @@ class ChunkDownloader:
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("D10Z-TTA DISTRIBUTED CONTENT SYSTEM - TEST")
+    print("Pyraclaw-TTA DISTRIBUTED CONTENT SYSTEM - TEST")
     print("=" * 70)
     
     # Test almacenamiento
@@ -672,7 +672,7 @@ if __name__ == '__main__':
     storage = LocalStorage("./test_storage")
     
     # Crear contenido de prueba
-    test_data = b"Hello, D10Z! " * 1000  # ~13 KB
+    test_data = b"Hello, Pyraclaw! " * 1000  # ~13 KB
     print(f"   Datos de prueba: {len(test_data)} bytes")
     
     # Almacenar

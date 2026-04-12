@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-D10Z-TTA NODAL ENGINE v18
+Pyraclaw-TTA NODAL ENGINE v18
 =========================
 Core Engine con parámetros validados de producción.
 
@@ -13,7 +13,7 @@ Parámetros calibrados via MCMC sobre dataset ECG200:
 - Factor alivio red: 8.49x
 
 DOI: 10.5281/zenodo.18356012
-ORCID: 0009-0000-8858-4992
+Rights Holder: Byron Callaghan
 """
 
 import numpy as np
@@ -30,8 +30,8 @@ import queue
 # CONSTANTES VALIDADAS (MCMC + TÜV Rheinland)
 # =============================================================================
 
-class D10ZConstants:
-    """Constantes del sistema D10Z validadas."""
+class PyraclawConstants:
+    """Constantes del sistema Pyraclaw validadas."""
     
     # Umbrales de coherencia (calibrados via MCMC)
     T_HIGH = 0.436          # Bread Path threshold
@@ -63,7 +63,7 @@ class D10ZConstants:
     DHT_K = 20
     
     # Protocolo
-    MAGIC = b'D10Z'
+    MAGIC = b'Pyraclaw'
     VERSION = 0x0100
 
 
@@ -89,7 +89,7 @@ class CoherenceLevel(Enum):
 
 class CoherenceAnalyzer:
     """
-    Analizador de coherencia espectral D10Z.
+    Analizador de coherencia espectral Pyraclaw.
     
     Calcula Φ usando análisis FFT de la señal:
     Φ = tanh(energy_ratio × f_normalized × 100)
@@ -157,9 +157,9 @@ class CoherenceAnalyzer:
     
     def get_path(self, phi: float) -> PathMode:
         """Determina path de procesamiento."""
-        if phi >= D10ZConstants.T_HIGH:
+        if phi >= PyraclawConstants.T_HIGH:
             return PathMode.FAST
-        elif phi >= D10ZConstants.T_LOW:
+        elif phi >= PyraclawConstants.T_LOW:
             return PathMode.QUANT
         else:
             return PathMode.DEEP
@@ -197,8 +197,8 @@ class IsisLawEngine:
     """
     
     def __init__(self, 
-                 alpha: float = D10ZConstants.ALPHA_DECAY,
-                 beta: float = D10ZConstants.BETA_COUPLING,
+                 alpha: float = PyraclawConstants.ALPHA_DECAY,
+                 beta: float = PyraclawConstants.BETA_COUPLING,
                  dt: float = 0.1):
         self.alpha = alpha
         self.beta = beta
@@ -257,7 +257,7 @@ class IsisLawEngine:
 
 class NodalTriModal:
     """
-    Arquitectura neuronal tri-modal D10Z.
+    Arquitectura neuronal tri-modal Pyraclaw.
     
     Tres paths de procesamiento según coherencia:
     1. FAST (Bread): Φ ≥ 0.436 - Reglas, 1% energía
@@ -283,8 +283,8 @@ class NodalTriModal:
         self.stats = {'FAST': 0, 'QUANT': 0, 'DEEP': 0}
         
     def forward(self, x: np.ndarray, phi: float,
-                t_high: float = D10ZConstants.T_HIGH,
-                t_low: float = D10ZConstants.T_LOW) -> Tuple[np.ndarray, PathMode]:
+                t_high: float = PyraclawConstants.T_HIGH,
+                t_low: float = PyraclawConstants.T_LOW) -> Tuple[np.ndarray, PathMode]:
         """
         Forward pass con selección automática de path.
         
@@ -361,9 +361,9 @@ class NodalTriModal:
             return 1.0
         
         cost = (
-            self.stats['FAST'] * D10ZConstants.COST_FAST +
-            self.stats['QUANT'] * D10ZConstants.COST_QUANT +
-            self.stats['DEEP'] * D10ZConstants.COST_DEEP
+            self.stats['FAST'] * PyraclawConstants.COST_FAST +
+            self.stats['QUANT'] * PyraclawConstants.COST_QUANT +
+            self.stats['DEEP'] * PyraclawConstants.COST_DEEP
         ) / total
         
         return cost
@@ -374,7 +374,7 @@ class NodalTriModal:
     
     def serialize(self) -> bytes:
         """Serializa el modelo a binario."""
-        data = struct.pack('ff', D10ZConstants.T_HIGH, D10ZConstants.T_LOW)
+        data = struct.pack('ff', PyraclawConstants.T_HIGH, PyraclawConstants.T_LOW)
         
         for w in self.weights.flatten():
             data += struct.pack('f', w)
@@ -480,7 +480,7 @@ class DeploymentResult:
     
     def __str__(self):
         return f"""
-🌍 D10Z GLOBAL MESH: REPORTE DE ESTADO
+🌍 Pyraclaw GLOBAL MESH: REPORTE DE ESTADO
 {'='*60}
 📡 NODOS FÍSICOS ACTIVOS: {self.total_nodes:,}
 🚀 CAPACIDAD VIRTUAL: {self.virtual_capacity:,} NODOS
@@ -498,7 +498,7 @@ class DeploymentResult:
 
 class PlanetaryMeshSimulator:
     """
-    Simulador de despliegue planetario D10Z.
+    Simulador de despliegue planetario Pyraclaw.
     
     Simula la distribución de coherencia y paths
     en una red global de nodos.
@@ -519,28 +519,28 @@ class PlanetaryMeshSimulator:
         
         # Generar distribución de coherencia
         phi_values = np.concatenate([
-            np.random.uniform(D10ZConstants.T_HIGH, 1.0, 
+            np.random.uniform(PyraclawConstants.T_HIGH, 1.0, 
                             int(self.total_nodes * self.fast_ratio)),
-            np.random.uniform(D10ZConstants.T_LOW, D10ZConstants.T_HIGH, 
+            np.random.uniform(PyraclawConstants.T_LOW, PyraclawConstants.T_HIGH, 
                             int(self.total_nodes * self.quant_ratio)),
-            np.random.uniform(0.0, D10ZConstants.T_LOW, 
+            np.random.uniform(0.0, PyraclawConstants.T_LOW, 
                             int(self.total_nodes * self.deep_ratio))
         ])
         
         # Contar nodos por path
-        fast_nodes = int(np.sum(phi_values >= D10ZConstants.T_HIGH))
-        quant_nodes = int(np.sum((phi_values >= D10ZConstants.T_LOW) & 
-                                  (phi_values < D10ZConstants.T_HIGH)))
-        deep_nodes = int(np.sum(phi_values < D10ZConstants.T_LOW))
+        fast_nodes = int(np.sum(phi_values >= PyraclawConstants.T_HIGH))
+        quant_nodes = int(np.sum((phi_values >= PyraclawConstants.T_LOW) & 
+                                  (phi_values < PyraclawConstants.T_HIGH)))
+        deep_nodes = int(np.sum(phi_values < PyraclawConstants.T_LOW))
         
         # Calcular costo energético
         traditional_cost = self.total_nodes * 1.0
-        d10z_cost = (fast_nodes * D10ZConstants.COST_FAST +
-                     quant_nodes * D10ZConstants.COST_QUANT +
-                     deep_nodes * D10ZConstants.COST_DEEP)
+        pyraclaw_cost = (fast_nodes * PyraclawConstants.COST_FAST +
+                     quant_nodes * PyraclawConstants.COST_QUANT +
+                     deep_nodes * PyraclawConstants.COST_DEEP)
         
-        energy_savings = (1 - d10z_cost / traditional_cost) * 100
-        virtual_capacity = int((traditional_cost / d10z_cost) * self.total_nodes)
+        energy_savings = (1 - pyraclaw_cost / traditional_cost) * 100
+        virtual_capacity = int((traditional_cost / pyraclaw_cost) * self.total_nodes)
         thermal_delta = energy_savings * 0.8  # Factor de correlación térmica
         
         return DeploymentResult(
@@ -567,7 +567,7 @@ class PlanetaryMeshSimulator:
         failed_nodes = self.total_nodes - surviving_nodes
         
         # Capacidad virtual con nodos supervivientes
-        new_virtual_capacity = int(surviving_nodes * D10ZConstants.SCALABILITY_FACTOR)
+        new_virtual_capacity = int(surviving_nodes * PyraclawConstants.SCALABILITY_FACTOR)
         
         surplus = new_virtual_capacity - self.total_nodes
         survives = new_virtual_capacity >= self.total_nodes
@@ -616,10 +616,10 @@ def hash_to_base58(hash_bytes: bytes) -> str:
     return result or '1'
 
 
-def d10z_hash(data: bytes) -> str:
-    """Genera hash D10Z con prefijo."""
+def pyraclaw_hash(data: bytes) -> str:
+    """Genera hash Pyraclaw con prefijo."""
     h = compute_hash(data)
-    return f"D10Z://Qm{hash_to_base58(h)}"
+    return f"PYRACLAW://Qm{hash_to_base58(h)}"
 
 
 # =============================================================================
@@ -628,7 +628,7 @@ def d10z_hash(data: bytes) -> str:
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("D10Z-TTA NODAL ENGINE v18 - VALIDACIÓN")
+    print("Pyraclaw-TTA NODAL ENGINE v18 - VALIDACIÓN")
     print("=" * 70)
     
     # Test CoherenceAnalyzer

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-D10Z-TTA INTEGRATED SYSTEM v18
+Pyraclaw-TTA INTEGRATED SYSTEM v18
 ==============================
 Sistema integrado completo que une todos los componentes:
 - Motor de coherencia (engine.py)
@@ -17,8 +17,8 @@ Parámetros validados (MCMC + TÜV Rheinland):
 - Compresión: 14.9x
 
 DOI: 10.5281/zenodo.18356012
-ORCID: 0009-0000-8858-4992
-GitHub: https://github.com/Omnidimensional/D10Z-nqae
+Rights Holder: Byron Callaghan
+GitHub: https://github.com/Omnidimensional/Pyraclaw-nqae
 """
 
 import sys
@@ -32,16 +32,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from core.engine import (
-    D10ZConstants, PathMode, CoherenceLevel,
+    PyraclawConstants, PathMode, CoherenceLevel,
     CoherenceAnalyzer, IsisLawEngine, NodalTriModal,
     PlanetaryMeshSimulator, ETTACalculator,
-    generate_node_id, d10z_hash
+    generate_node_id, pyraclaw_hash
 )
 from network.nodal_network import (
-    D10ZNode, NetworkSimulator, LinkLayer, Router
+    PyraclawNode, NetworkSimulator, LinkLayer, Router
 )
 from storage.content import (
-    LocalStorage, D10ZHash, Manifest, NameRegistry, ReplicationManager
+    LocalStorage, PyraclawHash, Manifest, NameRegistry, ReplicationManager
 )
 
 
@@ -49,9 +49,9 @@ from storage.content import (
 # SISTEMA INTEGRADO
 # =============================================================================
 
-class D10ZSystem:
+class PyraclawSystem:
     """
-    Sistema D10Z-TTA integrado completo.
+    Sistema Pyraclaw-TTA integrado completo.
     
     Combina todos los componentes en una interfaz unificada.
     """
@@ -59,9 +59,9 @@ class D10ZSystem:
     VERSION = "18.0.0"
     DOI = "10.5281/zenodo.18356012"
     
-    def __init__(self, data_path: str = "./d10z_data"):
+    def __init__(self, data_path: str = "./pyraclaw_data"):
         """
-        Inicializa el sistema D10Z.
+        Inicializa el sistema Pyraclaw.
         
         Args:
             data_path: Ruta para almacenamiento de datos
@@ -77,7 +77,7 @@ class D10ZSystem:
         self.model = NodalTriModal()
         
         # Nodo local
-        self.local_node = D10ZNode()
+        self.local_node = PyraclawNode()
         
         # Estado
         self.start_time = time.time()
@@ -85,7 +85,7 @@ class D10ZSystem:
         
         print(f"""
 ╔══════════════════════════════════════════════════════════════════════╗
-║                    D10Z-TTA NODAL SYSTEM v{self.VERSION}                     ║
+║                    Pyraclaw-TTA NODAL SYSTEM v{self.VERSION}                     ║
 ╠══════════════════════════════════════════════════════════════════════╣
 ║  DOI: {self.DOI}                                    ║
 ║  Node ID: {self.local_node.node_id.hex()[:32]}...           ║
@@ -97,19 +97,19 @@ class D10ZSystem:
         """Inicia el sistema."""
         self.is_running = True
         self.local_node.start()
-        print("✅ Sistema D10Z iniciado")
+        print("✅ Sistema Pyraclaw iniciado")
     
     def stop(self):
         """Detiene el sistema."""
         self.is_running = False
         self.local_node.stop()
-        print("🛑 Sistema D10Z detenido")
+        print("🛑 Sistema Pyraclaw detenido")
     
     # =========================================================================
     # ALMACENAMIENTO DE CONTENIDO
     # =========================================================================
     
-    def store(self, data: bytes, name: str = None, **kwargs) -> D10ZHash:
+    def store(self, data: bytes, name: str = None, **kwargs) -> PyraclawHash:
         """
         Almacena contenido en la red nodal.
         
@@ -119,7 +119,7 @@ class D10ZSystem:
             **kwargs: Metadatos adicionales
             
         Returns:
-            Hash D10Z del contenido
+            Hash Pyraclaw del contenido
         """
         # Calcular coherencia
         if len(data) > 10:
@@ -156,14 +156,14 @@ class D10ZSystem:
         Recupera contenido por hash o nombre.
         
         Args:
-            identifier: Hash D10Z o nombre registrado
+            identifier: Hash Pyraclaw o nombre registrado
             
         Returns:
             Datos del contenido
         """
         # Determinar si es nombre o hash
-        if identifier.startswith("D10Z://"):
-            content_hash = D10ZHash.from_string(identifier)
+        if identifier.startswith("PYRACLAW://"):
+            content_hash = PyraclawHash.from_string(identifier)
         else:
             # Buscar por nombre
             content_hash = self.name_registry.resolve(identifier)
@@ -222,8 +222,8 @@ class D10ZSystem:
                 PathMode.DEEP: 1.00
             }[mode],
             'thresholds': {
-                'T_HIGH': D10ZConstants.T_HIGH,
-                'T_LOW': D10ZConstants.T_LOW
+                'T_HIGH': PyraclawConstants.T_HIGH,
+                'T_LOW': PyraclawConstants.T_LOW
             }
         }
     
@@ -326,12 +326,12 @@ class D10ZSystem:
             'neighbors': len(self.local_node.link.neighbors),
             'storage': storage_stats,
             'constants': {
-                'T_HIGH': D10ZConstants.T_HIGH,
-                'T_LOW': D10ZConstants.T_LOW,
-                'ENERGY_SAVINGS': f"{D10ZConstants.ENERGY_SAVINGS*100:.2f}%",
-                'THERMAL_DELTA': f"{D10ZConstants.THERMAL_DELTA}°C",
-                'SCALABILITY': f"{D10ZConstants.SCALABILITY_FACTOR}x",
-                'COMPRESSION': f"{D10ZConstants.COMPRESSION_RATIO}x",
+                'T_HIGH': PyraclawConstants.T_HIGH,
+                'T_LOW': PyraclawConstants.T_LOW,
+                'ENERGY_SAVINGS': f"{PyraclawConstants.ENERGY_SAVINGS*100:.2f}%",
+                'THERMAL_DELTA': f"{PyraclawConstants.THERMAL_DELTA}°C",
+                'SCALABILITY': f"{PyraclawConstants.SCALABILITY_FACTOR}x",
+                'COMPRESSION': f"{PyraclawConstants.COMPRESSION_RATIO}x",
             }
         }
     
@@ -340,7 +340,7 @@ class D10ZSystem:
         status = self.get_status()
         
         print(f"""
-📊 D10Z SYSTEM STATUS
+📊 Pyraclaw SYSTEM STATUS
 {'='*60}
 Version: {status['version']}
 DOI: {status['doi']}
@@ -373,28 +373,28 @@ Neighbors: {status['neighbors']}
 def main():
     """Punto de entrada principal."""
     parser = argparse.ArgumentParser(
-        description="D10Z-TTA Nodal System v18",
+        description="Pyraclaw-TTA Nodal System v18",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Ejemplos:
-  python d10z.py status              # Ver estado del sistema
-  python d10z.py simulate            # Simular despliegue planetario
-  python d10z.py stress              # Test de estrés
-  python d10z.py store file.txt      # Almacenar archivo
-  python d10z.py retrieve D10Z://... # Recuperar contenido
+  python pyraclaw.py status              # Ver estado del sistema
+  python pyraclaw.py simulate            # Simular despliegue planetario
+  python pyraclaw.py stress              # Test de estrés
+  python pyraclaw.py store file.txt      # Almacenar archivo
+  python pyraclaw.py retrieve PYRACLAW://... # Recuperar contenido
         """
     )
     
     parser.add_argument('command', choices=['status', 'simulate', 'stress', 'network', 'store', 'retrieve', 'demo'],
                        help='Comando a ejecutar')
     parser.add_argument('args', nargs='*', help='Argumentos del comando')
-    parser.add_argument('--data-path', default='./d10z_data', help='Ruta de datos')
+    parser.add_argument('--data-path', default='./pyraclaw_data', help='Ruta de datos')
     parser.add_argument('--nodes', type=int, default=2490000, help='Número de nodos para simulación')
     
     args = parser.parse_args()
     
     # Crear sistema
-    system = D10ZSystem(data_path=args.data_path)
+    system = PyraclawSystem(data_path=args.data_path)
     
     if args.command == 'status':
         system.print_status()
@@ -436,7 +436,7 @@ Ejemplos:
             print(data[:1000])
     
     elif args.command == 'demo':
-        print("\n🎯 DEMO COMPLETA D10Z-TTA\n")
+        print("\n🎯 DEMO COMPLETA Pyraclaw-TTA\n")
         
         # 1. Simulación planetaria
         print("1️⃣ Simulación Planetaria (2.49M nodos):")
@@ -448,12 +448,12 @@ Ejemplos:
         
         # 3. Almacenamiento
         print("\n3️⃣ Test de Almacenamiento:")
-        test_data = b"Hello, D10Z Nodal Network! " * 100
-        content_hash = system.store(test_data, name="hello-d10z")
+        test_data = b"Hello, Pyraclaw Nodal Network! " * 100
+        content_hash = system.store(test_data, name="hello-pyraclaw")
         
         # 4. Recuperación
         print("\n4️⃣ Test de Recuperación:")
-        recovered = system.retrieve("hello-d10z")
+        recovered = system.retrieve("hello-pyraclaw")
         print(f"   Verificación: {recovered == test_data}")
         
         # 5. Análisis

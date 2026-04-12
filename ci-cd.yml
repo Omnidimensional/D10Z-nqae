@@ -1,4 +1,4 @@
-name: D10Z CI/CD Pipeline
+name: Pyraclaw CI/CD Pipeline
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 env:
   PYTHON_VERSION: '3.11'
-  D10Z_VERSION: '18.0.0'
+  Pyraclaw_VERSION: '18.0.0'
 
 jobs:
   lint:

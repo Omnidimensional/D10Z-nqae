@@ -2,22 +2,22 @@
 
 ## Document Information
 
-**Repository:** https://github.com/d10z-institute/d10z-nqae  
-**Primary Publication:** D10Z-NQAE v18 (DOI: 10.5281/zenodo.18348037)  
+**Repository:** https://github.com/pyraclaw-institute/pyraclaw-nqae  
+**Primary Publication:** Pyraclaw-NQAE v18 (DOI: 10.5281/zenodo.18348037)  
 **Primary Publication Date:** January 23, 2026  
 **Repository Creation Date:** January 24, 2026  
-**Rights Holder:** D10Z Institute (Jamil Al Thani, ORCID: 0009-0000-8858-4992)
+**Rights Holder:** Byron Callaghan / Pyraclaw (Byron Callaghan, Rights Holder: Byron Callaghan)
 
 ---
 
 ## 1. Purpose of This Document
 
-This document serves as a **supplementary prior art record** that explicitly links this GitHub repository to the primary D10Z-NQAE v18 publication on Zenodo. The purpose is to:
+This document serves as a **supplementary prior art record** that explicitly links this GitHub repository to the primary Pyraclaw-NQAE v18 publication on Zenodo. The purpose is to:
 
 1. Establish clear provenance between the Zenodo DOI and this GitHub repository
 2. Document the relationship between the theoretical specification and implementation code
 3. Create additional timestamped evidence of the invention
-4. Protect the prior art status of the D10Z Universal Nodal Architecture
+4. Protect the prior art status of the Pyraclaw Universal Nodal Architecture
 
 ---
 
@@ -25,14 +25,14 @@ This document serves as a **supplementary prior art record** that explicitly lin
 
 ### 2.1 Primary Reference
 
-The authoritative source for the D10Z Universal Nodal Architecture is the Zenodo publication:
+The authoritative source for the Pyraclaw Universal Nodal Architecture is the Zenodo publication:
 
 ```
-Title: D10Z-NQAE v18: Universal Nodal Architecture
+Title: Pyraclaw-NQAE v18: Universal Nodal Architecture
 DOI: 10.5281/zenodo.18348037
 URL: https://doi.org/10.5281/zenodo.18348037
 Published: January 23, 2026
-Authors: Jamil Al Thani, Cisneros Grace, Sahana Amira Quintanilla, Isis Ra Quintanilla
+Authors: Byron Callaghan, Byron Callaghan, Byron Callaghan, Byron Callaghan
 ```
 
 ### 2.2 Supplementary Nature
@@ -116,7 +116,7 @@ This creates a clear chain of evidence linking both publications.
 
 ### 5.1 Patent Rights Reserved
 
-All patent rights are expressly reserved by D10Z Institute:
+All patent rights are expressly reserved by Byron Callaghan / Pyraclaw:
 - Original invention date: On or before January 23, 2026
 - Priority window: PCT (12 months from January 23, 2026)
 - Geographic scope: Worldwide
@@ -131,7 +131,7 @@ The CC BY-NC 4.0 license applies only to copyright, NOT to patents:
 ### 5.3 Defensive Publication
 
 This repository serves as a **defensive publication**:
-- Purpose: Prevent third-party patents on D10Z technology
+- Purpose: Prevent third-party patents on Pyraclaw technology
 - Effect: Establishes prior art date
 - Scope: All subject matter disclosed herein
 
@@ -161,8 +161,8 @@ The following uses are NOT permitted without explicit authorization:
 | Commercial products | ❌ Yes | Patent license required |
 | SaaS offerings | ❌ Yes | Patent license required |
 | Patent filing | ❌ Yes | Rights reserved |
-| Licensing to third parties | ❌ Yes | D10Z Institute exclusive |
-| Trademark use | ❌ Yes | "D10Z" is a trademark |
+| Licensing to third parties | ❌ Yes | Byron Callaghan / Pyraclaw exclusive |
+| Trademark use | ❌ Yes | "Pyraclaw" is a trademark |
 
 ---
 
@@ -170,7 +170,7 @@ The following uses are NOT permitted without explicit authorization:
 
 ### 7.1 Independent Validation
 
-The D10Z-NQAE v18 specification has received independent validation:
+The Pyraclaw-NQAE v18 specification has received independent validation:
 
 | Validation | Result | Source |
 |------------|--------|--------|
@@ -192,18 +192,18 @@ The implementation code in this repository:
 
 ### 8.1 Academic Citation
 
-When citing this repository or the D10Z architecture, use:
+When citing this repository or the Pyraclaw architecture, use:
 
 **Primary Citation (Zenodo):**
 ```
-D10Z Institute. (2026). D10Z-NQAE v18: Universal Nodal Architecture.
+Byron Callaghan / Pyraclaw. (2026). Pyraclaw-NQAE v18: Universal Nodal Architecture.
 Zenodo. https://doi.org/10.5281/zenodo.18348037
 ```
 
 **Supplementary Citation (GitHub):**
 ```
-D10Z Institute. (2026). D10Z Universal Nodal Architecture [Software].
-GitHub Repository. https://github.com/d10z-institute/d10z-nqae
+Byron Callaghan / Pyraclaw. (2026). Pyraclaw Universal Nodal Architecture [Software].
+GitHub Repository. https://github.com/pyraclaw-institute/pyraclaw-nqae
 ```
 
 ### 8.2 Code References
@@ -212,8 +212,8 @@ When referencing specific code from this repository:
 
 ```python
 # Example citation format
-# D10Z Institute. (2026). CoherenceAnalyzer class.
-# Source: d10z-github-repository/src/core/coherence.py
+# Byron Callaghan / Pyraclaw. (2026). CoherenceAnalyzer class.
+# Source: pyraclaw-github-repository/src/core/coherence.py
 ```
 
 ---
@@ -225,19 +225,19 @@ When referencing specific code from this repository:
 This repository is governed by:
 - **Primary:** Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 - **Supplementary:** PATENTS_AND_LICENSING.md in this repository
-- **Primary Reference:** D10Z-NQAE v18 on Zenodo
+- **Primary Reference:** Pyraclaw-NQAE v18 on Zenodo
 
 ### 9.2 Priority Claims
 
 This publication claims priority from:
-- D10Z-NQAE v18 Zenodo publication (January 23, 2026)
-- All prior D10Z publications on Zenodo (see DOI chain)
+- Pyraclaw-NQAE v18 Zenodo publication (January 23, 2026)
+- All prior Pyraclaw publications on Zenodo (see DOI chain)
 
 ### 9.3 PCT Protection
 
 The technology disclosed herein is protected under:
 - **PCT Priority Window:** January 23, 2026 - January 23, 2027
-- **PCT Application:** To be filed by D10Z Institute
+- **PCT Application:** To be filed by Byron Callaghan / Pyraclaw
 - **National Phase:** Based on PCT filing
 
 ---
@@ -246,9 +246,9 @@ The technology disclosed herein is protected under:
 
 ### 10.1 Rights Holder
 
-**D10Z Institute**
-- Contact: contact@d10z.institute
-- ORCID: 0009-0000-8858-4992 (Jamil Al Thani)
+**Byron Callaghan / Pyraclaw**
+- Contact: contact@pyraclaw.institute
+- Rights Holder: Byron Callaghan (Byron Callaghan)
 
 ### 10.2 Primary Publication
 
@@ -259,7 +259,7 @@ The technology disclosed herein is protected under:
 ### 10.3 Repository
 
 **GitHub Repository:**
-- URL: https://github.com/d10z-institute/d10z-nqae
+- URL: https://github.com/pyraclaw-institute/pyraclaw-nqae
 - Issues: Use GitHub Issues for bug reports
 
 ---
@@ -276,7 +276,7 @@ The technology disclosed herein is protected under:
 
 THIS SUPPLEMENTARY PRIOR ART RECORD IS PROVIDED "AS IS" FOR PRIOR ART ESTABLISHMENT PURPOSES.
 
-D10Z Institute makes no representations about:
+Byron Callaghan / Pyraclaw makes no representations about:
 - The completeness of this record
 - The accuracy of timestamp evidence
 - The enforceability of any claims
@@ -291,6 +291,6 @@ This document supplements, does not replace, the primary Zenodo publication.
 
 ---
 
-© 2026 D10Z Institute. All Rights Reserved.
+© 2026 Byron Callaghan / Pyraclaw. All Rights Reserved.
 
-This supplementary prior art record is published under CC BY-NC 4.0 and serves as defensive disclosure to protect D10Z intellectual property rights.
+This supplementary prior art record is published under CC BY-NC 4.0 and serves as defensive disclosure to protect Pyraclaw intellectual property rights.

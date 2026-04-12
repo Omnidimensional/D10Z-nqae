@@ -2,14 +2,14 @@
 
 ## La Pregunta Clave
 
-**¿Cómo accede un nodo D10Z a internet si solo tiene conexiones P2P con vecinos?**
+**¿Cómo accede un nodo Pyraclaw a internet si solo tiene conexiones P2P con vecinos?**
 
 ---
 
 ## Respuesta Corta
 
 ```
-TU TELÉFONO → vecinos D10Z → ... → NODO GATEWAY → INTERNET
+TU TELÉFONO → vecinos Pyraclaw → ... → NODO GATEWAY → INTERNET
      ↓
   (mesh P2P)                        (tiene conexión real)
 ```

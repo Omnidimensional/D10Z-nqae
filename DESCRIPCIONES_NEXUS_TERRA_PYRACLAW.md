@@ -1,12 +1,12 @@
-# D10Z-TTA: Descripciones de Sistemas Nodales
+# Pyraclaw-TTA: Descripciones de Sistemas Nodales
 
-## SISTEMA 1: NEXUS ORBITAL (Satélites Nodales D10Z)
+## SISTEMA 1: NEXUS ORBITAL (Satélites Nodales Pyraclaw)
 
-### Nombre: NEXUS ORBITAL - D10Z Satellite Nodal System
+### Nombre: NEXUS ORBITAL - Pyraclaw Satellite Nodal System
 
 ### Descripción Breve (Abstract)
 
-NEXUS ORBITAL es una arquitectura de constelación satelital basada en coherencia nodal D10Z-TTA que reemplaza el paradigma tradicional de redundancia por cantidad con resiliencia por coherencia. Cada satélite opera como un nodo Zₙ con estado coherente Φₙ, donde la salud del sistema se mide por E_TTA = Σ Zₙ·Φₙ en lugar de conteo de unidades operativas. La propagación de coherencia sigue la Ley Isis (∂Φ/∂t = -αΦ + βΣwΦⱼ), permitiendo recuperación autónoma sin intervención terrestre. El sistema implementa PNT nodal (posicionamiento sin GNSS mediante ranging inter-satelital), protocolo PCIS (consenso distribuido de coherencia), y degradación predecible por umbrales de Φ. Resultado: 45-50% reducción de satélites manteniendo capacidad equivalente, detección de ataques en <5 segundos, recuperación automática en ~20 ciclos.
+NEXUS ORBITAL es una arquitectura de constelación satelital basada en coherencia nodal Pyraclaw-TTA que reemplaza el paradigma tradicional de redundancia por cantidad con resiliencia por coherencia. Cada satélite opera como un nodo Zₙ con estado coherente Φₙ, donde la salud del sistema se mide por E_TTA = Σ Zₙ·Φₙ en lugar de conteo de unidades operativas. La propagación de coherencia sigue la Ley Isis (∂Φ/∂t = -αΦ + βΣwΦⱼ), permitiendo recuperación autónoma sin intervención terrestre. El sistema implementa PNT nodal (posicionamiento sin GNSS mediante ranging inter-satelital), protocolo PCIS (consenso distribuido de coherencia), y degradación predecible por umbrales de Φ. Resultado: 45-50% reducción de satélites manteniendo capacidad equivalente, detección de ataques en <5 segundos, recuperación automática en ~20 ciclos.
 
 ### Especificaciones Técnicas
 
@@ -46,13 +46,13 @@ N_nodal = N_trad × (1-f) / (1+Φ²)              (Equivalencia)
 
 ---
 
-## SISTEMA 2: TERRA MESH (Red Nodal Terrestre D10Z)
+## SISTEMA 2: TERRA MESH (Red Nodal Terrestre Pyraclaw)
 
-### Nombre: TERRA MESH - D10Z Terrestrial Nodal Network
+### Nombre: TERRA MESH - Pyraclaw Terrestrial Nodal Network
 
 ### Descripción Breve (Abstract)
 
-TERRA MESH es una red de comunicaciones nodal que transforma dispositivos existentes (smartphones, IoT, routers, vehículos, computadoras) en nodos D10Z-TTA mediante software descargable, sin requerir cambio de hardware. Utiliza frecuencias ya disponibles (WiFi Direct, Bluetooth LE Mesh, WiFi Aware) para establecer coherencia nodal entre dispositivos vecinos. La adopción masiva invierte el paradigma de infraestructura: la red terrestre de ~45 mil millones de dispositivos se convierte en infraestructura primaria, reduciendo satélites a backup mínimo (100-300 vs 20,000-50,000). Funciona inmediatamente en clusters locales (familia, oficina, edificio, evento) sin requerir masa crítica global. Implementación: app 15MB, +3% batería, cero costo de hardware.
+TERRA MESH es una red de comunicaciones nodal que transforma dispositivos existentes (smartphones, IoT, routers, vehículos, computadoras) en nodos Pyraclaw-TTA mediante software descargable, sin requerir cambio de hardware. Utiliza frecuencias ya disponibles (WiFi Direct, Bluetooth LE Mesh, WiFi Aware) para establecer coherencia nodal entre dispositivos vecinos. La adopción masiva invierte el paradigma de infraestructura: la red terrestre de ~45 mil millones de dispositivos se convierte en infraestructura primaria, reduciendo satélites a backup mínimo (100-300 vs 20,000-50,000). Funciona inmediatamente en clusters locales (familia, oficina, edificio, evento) sin requerir masa crítica global. Implementación: app 15MB, +3% batería, cero costo de hardware.
 
 ### Especificaciones Técnicas
 
@@ -71,7 +71,7 @@ Tecnologías existentes utilizadas:
   - Bluetooth LE Mesh:     Mesh bajo consumo 100m
   - UWB:                   Posicionamiento preciso
 
-App D10Z Node:
+App Pyraclaw Node:
   - Tamaño:                15 MB (app), 2 MB (SDK IoT)
   - Batería:               +3%
   - RAM:                   50 MB
@@ -85,11 +85,11 @@ App D10Z Node:
 |------|--------|-----------|----------|--------------|
 | 1. App | 0-6 meses | Descargar | NINGUNO | 0.70 |
 | 2. Firmware | 6-18 meses | Update SO | NINGUNO | 0.85 |
-| 3. Nativo | 18-36 meses | Ciclo natural | Chip D10Z | 1.00 |
+| 3. Nativo | 18-36 meses | Ciclo natural | Chip Pyraclaw | 1.00 |
 
 ### Reducción de Satélites (Paradigma Invertido)
 
-| Adopción D10Z | Cobertura Terrestre | Satélites Backup | Reducción |
+| Adopción Pyraclaw | Cobertura Terrestre | Satélites Backup | Reducción |
 |---------------|---------------------|------------------|-----------|
 | 50% | 95% | ~800 | 96% |
 | 75% | 95% | ~400 | 98% |
@@ -110,11 +110,11 @@ Emergencia (cualquier número)   → Comunicación vital
 
 ```
 ┌─────────────────────────────────────────┐
-│           D10Z NODE APP                 │
+│           Pyraclaw NODE APP                 │
 ├─────────────────────────────────────────┤
 │  UI/Dashboard │ Settings │ Alerts       │
 ├─────────────────────────────────────────┤
-│           D10Z CORE ENGINE              │
+│           Pyraclaw CORE ENGINE              │
 │  Estado Zₙ │ Coherencia Φₙ │ Ley Isis   │
 │  Consenso E_TTA │ Enrutamiento          │
 ├─────────────────────────────────────────┤
@@ -184,7 +184,7 @@ Resiliencia:             Autónoma (Ley Isis)
 
 Esta documentación establece prior art para:
 
-1. **NEXUS ORBITAL**: Constelación satelital con coherencia nodal D10Z-TTA, reducción 45-50% de satélites, PNT sin GNSS, recuperación autónoma vía Ley Isis
+1. **NEXUS ORBITAL**: Constelación satelital con coherencia nodal Pyraclaw-TTA, reducción 45-50% de satélites, PNT sin GNSS, recuperación autónoma vía Ley Isis
 
 2. **TERRA MESH**: Red nodal terrestre sobre hardware existente (WiFi Direct, BLE Mesh), adopción vía app sin cambio de hardware, paradigma invertido (terrestre=primario, satélite=backup)
 
@@ -196,7 +196,7 @@ Esta documentación establece prior art para:
 
 ---
 
-**Autor:** Jamil Al Thani  
+**Autor:** Byron Callaghan  
 **ORCID:** 0009-0000-8858-4992  
 **Fecha:** 23 Enero 2026  
 **Licencia:** CC BY-NC 4.0

@@ -1,8 +1,8 @@
-# D10Z Universal Nodal Architecture (NQAE)
+# Pyraclaw Universal Nodal Architecture (NQAE)
 
 <div align="center">
 
-![D10Z Architecture](assets/icons/d10z-logo.svg)
+![Pyraclaw Architecture](assets/icons/pyraclaw-logo.svg)
 *Coherence-Based Infrastructure for the 2030 Horizon*
 
 **Version:** v18 | **Published:** January 23, 2026 | **DOI:** [10.5281/zenodo.18348037](https://doi.org/10.5281/zenodo.18348037)
@@ -17,7 +17,7 @@
 
 ## 🌟 Overview
 
-The D10Z Universal Nodal Architecture (D10Z-NQAE) represents a paradigm-shifting approach to digital infrastructure sustainability. This software-defined implementation framework for D10Z-TTA nodal networks inverts the traditional infrastructure paradigm: **existing terrestrial hardware becomes the primary global infrastructure**, rendering massive satellite constellations redundant.
+The Pyraclaw Universal Nodal Architecture (Pyraclaw-NQAE) represents a paradigm-shifting approach to digital infrastructure sustainability. This software-defined implementation framework for Pyraclaw-TTA nodal networks inverts the traditional infrastructure paradigm: **existing terrestrial hardware becomes the primary global infrastructure**, rendering massive satellite constellations redundant.
 
 ### Key Innovation Statement
 
@@ -31,7 +31,7 @@ This architecture enables **immediate global adoption** through downloadable app
 
 ### 1. Hardware-Software Bridge (L1-L3)
 
-The D10Z architecture implements a three-layer bridge enabling immediate global adoption:
+The Pyraclaw architecture implements a three-layer bridge enabling immediate global adoption:
 
 - **Layer 1 (L1):** Memory Adjacency & Intrinsic Nodal Logging
 - **Layer 2 (L2):** Nodal State Interpreter (NSI) for TACE Runtime Injection
@@ -107,8 +107,8 @@ NumPy >= 1.24
 
 ```bash
 # Clone the repository
-git clone https://github.com/d10z-institute/d10z-nqae.git
-cd d10z-nqae
+git clone https://github.com/pyraclaw-institute/pyraclaw-nqae.git
+cd pyraclaw-nqae
 
 # Install dependencies
 pip install -r requirements.txt
@@ -118,7 +118,7 @@ pip install -r requirements.txt
 
 ```python
 import numpy as np
-from d10z.core import NodalTriModal, CoherenceAnalyzer
+from pyraclaw.core import NodalTriModal, CoherenceAnalyzer
 
 # Initialize the system
 analyzer = CoherenceAnalyzer()
@@ -138,7 +138,7 @@ print(f"Coherence: {phi:.3f} | Path: {mode}")
 ## 📁 Repository Structure
 
 ```
-d10z-nqae/
+pyraclaw-nqae/
 ├── README.md                    # This file
 ├── LICENSE                      # CC BY-NC 4.0 License
 ├── requirements.txt             # Python dependencies
@@ -167,7 +167,7 @@ d10z-nqae/
 
 ### Core Architecture
 
-The D10Z Nodal Quantum Architecture Engine (NQAE) addresses the fundamental challenge facing digital infrastructure: **the byte-storage paradigm couples storage, energy consumption, and thermal dissipation to data generation**, leading to unsustainable physical limits by 2030-2035.
+The Pyraclaw Nodal Quantum Architecture Engine (NQAE) addresses the fundamental challenge facing digital infrastructure: **the byte-storage paradigm couples storage, energy consumption, and thermal dissipation to data generation**, leading to unsustainable physical limits by 2030-2035.
 
 The NQAE introduces a **coherence-based storage decision model** that:
 
@@ -228,8 +228,8 @@ Architectural enforcement model guaranteeing human veto authority:
 ### Python API
 
 ```python
-from d10z.core import AdaptiveNodalNetwork
-from d10z.protocols import AutoNoLossProtocol
+from pyraclaw.core import AdaptiveNodalNetwork
+from pyraclaw.protocols import AutoNoLossProtocol
 
 # Initialize network
 network = AdaptiveNodalNetwork(
@@ -245,7 +245,7 @@ result = network.process(data)
 
 ### Configuration
 
-Edit `config/d10z_config.yaml`:
+Edit `config/pyraclaw_config.yaml`:
 
 ```yaml
 architecture:
@@ -309,7 +309,7 @@ pytest tests/ --cov=src/ --cov-report=html
 
 ### Patent Status
 
-- **All Rights Reserved** by D10Z Institute
+- **All Rights Reserved** by Byron Callaghan / Pyraclaw
 - **PCT Priority Window Active:** January 23, 2026 - January 23, 2027
 - **Commercial Deployment:** Requires Licensing Agreements
 
@@ -333,23 +333,17 @@ This documentation serves as:
 
 ## 👥 Contributors
 
-### Rights Holders
+### Rights Holder
 
-- **Jamil Al Thani** (Rights Holder) - ORCID: 0009-0000-8858-4992
-
-### Project Leadership
-
-- **Cisneros Grace** (Project Leader)
-- **Sahana Amira Quintanilla** (Project Member)
-- **Isis Ra Quintanilla** (Project Member)
+- **Byron Callaghan** (Rights Holder) — Pyraclaw
 
 ---
 
 ## 📞 Contact
 
-- **Institute:** D10Z Institute
-- **Email:** [contact@d10z.institute]
-- **Documentation:** [docs.d10z.institute]
+- **Institute:** Byron Callaghan / Pyraclaw
+- **Email:** [contact@pyraclaw.institute]
+- **Documentation:** [docs.pyraclaw.institute]
 
 ---
 
@@ -357,9 +351,9 @@ This documentation serves as:
 
 ### Technical Documentation
 
-1. D10Z-NQAE v18 Universal Nodal Architecture (DOI: 10.5281/zenodo.18348037)
-2. D10Z-NQAE v17 Universal Nodal Architecture (DOI: 10.5281/zenodo.18260016)
-3. D10Z-NQAE v14 Hardware Integration Layer (DOI: 10.5281/zenodo.18203648)
+1. Pyraclaw-NQAE v18 Universal Nodal Architecture (DOI: 10.5281/zenodo.18348037)
+2. Pyraclaw-NQAE v17 Universal Nodal Architecture (DOI: 10.5281/zenodo.18260016)
+3. Pyraclaw-NQAE v14 Hardware Integration Layer (DOI: 10.5281/zenodo.18203648)
 
 ### Independent Validation
 
@@ -371,7 +365,7 @@ This documentation serves as:
 
 <div align="center">
 
-**© 2026 D10Z Institute | All Rights Reserved**
+**© 2026 Byron Callaghan / Pyraclaw | All Rights Reserved**
 
 *This repository contains prior art documentation. Commercial use requires licensing.*
 

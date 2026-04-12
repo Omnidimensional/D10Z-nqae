@@ -1,6 +1,6 @@
-# Contributing to D10Z Universal Nodal Architecture
+# Contributing to Pyraclaw Universal Nodal Architecture
 
-Thank you for your interest in contributing to the D10Z project! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to the Pyraclaw project! This document provides guidelines and instructions for contributing.
 
 ## Table of Contents
 
@@ -33,14 +33,14 @@ This project adheres to the Creative Commons Attribution-NonCommercial 4.0 Inter
 2. **Clone your fork**
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/d10z-nqae.git
-   cd d10z-nqae
+   git clone https://github.com/YOUR-USERNAME/pyraclaw-nqae.git
+   cd pyraclaw-nqae
    ```
 
 3. **Add upstream remote**
 
    ```bash
-   git remote add upstream https://github.com/d10z-institute/d10z-nqae.git
+   git remote add upstream https://github.com/pyraclaw-institute/pyraclaw-nqae.git
    ```
 
 4. **Create a virtual environment**
@@ -237,14 +237,14 @@ sphinx-build -b html docs/ docs/_build/
 
 - All contributions are subject to the CC BY-NC 4.0 license
 - Commercial use requires explicit authorization
-- All patent rights are reserved by the D10Z Institute
+- All patent rights are reserved by the Byron Callaghan / Pyraclaw
 
 ### Questions?
 
 - Check existing issues and documentation
 - Open a new issue for questions
-- Contact: contact@d10z.institute
+- Contact: contact@pyraclaw.institute
 
 ---
 
-**Thank you for contributing to D10Z!**
+**Thank you for contributing to Pyraclaw!**

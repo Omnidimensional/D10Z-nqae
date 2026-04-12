@@ -1,9 +1,9 @@
 /*
  * ══════════════════════════════════════════════════════════════════════════════
- * D10Z-TTA SDK - EJEMPLO DE USO
+ * Pyraclaw-TTA SDK - EJEMPLO DE USO
  * ══════════════════════════════════════════════════════════════════════════════
  * 
- * Este ejemplo muestra cómo integrar el SDK D10Z en:
+ * Este ejemplo muestra cómo integrar el SDK Pyraclaw en:
  * - OpenWRT routers
  * - ESP32 / ESP8266
  * - FreeRTOS devices
@@ -12,7 +12,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  */
 
-#include "d10z_sdk.h"
+#include "pyraclaw_sdk.h"
 #include <stdio.h>
 #include <time.h>
 
@@ -22,9 +22,9 @@
  */
 
 /* Callback: enviar heartbeat por broadcast */
-void on_send_heartbeat(const d10z_heartbeat_t *heartbeat, void *user_data) {
+void on_send_heartbeat(const pyraclaw_heartbeat_t *heartbeat, void *user_data) {
     uint8_t buffer[128];
-    uint16_t len = d10z_heartbeat_serialize(heartbeat, buffer, sizeof(buffer));
+    uint16_t len = pyraclaw_heartbeat_serialize(heartbeat, buffer, sizeof(buffer));
     
     if (len > 0) {
         /* 
@@ -41,7 +41,7 @@ void on_send_heartbeat(const d10z_heartbeat_t *heartbeat, void *user_data) {
 }
 
 /* Callback: enviar paquete a vecino específico */
-void on_send_packet(const d10z_packet_t *packet, const char *neighbor_id, void *user_data) {
+void on_send_packet(const pyraclaw_packet_t *packet, const char *neighbor_id, void *user_data) {
     printf("[TX] Packet %s -> %s via %s (hop %d)\n",
            packet->source_id,
            packet->dest_id,
@@ -56,7 +56,7 @@ void on_send_packet(const d10z_packet_t *packet, const char *neighbor_id, void *
 }
 
 /* Callback: usar fallback (internet tradicional) */
-void on_use_fallback(const d10z_packet_t *packet, void *user_data) {
+void on_use_fallback(const pyraclaw_packet_t *packet, void *user_data) {
     printf("[FALLBACK] No nodal route for %s -> %s\n",
            packet->source_id,
            packet->dest_id);
@@ -67,7 +67,7 @@ void on_use_fallback(const d10z_packet_t *packet, void *user_data) {
 }
 
 /* Callback: paquete recibido para este nodo */
-void on_packet_received(const d10z_packet_t *packet, void *user_data) {
+void on_packet_received(const pyraclaw_packet_t *packet, void *user_data) {
     printf("[RX] Packet from %s: %.*s\n",
            packet->source_id,
            packet->payload_len,
@@ -75,10 +75,10 @@ void on_packet_received(const d10z_packet_t *packet, void *user_data) {
 }
 
 /* Callback: cambio de nivel de coherencia */
-void on_level_changed(d10z_level_t old_level, d10z_level_t new_level, void *user_data) {
+void on_level_changed(pyraclaw_level_t old_level, pyraclaw_level_t new_level, void *user_data) {
     printf("[ALERT] Level changed: %s -> %s\n",
-           d10z_level_to_string(old_level),
-           d10z_level_to_string(new_level));
+           pyraclaw_level_to_string(old_level),
+           pyraclaw_level_to_string(new_level));
     
     /*
      * Acciones según nivel:
@@ -93,21 +93,21 @@ void on_level_changed(d10z_level_t old_level, d10z_level_t new_level, void *user
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-void simulate_received_heartbeat(d10z_node_t *node, const char *neighbor_id, 
+void simulate_received_heartbeat(pyraclaw_node_t *node, const char *neighbor_id, 
                                  uint16_t phi, int8_t rssi) {
-    d10z_heartbeat_t hb;
+    pyraclaw_heartbeat_t hb;
     memset(&hb, 0, sizeof(hb));
     
-    strncpy(hb.node_id, neighbor_id, D10Z_MAX_NODE_ID_LEN - 1);
+    strncpy(hb.node_id, neighbor_id, Pyraclaw_MAX_NODE_ID_LEN - 1);
     hb.timestamp_ms = (uint32_t)(time(NULL) * 1000);
     hb.state.phi = phi;
     hb.state.energy = 950;
     hb.neighbor_count = 2;
     hb.local_e_tta = 5000;
     
-    uint16_t distance = d10z_rssi_to_distance_cm(rssi, -59);
+    uint16_t distance = pyraclaw_rssi_to_distance_cm(rssi, -59);
     
-    d10z_node_process_heartbeat(node, &hb, distance, rssi, D10Z_CONN_WIFI);
+    pyraclaw_node_process_heartbeat(node, &hb, distance, rssi, Pyraclaw_CONN_WIFI);
     
     printf("[RX] Heartbeat from %s: phi=%d rssi=%d dist=%dcm\n",
            neighbor_id, phi, rssi, distance);
@@ -120,17 +120,17 @@ void simulate_received_heartbeat(d10z_node_t *node, const char *neighbor_id,
 
 int main(void) {
     printf("══════════════════════════════════════════════════════════════════\n");
-    printf("D10Z-TTA Embedded SDK v%s\n", D10Z_SDK_VERSION);
+    printf("Pyraclaw-TTA Embedded SDK v%s\n", PYRACLAW_SDK_VERSION);
     printf("══════════════════════════════════════════════════════════════════\n\n");
     
     /* ─────────────────────────────────────────────────────────────────────
      * 1. CONFIGURACIÓN
      * ───────────────────────────────────────────────────────────────────── */
     
-    d10z_config_t config;
-    d10z_config_default(&config);
+    pyraclaw_config_t config;
+    pyraclaw_config_default(&config);
     
-    strcpy(config.node_id, "D10Z-ROUTER-001");
+    strcpy(config.node_id, "Pyraclaw-ROUTER-001");
     config.initial_phi = 500;  /* 0.5 */
     config.heartbeat_interval_ms = 100;
     
@@ -146,7 +146,7 @@ int main(void) {
      * 2. CREAR NODO
      * ───────────────────────────────────────────────────────────────────── */
     
-    d10z_node_t *node = d10z_node_create(&config);
+    pyraclaw_node_t *node = pyraclaw_node_create(&config);
     if (!node) {
         printf("ERROR: Failed to create node\n");
         return 1;
@@ -159,7 +159,7 @@ int main(void) {
      * ───────────────────────────────────────────────────────────────────── */
     
     /* Lima, Perú: -12.0464, -77.0428 */
-    d10z_node_update_position(node, -12046400, -77042800, 150);
+    pyraclaw_node_update_position(node, -12046400, -77042800, 150);
     
     /* ─────────────────────────────────────────────────────────────────────
      * 4. SIMULAR CICLOS
@@ -174,21 +174,21 @@ int main(void) {
         
         /* Simular heartbeats de vecinos */
         if (cycle == 0) {
-            simulate_received_heartbeat(node, "D10Z-NEIGHBOR-A", 900, -45);
-            simulate_received_heartbeat(node, "D10Z-NEIGHBOR-B", 850, -55);
-            simulate_received_heartbeat(node, "D10Z-NEIGHBOR-C", 800, -65);
+            simulate_received_heartbeat(node, "Pyraclaw-NEIGHBOR-A", 900, -45);
+            simulate_received_heartbeat(node, "Pyraclaw-NEIGHBOR-B", 850, -55);
+            simulate_received_heartbeat(node, "Pyraclaw-NEIGHBOR-C", 800, -65);
         }
         
-        /* Ejecutar ciclo D10Z */
-        d10z_node_tick(node, time_ms);
+        /* Ejecutar ciclo Pyraclaw */
+        pyraclaw_node_tick(node, time_ms);
         
         /* Mostrar métricas cada 5 ciclos */
         if ((cycle + 1) % 5 == 0) {
-            d10z_metrics_t metrics;
-            d10z_node_get_metrics(node, &metrics);
+            pyraclaw_metrics_t metrics;
+            pyraclaw_node_get_metrics(node, &metrics);
             
             printf("\n─── Cycle %d ───\n", cycle + 1);
-            printf("  Φ: %d/1000 (%s)\n", metrics.phi, d10z_level_to_string(metrics.level));
+            printf("  Φ: %d/1000 (%s)\n", metrics.phi, pyraclaw_level_to_string(metrics.level));
             printf("  E_TTA: %u\n", metrics.local_e_tta);
             printf("  Neighbors: %d\n", metrics.neighbor_count);
             printf("  Packets: RX=%u TX=%u DROP=%u\n",
@@ -202,11 +202,11 @@ int main(void) {
     
     printf("\n─── Enviando mensaje ───\n");
     
-    const char *message = "Hola desde D10Z!";
-    d10z_error_t err = d10z_node_send(node, "D10Z-DESTINATION", 
+    const char *message = "Hola desde Pyraclaw!";
+    pyraclaw_error_t err = pyraclaw_node_send(node, "Pyraclaw-DESTINATION", 
                                        (const uint8_t*)message, strlen(message));
     
-    printf("Send result: %s\n", d10z_error_to_string(err));
+    printf("Send result: %s\n", pyraclaw_error_to_string(err));
     
     /* ─────────────────────────────────────────────────────────────────────
      * 6. LISTAR VECINOS
@@ -214,10 +214,10 @@ int main(void) {
     
     printf("\n─── Vecinos activos ───\n");
     
-    d10z_neighbor_t neighbors[D10Z_MAX_NEIGHBORS];
+    pyraclaw_neighbor_t neighbors[Pyraclaw_MAX_NEIGHBORS];
     uint8_t neighbor_count = 0;
     
-    d10z_node_get_neighbors(node, neighbors, &neighbor_count, D10Z_MAX_NEIGHBORS);
+    pyraclaw_node_get_neighbors(node, neighbors, &neighbor_count, Pyraclaw_MAX_NEIGHBORS);
     
     for (int i = 0; i < neighbor_count; i++) {
         printf("  [%d] %s: phi=%d dist=%dcm rssi=%d\n",
@@ -232,7 +232,7 @@ int main(void) {
      * 7. CLEANUP
      * ───────────────────────────────────────────────────────────────────── */
     
-    d10z_node_destroy(node);
+    pyraclaw_node_destroy(node);
     
     printf("\n══════════════════════════════════════════════════════════════════\n");
     printf("Demo completed\n");
@@ -247,7 +247,7 @@ int main(void) {
  *
  * Para OpenWRT/FreeRTOS/bare-metal:
  *
- * void main_loop(d10z_node_t *node) {
+ * void main_loop(pyraclaw_node_t *node) {
  *     while (1) {
  *         uint32_t now = get_time_ms();  // Función de plataforma
  *         
@@ -256,15 +256,15 @@ int main(void) {
  *             uint8_t buffer[128];
  *             int len = udp_recv(buffer, sizeof(buffer));
  *             
- *             d10z_heartbeat_t hb;
- *             if (d10z_heartbeat_deserialize(buffer, len, &hb) == D10Z_OK) {
- *                 d10z_node_process_heartbeat(node, &hb, 
- *                     estimate_distance(), get_rssi(), D10Z_CONN_WIFI);
+ *             pyraclaw_heartbeat_t hb;
+ *             if (pyraclaw_heartbeat_deserialize(buffer, len, &hb) == Pyraclaw_OK) {
+ *                 pyraclaw_node_process_heartbeat(node, &hb, 
+ *                     estimate_distance(), get_rssi(), Pyraclaw_CONN_WIFI);
  *             }
  *         }
  *         
- *         // Ejecutar ciclo D10Z
- *         d10z_node_tick(node, now);
+ *         // Ejecutar ciclo Pyraclaw
+ *         pyraclaw_node_tick(node, now);
  *         
  *         // Dormir hasta siguiente ciclo
  *         sleep_ms(10);

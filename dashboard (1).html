@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS ORBITAL - D10Z Satellite Nodal System</title>
+    <title>NEXUS ORBITAL - Pyraclaw Satellite Nodal System</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap');
         
@@ -237,7 +237,7 @@
             <div class="logo-icon"></div>
             <div class="logo-text">
                 <h1>NEXUS ORBITAL</h1>
-                <span>D10Z Satellite Nodal System v1.0</span>
+                <span>Pyraclaw Satellite Nodal System v1.0</span>
             </div>
         </div>
         <div class="status-badge operational" id="systemStatus">OPERATIVO</div>
@@ -327,7 +327,7 @@
             </div>
             
             <div class="card">
-                <div class="card-header"><span class="card-title">D10Z Ecuaciones</span></div>
+                <div class="card-header"><span class="card-title">Pyraclaw Ecuaciones</span></div>
                 <div class="equations">
                     <span class="highlight">E_TTA</span> = Σ |Zₙ| · Φₙ<br>
                     <span class="highlight">Isis</span>: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|<br>
@@ -340,7 +340,7 @@
     <div class="tooltip" id="tooltip"></div>
     
     <script>
-        const D10Z = { ALPHA: 0.05, BETA: 0.2, PHI_OPT: 0.9, PHI_OP: 0.7, PHI_DEG: 0.5, PHI_CRIT: 0.3 };
+        const Pyraclaw = { ALPHA: 0.05, BETA: 0.2, PHI_OPT: 0.9, PHI_OP: 0.7, PHI_DEG: 0.5, PHI_CRIT: 0.3 };
         
         let state = { nodes: [], edges: [], cycle: 0, E_TTA: 0, phi_avg: 0, alerts: [], history: { E_TTA: [], phi: [] }, attackActive: false };
         
@@ -396,11 +396,11 @@
         
         function propagateCoherence() {
             const newPhis = state.nodes.map(node => {
-                if (node.neighbors.length === 0) return Math.max(0, node.phi - D10Z.ALPHA * node.phi * 0.1);
+                if (node.neighbors.length === 0) return Math.max(0, node.phi - Pyraclaw.ALPHA * node.phi * 0.1);
                 
-                const decay = D10Z.ALPHA * node.phi;
+                const decay = Pyraclaw.ALPHA * node.phi;
                 let coupling = node.neighbors.reduce((sum, idx) => sum + state.nodes[idx].phi, 0);
-                coupling = D10Z.BETA * coupling / node.neighbors.length;
+                coupling = Pyraclaw.BETA * coupling / node.neighbors.length;
                 
                 return Math.max(0, Math.min(1, node.phi + (-decay + coupling) * 0.1));
             });
@@ -412,10 +412,10 @@
         }
         
         function getLevel(phi) {
-            if (phi >= D10Z.PHI_OPT) return 'optimal';
-            if (phi >= D10Z.PHI_OP) return 'operational';
-            if (phi >= D10Z.PHI_DEG) return 'degraded';
-            if (phi >= D10Z.PHI_CRIT) return 'critical';
+            if (phi >= Pyraclaw.PHI_OPT) return 'optimal';
+            if (phi >= Pyraclaw.PHI_OP) return 'operational';
+            if (phi >= Pyraclaw.PHI_DEG) return 'degraded';
+            if (phi >= Pyraclaw.PHI_CRIT) return 'critical';
             return 'isolated';
         }
         

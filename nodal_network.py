@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-D10Z-TTA NODAL NETWORK
+Pyraclaw-TTA NODAL NETWORK
 ======================
 Sistema de red P2P nodal con soporte para:
 - WiFi Direct
@@ -8,7 +8,7 @@ Sistema de red P2P nodal con soporte para:
 - WiFi Aware
 - Comunicación Hz nodal
 
-Implementa el protocolo de comunicación D10Z para
+Implementa el protocolo de comunicación Pyraclaw para
 reemplazo de internet tradicional.
 """
 
@@ -29,9 +29,9 @@ import json
 import sys
 sys.path.insert(0, '..')
 from core.engine import (
-    D10ZConstants, PathMode, CoherenceLevel,
+    PyraclawConstants, PathMode, CoherenceLevel,
     CoherenceAnalyzer, IsisLawEngine, ETTACalculator,
-    generate_node_id, compute_hash, d10z_hash
+    generate_node_id, compute_hash, pyraclaw_hash
 )
 
 
@@ -40,7 +40,7 @@ from core.engine import (
 # =============================================================================
 
 class FrameType(Enum):
-    """Tipos de trama del protocolo D10Z."""
+    """Tipos de trama del protocolo Pyraclaw."""
     HEARTBEAT = 0x01
     DATA = 0x02
     ROUTE_REQUEST = 0x31
@@ -82,7 +82,7 @@ class NodeInfo:
     services: int   # bitmap de servicios
     position: Optional[Tuple[float, float, float]] = None
     
-    def is_stale(self, timeout_ms: int = D10ZConstants.NEIGHBOR_TIMEOUT_MS) -> bool:
+    def is_stale(self, timeout_ms: int = PyraclawConstants.NEIGHBOR_TIMEOUT_MS) -> bool:
         """Verifica si el nodo está inactivo."""
         return (time.time_ns() // 1_000_000 - self.last_seen) > timeout_ms
     
@@ -114,7 +114,7 @@ class RouteEntry:
 
 @dataclass
 class Packet:
-    """Paquete de datos D10Z."""
+    """Paquete de datos Pyraclaw."""
     frame_type: FrameType
     source_id: bytes
     dest_id: bytes
@@ -135,8 +135,8 @@ class Packet:
         # Header
         data = struct.pack(
             '>4sHBBHH16s16sIBBHI',
-            D10ZConstants.MAGIC,
-            D10ZConstants.VERSION,
+            PyraclawConstants.MAGIC,
+            PyraclawConstants.VERSION,
             self.frame_type.value,
             0,  # flags
             int(self.phi_source * 65535),
@@ -167,7 +167,7 @@ class Packet:
     def deserialize(cls, data: bytes) -> 'Packet':
         """Deserializa paquete desde bytes."""
         # Verificar magic
-        if data[:4] != D10ZConstants.MAGIC:
+        if data[:4] != PyraclawConstants.MAGIC:
             raise ValueError("Invalid magic number")
         
         # Header
@@ -258,7 +258,7 @@ class Heartbeat:
 
 class LinkLayer:
     """
-    Capa de enlace D10Z.
+    Capa de enlace Pyraclaw.
     
     Gestiona:
     - Descubrimiento de vecinos
@@ -313,7 +313,7 @@ class LinkLayer:
             # Limpiar vecinos inactivos
             self._prune_stale_neighbors()
             
-            time.sleep(D10ZConstants.HEARTBEAT_INTERVAL_MS / 1000)
+            time.sleep(PyraclawConstants.HEARTBEAT_INTERVAL_MS / 1000)
     
     def _create_heartbeat(self) -> Heartbeat:
         """Crea heartbeat con estado actual."""
@@ -433,9 +433,9 @@ class LinkLayer:
 
 class Router:
     """
-    Enrutador D10Z basado en coherencia.
+    Enrutador Pyraclaw basado en coherencia.
     
-    Implementa D10Z-AODV-Φ:
+    Implementa Pyraclaw-AODV-Φ:
     - Enrutamiento on-demand
     - Métricas basadas en coherencia
     - Selección de ruta por Φ mínimo del path
@@ -552,7 +552,7 @@ class Router:
 
 class NodalDHT:
     """
-    DHT basada en Kademlia adaptada para D10Z.
+    DHT basada en Kademlia adaptada para Pyraclaw.
     
     Diferencias con Kademlia estándar:
     - Distancia incluye factor de coherencia Φ
@@ -613,9 +613,9 @@ class NodalDHT:
 # NODO COMPLETO
 # =============================================================================
 
-class D10ZNode:
+class PyraclawNode:
     """
-    Nodo D10Z-TTA completo.
+    Nodo Pyraclaw-TTA completo.
     
     Integra todas las capas:
     - Enlace (vecinos, heartbeat)
@@ -651,14 +651,14 @@ class D10ZNode:
         self.start_time = time.time()
         self.link.start()
         
-        print(f"🚀 D10Z Node started: {self.node_id.hex()[:16]}...")
+        print(f"🚀 Pyraclaw Node started: {self.node_id.hex()[:16]}...")
         print(f"   Φ = {self.link.coherence.phi:.3f}")
         
     def stop(self):
         """Detiene el nodo."""
         self.running = False
         self.link.stop()
-        print(f"🛑 D10Z Node stopped: {self.node_id.hex()[:16]}...")
+        print(f"🛑 Pyraclaw Node stopped: {self.node_id.hex()[:16]}...")
     
     def _on_neighbor_discovered(self, neighbor: NodeInfo):
         """Callback cuando se descubre un vecino."""
@@ -675,7 +675,7 @@ class D10ZNode:
             source_id=self.node_id,
             dest_id=dest_id,
             sequence=self.link._next_sequence(),
-            ttl=D10ZConstants.MAX_HOPS,
+            ttl=PyraclawConstants.MAX_HOPS,
             hop_count=0,
             phi_source=self.link.coherence.phi,
             payload=data
@@ -692,7 +692,7 @@ class D10ZNode:
         self.dht.store(content_hash, data)
         self.dht.announce_provider(content_hash)
         
-        return d10z_hash(data)
+        return pyraclaw_hash(data)
     
     def get_content(self, content_hash: bytes) -> Optional[bytes]:
         """Obtiene contenido de la red."""
@@ -721,13 +721,13 @@ class D10ZNode:
 # =============================================================================
 
 class NetworkSimulator:
-    """Simulador de red D10Z para testing."""
+    """Simulador de red Pyraclaw para testing."""
     
     def __init__(self, num_nodes: int = 10):
-        self.nodes: List[D10ZNode] = []
+        self.nodes: List[PyraclawNode] = []
         
         for i in range(num_nodes):
-            node = D10ZNode(seed=f"node_{i}".encode())
+            node = PyraclawNode(seed=f"node_{i}".encode())
             self.nodes.append(node)
         
         # Conectar nodos (topología mesh simple)
@@ -792,18 +792,18 @@ class NetworkSimulator:
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("D10Z-TTA NODAL NETWORK - TEST")
+    print("Pyraclaw-TTA NODAL NETWORK - TEST")
     print("=" * 70)
     
     # Test nodo individual
     print("\n📡 Test Nodo Individual:")
-    node = D10ZNode()
+    node = PyraclawNode()
     print(f"   ID: {node.node_id.hex()[:16]}...")
     print(f"   Φ inicial: {node.link.coherence.phi:.3f}")
     
     # Test almacenamiento
     print("\n💾 Test Almacenamiento:")
-    test_data = b"Hello, D10Z Nodal Network!"
+    test_data = b"Hello, Pyraclaw Nodal Network!"
     content_hash = node.store_content(test_data)
     print(f"   Stored: {content_hash}")
     

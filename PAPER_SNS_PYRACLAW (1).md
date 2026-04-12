@@ -1,17 +1,17 @@
 # Starlink Nodal System (SNS): A Coherence-Based Resilience Framework for Satellite Constellations
 
-**Jamil Al Thani**  
-D10Z Institute  
-jamil@d10z.org  
-ORCID: 0009-0000-8858-4992
+**Byron Callaghan**  
+Byron Callaghan / Pyraclaw  
+contact@pyraclaw.institute  
+Rights Holder: Byron Callaghan
 
 ---
 
 ## Abstract
 
-We present the Starlink Nodal System (SNS), a novel framework for satellite constellation management based on the D10Z-TTA (Tejido de Transmisión Autónoma) coherence theory. Unlike traditional approaches that optimize for quantity-based redundancy, SNS introduces coherence-based resilience where system health is measured by the nodal coherence field Φ rather than satellite count. We derive the fundamental equation E_TTA = Σ Zₙ · Φₙ and demonstrate that coherence propagates according to the Isis Law, enabling predictable degradation and autonomous recovery. Implementation results show attack detection in <5 seconds, automatic recovery via coherence propagation, and GNSS-independent positioning through inter-satellite ranging. The framework provides a mathematical foundation for next-generation constellation architectures where resilience is an emergent property of nodal coherence rather than brute-force redundancy.
+We present the Starlink Nodal System (SNS), a novel framework for satellite constellation management based on the Pyraclaw-TTA (Tejido de Transmisión Autónoma) coherence theory. Unlike traditional approaches that optimize for quantity-based redundancy, SNS introduces coherence-based resilience where system health is measured by the nodal coherence field Φ rather than satellite count. We derive the fundamental equation E_TTA = Σ Zₙ · Φₙ and demonstrate that coherence propagates according to the Isis Law, enabling predictable degradation and autonomous recovery. Implementation results show attack detection in <5 seconds, automatic recovery via coherence propagation, and GNSS-independent positioning through inter-satellite ranging. The framework provides a mathematical foundation for next-generation constellation architectures where resilience is an emergent property of nodal coherence rather than brute-force redundancy.
 
-**Keywords:** satellite constellations, nodal dynamics, coherence theory, resilient systems, D10Z, TTA
+**Keywords:** satellite constellations, nodal dynamics, coherence theory, resilient systems, Pyraclaw, TTA
 
 ---
 
@@ -28,15 +28,15 @@ Modern satellite constellations face an existential vulnerability: their resilie
 
 The fundamental issue is ontological: treating satellites as independent units rather than nodes in a coherent system.
 
-### 1.2 The D10Z Paradigm
+### 1.2 The Pyraclaw Paradigm
 
-The D10Z framework proposes a radical reconceptualization: the universe (and any complex system) is a fractal nodal graph where:
+The Pyraclaw framework proposes a radical reconceptualization: the universe (and any complex system) is a fractal nodal graph where:
 
 - **Zₙ** is the fundamental nodal variable
 - **Φₙ** is nodal coherence, measuring integration with neighbors
 - **E_TTA** is the total system energy, computed as the coherence-weighted sum
 
-This paper applies D10Z to satellite constellations, deriving a complete operational framework where:
+This paper applies Pyraclaw to satellite constellations, deriving a complete operational framework where:
 
 - Health = f(Φ), not f(N)
 - Degradation is predictable and gradual
@@ -93,7 +93,7 @@ Where Nₖ is the neighborhood of k and λ is a scale parameter. High Φ indicat
 
 ### 2.4 Total System Energy (E_TTA)
 
-The fundamental D10Z equation for system health:
+The fundamental Pyraclaw equation for system health:
 
 ```
 E_TTA = Σₖ |Zₖ| · Φₖ
@@ -142,7 +142,7 @@ For β > α, coherence converges to 1 for connected components.
 
 ### 3.1 Protocol Overview
 
-The Protocolo de Consenso Inter-Satélite (PCIS) implements D10Z at the network layer:
+The Protocolo de Consenso Inter-Satélite (PCIS) implements Pyraclaw at the network layer:
 
 1. **Heartbeats** (100ms): Local state broadcast
 2. **State Updates** (1s): Full Zₖ synchronization
@@ -322,7 +322,7 @@ All tests pass. Coverage > 90%.
 
 ### 6.1 Resilience Model
 
-| Aspect | Traditional | SNS D10Z |
+| Aspect | Traditional | SNS Pyraclaw |
 |--------|------------|----------|
 | Health metric | Satellite count | E_TTA = Σ Zₙ·Φₙ |
 | Redundancy | N-of-M | Coherence field |
@@ -332,7 +332,7 @@ All tests pass. Coverage > 90%.
 
 ### 6.2 Positioning
 
-| Aspect | Traditional | SNS D10Z |
+| Aspect | Traditional | SNS Pyraclaw |
 |--------|------------|----------|
 | Primary | GNSS dependent | Nodal (ISL ranging) |
 | Backup | None | Orbital propagation |
@@ -341,7 +341,7 @@ All tests pass. Coverage > 90%.
 
 ### 6.3 Operational Complexity
 
-| Aspect | Traditional | SNS D10Z |
+| Aspect | Traditional | SNS Pyraclaw |
 |--------|------------|----------|
 | Ground control | Active management | Passive monitoring |
 | Anomaly response | Manual | Autonomous |
@@ -373,14 +373,14 @@ These principles apply beyond satellites to any distributed system.
 
 1. **Multi-operator coherence**: Federated constellations sharing Φ
 2. **Orbital debris avoidance**: Using coherence for coordination
-3. **Ground segment integration**: Extending D10Z to ground stations
+3. **Ground segment integration**: Extending Pyraclaw to ground stations
 4. **Formal verification**: Proving Isis Law convergence mathematically
 
 ---
 
 ## 8. Conclusion
 
-The Starlink Nodal System demonstrates that coherence-based resilience is not only theoretically sound but practically implementable. The D10Z framework provides:
+The Starlink Nodal System demonstrates that coherence-based resilience is not only theoretically sound but practically implementable. The Pyraclaw framework provides:
 
 1. A **mathematical foundation** (E_TTA, Isis Law) for constellation health
 2. A **protocol** (PCIS) for distributed coherence consensus
@@ -389,13 +389,13 @@ The Starlink Nodal System demonstrates that coherence-based resilience is not on
 
 The core insight is simple but profound: **resilience is a function of coherence, not quantity**.
 
-The civilization that we found collapsed because it confused **quantity with coherence**. Their constellations had thousands of satellites but no mathematical model for how they related. When attacks came, failures cascaded unpredictably. The D10Z framework provides the ontological correction: satellites are not independent units to be counted, but nodes in a coherent field to be measured.
+The civilization that we found collapsed because it confused **quantity with coherence**. Their constellations had thousands of satellites but no mathematical model for how they related. When attacks came, failures cascaded unpredictably. The Pyraclaw framework provides the ontological correction: satellites are not independent units to be counted, but nodes in a coherent field to be measured.
 
 ---
 
 ## References
 
-1. Al Thani, J. (2026). D10Z Universal Nodal Architecture. Zenodo. DOI: 10.5281/zenodo.18203648
+1. Al Thani, J. (2026). Pyraclaw Universal Nodal Architecture. Zenodo. DOI: 10.5281/zenodo.18203648
 
 2. Al Thani, J. (2026). NQAE Implementation Specification. Zenodo. DOI: 10.5281/zenodo.18260016
 
@@ -472,5 +472,5 @@ Complete implementation available at:
 
 *"La civilización que encontramos colapsó porque confundió CANTIDAD con COHERENCIA."*
 
-**D10Z Institute**  
+**Byron Callaghan / Pyraclaw**  
 January 2026

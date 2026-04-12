@@ -25,7 +25,7 @@ import heapq
 import json
 
 from core import (
-    C, D10ZConstants,
+    C, PyraclawConstants,
     NodeState, CoherenceLevel, AlertType, AlertSeverity,
     Vector3D, OrbitalElements, Timestamp,
     NodalState, SatelliteNode,
@@ -42,7 +42,7 @@ class ConstellationGraph:
     """
     Grafo nodal de la constelación SNS.
     
-    Implementa el modelo D10Z donde:
+    Implementa el modelo Pyraclaw donde:
         - Cada satélite es un nodo Zₖ
         - Cada ISL es una arista con peso
         - E_TTA = Σ |Zₖ| · Φₖ es la energía total
@@ -198,7 +198,7 @@ class ConstellationGraph:
         return (from_id, to_id) in self.edges
     
     # ─────────────────────────────────────────────────────────────────────────
-    # Cálculos D10Z
+    # Cálculos Pyraclaw
     # ─────────────────────────────────────────────────────────────────────────
     
     def compute_E_TTA(self) -> float:
@@ -207,7 +207,7 @@ class ConstellationGraph:
         
         E_TTA = Σₖ |Zₖ| · Φₖ
         
-        Esta es la métrica fundamental de salud del sistema D10Z.
+        Esta es la métrica fundamental de salud del sistema Pyraclaw.
         """
         with self._lock:
             if not self.nodes:

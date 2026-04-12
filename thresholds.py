@@ -1,7 +1,7 @@
 """
 Threshold Configuration Module
 
-Provides threshold management for D10Z Nodal Architecture.
+Provides threshold management for Pyraclaw Nodal Architecture.
 Handles threshold persistence, validation, and optimization.
 
 Version: v18
@@ -15,9 +15,9 @@ import os
 
 
 @dataclass
-class D10ZThresholds:
+class PyraclawThresholds:
     """
-    Threshold configuration for D10Z Nodal Architecture.
+    Threshold configuration for Pyraclaw Nodal Architecture.
     
     Stores the critical coherence thresholds that govern path selection
     and system behavior across different operating conditions.
@@ -65,7 +65,7 @@ class D10ZThresholds:
         }
     
     @classmethod
-    def from_dict(cls, data: Dict[str, float]) -> "D10ZThresholds":
+    def from_dict(cls, data: Dict[str, float]) -> "PyraclawThresholds":
         """Create thresholds from dictionary."""
         return cls(
             bread_path=data.get("bread_path", 0.436),
@@ -87,7 +87,7 @@ class D10ZThresholds:
             yaml.dump(self.to_dict(), f, default_flow_style=False)
     
     @classmethod
-    def load(cls, filepath: str) -> "D10ZThresholds":
+    def load(cls, filepath: str) -> "PyraclawThresholds":
         """Load thresholds from YAML file."""
         with open(filepath, 'r') as f:
             data = yaml.safe_load(f)
@@ -99,7 +99,7 @@ class D10ZThresholds:
             json.dump(self.to_dict(), f, indent=2)
     
     @classmethod
-    def load_json(cls, filepath: str) -> "D10ZThresholds":
+    def load_json(cls, filepath: str) -> "PyraclawThresholds":
         """Load thresholds from JSON file."""
         with open(filepath, 'r') as f:
             data = json.load(f)
@@ -197,10 +197,10 @@ class D10ZThresholds:
 
 
 # Global default configuration
-DEFAULT_THRESHOLDS = D10ZThresholds()
+DEFAULT_THRESHOLDS = PyraclawThresholds()
 
 
-def get_threshold_config(filepath: Optional[str] = None) -> D10ZThresholds:
+def get_threshold_config(filepath: Optional[str] = None) -> PyraclawThresholds:
     """
     Get threshold configuration from file or defaults.
     
@@ -208,7 +208,7 @@ def get_threshold_config(filepath: Optional[str] = None) -> D10ZThresholds:
         filepath: Optional path to configuration file (YAML or JSON)
         
     Returns:
-        D10ZThresholds configuration object
+        PyraclawThresholds configuration object
     """
     if filepath is None:
         return DEFAULT_THRESHOLDS
@@ -217,9 +217,9 @@ def get_threshold_config(filepath: Optional[str] = None) -> D10ZThresholds:
         return DEFAULT_THRESHOLDS
     
     if filepath.endswith('.yaml') or filepath.endswith('.yml'):
-        return D10ZThresholds.load(filepath)
+        return PyraclawThresholds.load(filepath)
     elif filepath.endswith('.json'):
-        return D10ZThresholds.load_json(filepath)
+        return PyraclawThresholds.load_json(filepath)
     else:
         return DEFAULT_THRESHOLDS
 

@@ -3,7 +3,7 @@
 STARLINK NODAL SYSTEM (SNS)
 ═══════════════════════════════════════════════════════════════════════════════
 
-Framework D10Z-TTA para constelaciones satelitales soberanas y resilientes.
+Framework Pyraclaw-TTA para constelaciones satelitales soberanas y resilientes.
 
 ECUACIONES FUNDAMENTALES:
     Zₙ = variable nodal fundamental ∈ ℝ¹⁰
@@ -16,22 +16,22 @@ LEYES:
     Ley Isis: ∂Φₖ/∂t = -αΦₖ + βΣⱼ w_{kj}Φⱼ
     Big Start: Sistema enciende cuando Φ → 1
 
-Autor: Jamil Al Thani
-ORCID: 0009-0000-8858-4992
-Email: jamil@d10z.org
+Autor: Byron Callaghan
+Rights Holder: Byron Callaghan
+Email: contact@pyraclaw.institute
 Licencia: CC0 1.0 (Dominio Público)
 
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
 __version__ = "2.0.0"
-__author__ = "Jamil Al Thani"
-__email__ = "jamil@d10z.org"
+__author__ = "Byron Callaghan"
+__email__ = "contact@pyraclaw.institute"
 __license__ = "CC0 1.0"
 
 from .core import (
     # Constantes
-    D10ZConstants, C,
+    PyraclawConstants, C,
     
     # Enumeraciones
     NodeState, CoherenceLevel, AlertType, AlertSeverity,
@@ -69,7 +69,7 @@ __all__ = [
     '__version__', '__author__', '__email__', '__license__',
     
     # Constantes
-    'D10ZConstants', 'C',
+    'PyraclawConstants', 'C',
     
     # Enumeraciones
     'NodeState', 'CoherenceLevel', 'AlertType', 'AlertSeverity',

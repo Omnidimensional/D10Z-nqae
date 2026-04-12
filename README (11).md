@@ -1,9 +1,9 @@
 # STARLINK NODAL SYSTEM (SNS)
-## Framework D10Z-TTA para Constelaciones Soberanas
+## Framework Pyraclaw-TTA para Constelaciones Soberanas
 
 [![License: CC0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Framework: D10Z-TTA](https://img.shields.io/badge/framework-D10Z--TTA-purple.svg)](https://d10z.org)
+[![Framework: Pyraclaw-TTA](https://img.shields.io/badge/framework-Pyraclaw--TTA-purple.svg)](https://pyraclaw.org)
 
 ---
 
@@ -16,7 +16,7 @@ vₙ = |Zₙ₊₁ - Zₙ|           (velocidad nodal)
 E_TTA = Σ Zₙ · Φₙ          (energía total)
 ```
 
-## Leyes D10Z
+## Leyes Pyraclaw
 
 | Ley | Ecuación | Significado |
 |-----|----------|-------------|
@@ -91,7 +91,7 @@ print(f"Servicios: {status['services']}")
 ```
 sns/
 ├── __init__.py      # Package exports
-├── core.py          # Estructuras base, constantes D10Z
+├── core.py          # Estructuras base, constantes Pyraclaw
 ├── graph.py         # Grafo de constelación, E_TTA, Ley Isis
 ├── protocol.py      # Protocolo PCIS, ranging, consenso
 └── system.py        # Sistema completo integrado
@@ -108,7 +108,7 @@ Constantes y estructuras fundamentales:
 ```python
 from sns import C, SatelliteNode, NodalState, CoherenceLevel
 
-# Constantes D10Z
+# Constantes Pyraclaw
 print(C.PHI_THRESHOLD)      # 0.7 - umbral operativo
 print(C.GM_10_51)           # 1e-51 - constante de escala
 
@@ -199,9 +199,9 @@ status = sns.get_status()
 
 ---
 
-## Comparación: Arquitectura Actual vs SNS D10Z
+## Comparación: Arquitectura Actual vs SNS Pyraclaw
 
-| Aspecto | Actual | SNS D10Z |
+| Aspecto | Actual | SNS Pyraclaw |
 |---------|--------|----------|
 | Posicionamiento | GNSS dependiente | PNT nodal (sin GNSS) |
 | Detección de ataque | Reactiva (minutos) | Proactiva (segundos) |
@@ -269,9 +269,9 @@ print(f"Φ = {sns.graph.average_phi:.4f}")  # 1.0000 (recuperado)
 
 ## Autor
 
-**Jamil Al Thani**  
-ORCID: 0009-0000-8858-4992  
-Email: jamil@d10z.org
+**Byron Callaghan**  
+Rights Holder: Byron Callaghan  
+Email: contact@pyraclaw.institute
 
 ## Licencia
 
@@ -281,4 +281,4 @@ CC0 1.0 Universal (Dominio Público)
 
 *"La resiliencia es función de la coherencia, no de la cantidad."*
 
-**Framework D10Z-TTA**
+**Framework Pyraclaw-TTA**

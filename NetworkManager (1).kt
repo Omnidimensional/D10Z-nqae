@@ -11,7 +11,7 @@
  * ══════════════════════════════════════════════════════════════════════════════
  */
 
-package org.d10z.terramesh.network
+package org.pyraclaw.terramesh.network
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -26,7 +26,7 @@ import android.os.ParcelUuid
 import androidx.annotation.RequiresPermission
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import org.d10z.terramesh.core.*
+import org.pyraclaw.terramesh.core.*
 import java.io.*
 import java.net.*
 import java.nio.ByteBuffer
@@ -38,18 +38,18 @@ import java.util.UUID
 
 object NetworkConstants {
     // WiFi Direct
-    const val WIFI_DIRECT_SERVICE_NAME = "d10z_terra_mesh"
-    const val WIFI_DIRECT_SERVICE_TYPE = "_d10z._tcp"
+    const val WIFI_DIRECT_SERVICE_NAME = "pyraclaw_terra_mesh"
+    const val WIFI_DIRECT_SERVICE_TYPE = "_pyraclaw._tcp"
     const val WIFI_DIRECT_PORT = 8470
     
     // WiFi Aware
-    const val WIFI_AWARE_SERVICE_NAME = "D10Z"
+    const val WIFI_AWARE_SERVICE_NAME = "Pyraclaw"
     const val WIFI_AWARE_MATCH_FILTER = "TERRA_MESH"
     
     // Bluetooth LE
-    val BLE_SERVICE_UUID: UUID = UUID.fromString("d10z0001-0001-0001-0001-d10zterramesh")
-    val BLE_CHAR_HEARTBEAT_UUID: UUID = UUID.fromString("d10z0001-0002-0001-0001-d10zterramesh")
-    val BLE_CHAR_DATA_UUID: UUID = UUID.fromString("d10z0001-0003-0001-0001-d10zterramesh")
+    val BLE_SERVICE_UUID: UUID = UUID.fromString("pyraclaw0001-0001-0001-0001-pyraclawterramesh")
+    val BLE_CHAR_HEARTBEAT_UUID: UUID = UUID.fromString("pyraclaw0001-0002-0001-0001-pyraclawterramesh")
+    val BLE_CHAR_DATA_UUID: UUID = UUID.fromString("pyraclaw0001-0003-0001-0001-pyraclawterramesh")
     
     // Timeouts
     const val DISCOVERY_TIMEOUT_MS = 30000L
@@ -476,7 +476,7 @@ class BluetoothMeshManager(
         
         gattServer = bluetoothManager?.openGattServer(context, callback)
         
-        // Configurar servicio D10Z
+        // Configurar servicio Pyraclaw
         val service = BluetoothGattService(
             NetworkConstants.BLE_SERVICE_UUID,
             BluetoothGattService.SERVICE_TYPE_PRIMARY

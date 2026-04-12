@@ -1,7 +1,7 @@
 """
-Basic Usage Example for D10Z Nodal Architecture
+Basic Usage Example for Pyraclaw Nodal Architecture
 
-This example demonstrates the fundamental usage of the D10Z
+This example demonstrates the fundamental usage of the Pyraclaw
 Universal Nodal Architecture including coherence analysis and
 tri-modal path selection.
 
@@ -9,10 +9,10 @@ Version: v18
 """
 
 import numpy as np
-from d10z.core import (
+from pyraclaw.core import (
     AdaptiveNodalNetwork,
     CoherenceAnalyzer,
-    D10ZThresholds,
+    PyraclawThresholds,
     BREAD_PATH_THRESHOLD,
     TORREJA_PATH_THRESHOLD
 )
@@ -21,7 +21,7 @@ from d10z.core import (
 def example_basic_coherence():
     """Example: Basic coherence analysis."""
     print("=" * 60)
-    print("D10Z Example: Basic Coherence Analysis")
+    print("Pyraclaw Example: Basic Coherence Analysis")
     print("=" * 60)
     
     # Initialize analyzer
@@ -44,7 +44,7 @@ def example_basic_coherence():
 def example_tri_modal_network():
     """Example: Tri-modal network processing."""
     print("\n" + "=" * 60)
-    print("D10Z Example: Tri-Modal Network Processing")
+    print("Pyraclaw Example: Tri-Modal Network Processing")
     print("=" * 60)
     
     # Initialize network
@@ -71,11 +71,11 @@ def example_tri_modal_network():
 def example_energy_savings():
     """Example: Calculate energy savings."""
     print("\n" + "=" * 60)
-    print("D10Z Example: Energy Savings Calculation")
+    print("Pyraclaw Example: Energy Savings Calculation")
     print("=" * 60)
     
     # Initialize thresholds
-    thresholds = D10ZThresholds()
+    thresholds = PyraclawThresholds()
     
     # Simulated path distribution (70% FAST, 20% QUANT, 10% DEEP)
     fast_ratio = 0.70
@@ -101,11 +101,11 @@ def example_energy_savings():
 def example_threshold_config():
     """Example: Threshold configuration management."""
     print("\n" + "=" * 60)
-    print("D10Z Example: Threshold Configuration")
+    print("Pyraclaw Example: Threshold Configuration")
     print("=" * 60)
     
     # Get default thresholds
-    thresholds = D10ZThresholds()
+    thresholds = PyraclawThresholds()
     
     print(f"\nDefault Thresholds:")
     print(f"  Bread Path:   {thresholds.bread_path}")
@@ -130,7 +130,7 @@ def example_threshold_config():
 def main():
     """Run all examples."""
     print("\n" + "#" * 60)
-    print("# D10Z Universal Nodal Architecture - Examples")
+    print("# Pyraclaw Universal Nodal Architecture - Examples")
     print("# Version: v18 | Published: January 23, 2026")
     print("#" * 60 + "\n")
     

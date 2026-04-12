@@ -1,5 +1,5 @@
 ""
-Test suite for D10Z Core Module
+Test suite for Pyraclaw Core Module
 
 Tests coherence analysis, tri-modal routing, and threshold management.
 
@@ -9,11 +9,11 @@ Version: v18
 import pytest
 import numpy as np
 import torch
-from d10z.core import (
+from pyraclaw.core import (
     AdaptiveNodalNetwork,
     NodalTriModal,
     CoherenceAnalyzer,
-    D10ZThresholds,
+    PyraclawThresholds,
     BREAD_PATH_THRESHOLD,
     TORREJA_PATH_THRESHOLD,
 )
@@ -205,12 +205,12 @@ class TestNodalTriModal:
         assert mode == "QUANT"
 
 
-class TestD10ZThresholds:
-    """Test cases for D10ZThresholds class."""
+class TestPyraclawThresholds:
+    """Test cases for PyraclawThresholds class."""
     
     def test_default_values(self):
         """Test default threshold values."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         
         assert thresholds.bread_path == 0.436
         assert thresholds.torreja_path == 0.286
@@ -219,17 +219,17 @@ class TestD10ZThresholds:
     
     def test_to_from_dict(self):
         """Test dictionary conversion."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         data = thresholds.to_dict()
         
-        restored = D10ZThresholds.from_dict(data)
+        restored = PyraclawThresholds.from_dict(data)
         
         assert restored.bread_path == thresholds.bread_path
         assert restored.torreja_path == thresholds.torreja_path
     
     def test_get_path_for_coherence(self):
         """Test path determination."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         
         assert thresholds.get_path_for_coherence(0.5) == "FAST"
         assert thresholds.get_path_for_coherence(0.35) == "QUANT"
@@ -237,7 +237,7 @@ class TestD10ZThresholds:
     
     def test_get_energy_cost_for_path(self):
         """Test energy cost lookup."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         
         assert thresholds.get_energy_cost_for_path("FAST") == 0.01
         assert thresholds.get_energy_cost_for_path("QUANT") == 0.25
@@ -245,7 +245,7 @@ class TestD10ZThresholds:
     
     def test_calculate_energy_savings(self):
         """Test energy savings calculation."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         
         result = thresholds.calculate_energy_savings(
             fast_ratio=0.70,
@@ -258,7 +258,7 @@ class TestD10ZThresholds:
     
     def test_validate(self):
         """Test threshold validation."""
-        thresholds = D10ZThresholds()
+        thresholds = PyraclawThresholds()
         
         is_valid, errors = thresholds.validate()
         
@@ -267,7 +267,7 @@ class TestD10ZThresholds:
     
     def test_validate_invalid(self):
         """Test validation with invalid values."""
-        thresholds = D10ZThresholds(bread_path=0.2, torreja_path=0.3)
+        thresholds = PyraclawThresholds(bread_path=0.2, torreja_path=0.3)
         
         is_valid, errors = thresholds.validate()
         

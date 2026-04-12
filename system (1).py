@@ -12,9 +12,9 @@ Sistema completo que integra:
     - Routing por coherencia
     - Simulación de ataques
 
-Framework: D10Z-TTA
-Autor: Jamil Al Thani
-ORCID: 0009-0000-8858-4992
+Framework: Pyraclaw-TTA
+Autor: Byron Callaghan
+Rights Holder: Byron Callaghan
 
 ══════════════════════════════════════════════════════════════════════════════════
 """
@@ -31,7 +31,7 @@ from collections import defaultdict, deque
 import heapq
 
 from core import (
-    C, D10ZConstants,
+    C, PyraclawConstants,
     NodeState, CoherenceLevel, AlertType, AlertSeverity, AttackType,
     SatelliteNode, Alert, SystemMetrics,
     logger
@@ -49,7 +49,7 @@ class DegradationController:
     """
     Controla la degradación del sistema según Φ.
     
-    Principio D10Z: La degradación es función de Φ, no caótica.
+    Principio Pyraclaw: La degradación es función de Φ, no caótica.
     """
     
     CAPACITY_FACTORS = {
@@ -157,7 +157,7 @@ class AttackDetector:
     """
     Sistema de detección de ataques basado en firmas E_TTA/Φ.
     
-    Principio D10Z: Todo ataque se manifiesta como anomalía detectable.
+    Principio Pyraclaw: Todo ataque se manifiesta como anomalía detectable.
     """
     
     ATTACK_SIGNATURES = {
@@ -627,7 +627,7 @@ def run_demo():
     
     print("=" * 80)
     print("STARLINK NODAL SYSTEM - COMPLETE DEMONSTRATION")
-    print("Framework: D10Z-TTA")
+    print("Framework: Pyraclaw-TTA")
     print("=" * 80)
     
     # Crear sistema

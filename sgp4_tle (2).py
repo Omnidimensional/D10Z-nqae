@@ -10,7 +10,7 @@ Funcionalidades:
     - Parsing de TLE (Two-Line Elements)
     - Propagación SGP4 de alta precisión
     - Descarga de TLE desde CelesTrak/Space-Track
-    - Conversión a estados nodales D10Z
+    - Conversión a estados nodales Pyraclaw
     - Predicción de pases y visibilidad
 
 Dependencias opcionales:
@@ -101,7 +101,7 @@ class TLEData:
         return 1440.0 / self.mean_motion
     
     def to_orbital_elements(self) -> OrbitalElements:
-        """Convierte a OrbitalElements D10Z."""
+        """Convierte a OrbitalElements Pyraclaw."""
         return OrbitalElements(
             semi_major_axis=self.semi_major_axis,
             eccentricity=self.eccentricity,
@@ -516,7 +516,7 @@ class StarlinkTLEManager:
     
     Funcionalidades:
         - Carga de TLEs desde archivo o texto
-        - Conversión a nodos D10Z
+        - Conversión a nodos Pyraclaw
         - Propagación de constelación completa
     """
     
@@ -587,7 +587,7 @@ class StarlinkTLEManager:
     def to_nodal_states(self, dt: datetime = None,
                        initial_phi: float = 0.9) -> Dict[str, NodalState]:
         """
-        Convierte TLEs a estados nodales D10Z.
+        Convierte TLEs a estados nodales Pyraclaw.
         
         Args:
             dt: Tiempo de propagación
@@ -624,7 +624,7 @@ class StarlinkTLEManager:
     def to_satellite_nodes(self, dt: datetime = None,
                           initial_phi: float = 0.9) -> List[SatelliteNode]:
         """
-        Convierte TLEs a nodos satelitales D10Z.
+        Convierte TLEs a nodos satelitales Pyraclaw.
         
         Returns:
             Lista de SatelliteNode listos para agregar a ConstellationGraph

@@ -18,7 +18,7 @@ import time
 from unittest.mock import Mock, patch
 
 from core import (
-    C, D10ZConstants,
+    C, PyraclawConstants,
     NodeState, CoherenceLevel, AlertType, AlertSeverity,
     Vector3D, OrbitalElements, NodalState, SatelliteNode,
     Alert, SystemMetrics

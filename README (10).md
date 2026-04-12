@@ -1,6 +1,6 @@
-# D10Z-TTA Embedded SDK
+# Pyraclaw-TTA Embedded SDK
 
-SDK ligero para implementar nodos D10Z-TTA en dispositivos IoT, routers y sistemas embebidos.
+SDK ligero para implementar nodos Pyraclaw-TTA en dispositivos IoT, routers y sistemas embebidos.
 
 ## Características
 
@@ -17,11 +17,11 @@ SDK ligero para implementar nodos D10Z-TTA en dispositivos IoT, routers y sistem
 ## Estructura
 
 ```
-d10z_sdk/
+pyraclaw_sdk/
 ├── include/
-│   └── d10z_sdk.h      # Header principal
+│   └── pyraclaw_sdk.h      # Header principal
 ├── src/
-│   └── d10z_sdk.c      # Implementación
+│   └── pyraclaw_sdk.c      # Implementación
 ├── examples/
 │   └── demo.c          # Ejemplo de uso
 ├── Makefile
@@ -50,44 +50,44 @@ make mips
 ## Uso Básico
 
 ```c
-#include "d10z_sdk.h"
+#include "pyraclaw_sdk.h"
 
 // Callbacks
-void on_send_heartbeat(const d10z_heartbeat_t *hb, void *data) {
+void on_send_heartbeat(const pyraclaw_heartbeat_t *hb, void *data) {
     // Enviar por UDP broadcast
 }
 
-void on_packet_received(const d10z_packet_t *pkt, void *data) {
+void on_packet_received(const pyraclaw_packet_t *pkt, void *data) {
     // Procesar paquete recibido
 }
 
 int main() {
     // Configurar
-    d10z_config_t config;
-    d10z_config_default(&config);
+    pyraclaw_config_t config;
+    pyraclaw_config_default(&config);
     strcpy(config.node_id, "MI-DISPOSITIVO");
     config.callbacks.send_heartbeat = on_send_heartbeat;
     config.callbacks.packet_received = on_packet_received;
     
     // Crear nodo
-    d10z_node_t *node = d10z_node_create(&config);
+    pyraclaw_node_t *node = pyraclaw_node_create(&config);
     
     // Loop principal
     while (1) {
         // Procesar heartbeats recibidos
         // ...
         
-        // Ejecutar ciclo D10Z (cada 100ms)
-        d10z_node_tick(node, get_time_ms());
+        // Ejecutar ciclo Pyraclaw (cada 100ms)
+        pyraclaw_node_tick(node, get_time_ms());
         
         sleep_ms(10);
     }
     
-    d10z_node_destroy(node);
+    pyraclaw_node_destroy(node);
 }
 ```
 
-## Ecuaciones D10Z Implementadas
+## Ecuaciones Pyraclaw Implementadas
 
 ```
 E_TTA = Σ |Zₙ| · Φₙ           (Energía del sistema)
@@ -108,7 +108,7 @@ Parámetros por defecto:
 ```cmake
 # CMakeLists.txt
 idf_component_register(
-    SRCS "d10z_sdk.c"
+    SRCS "pyraclaw_sdk.c"
     INCLUDE_DIRS "."
 )
 ```
@@ -116,18 +116,18 @@ idf_component_register(
 ### OpenWRT
 
 ```makefile
-# packages/d10z-sdk/Makefile
+# packages/pyraclaw-sdk/Makefile
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=d10z-sdk
+PKG_NAME:=pyraclaw-sdk
 PKG_VERSION:=1.0.0
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/d10z-sdk
+define Package/pyraclaw-sdk
   SECTION:=libs
   CATEGORY:=Libraries
-  TITLE:=D10Z-TTA Nodal SDK
+  TITLE:=Pyraclaw-TTA Nodal SDK
 endef
 
 define Build/Compile
@@ -136,23 +136,23 @@ define Build/Compile
         CFLAGS="$(TARGET_CFLAGS)"
 endef
 
-$(eval $(call BuildPackage,d10z-sdk))
+$(eval $(call BuildPackage,pyraclaw-sdk))
 ```
 
 ### FreeRTOS
 
 ```c
-void d10z_task(void *param) {
-    d10z_node_t *node = (d10z_node_t*)param;
+void pyraclaw_task(void *param) {
+    pyraclaw_node_t *node = (pyraclaw_node_t*)param;
     
     while (1) {
-        d10z_node_tick(node, xTaskGetTickCount());
+        pyraclaw_node_tick(node, xTaskGetTickCount());
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
 // Crear tarea
-xTaskCreate(d10z_task, "D10Z", 4096, node, 5, NULL);
+xTaskCreate(pyraclaw_task, "Pyraclaw", 4096, node, 5, NULL);
 ```
 
 ## Licencia
@@ -160,10 +160,10 @@ xTaskCreate(d10z_task, "D10Z", 4096, node, 5, NULL);
 CC BY-NC 4.0 (Non-Commercial)
 
 Uso comercial requiere autorización escrita de:
-- D10Z Institute
-- Jamil Al Thani (jamil@d10z.org)
+- Byron Callaghan / Pyraclaw
+- Byron Callaghan (contact@pyraclaw.institute)
 
 ## Autor
 
-D10Z Institute  
-ORCID: 0009-0000-8858-4992
+Byron Callaghan / Pyraclaw  
+Rights Holder: Byron Callaghan

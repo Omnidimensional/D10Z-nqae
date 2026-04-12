@@ -1,12 +1,12 @@
 /*
  * ══════════════════════════════════════════════════════════════════════════════
- * TERRA MESH - D10Z Nodal Network App
+ * TERRA MESH - Pyraclaw Nodal Network App
  * ══════════════════════════════════════════════════════════════════════════════
  * 
- * Core Engine para iOS - Implementación D10Z-TTA
+ * Core Engine para iOS - Implementación Pyraclaw-TTA
  * Usa MultipeerConnectivity para mesh P2P
  * 
- * Autor: D10Z Institute
+ * Autor: Byron Callaghan / Pyraclaw
  * Licencia: CC BY-NC 4.0
  * ══════════════════════════════════════════════════════════════════════════════
  */
@@ -17,9 +17,9 @@ import CoreBluetooth
 import Combine
 import CoreLocation
 
-// MARK: - Constantes D10Z
+// MARK: - Constantes Pyraclaw
 
-struct D10ZConstants {
+struct PyraclawConstants {
     static let gmScale: Double = 1e-51
     
     // Ley Isis
@@ -42,7 +42,7 @@ struct D10ZConstants {
     static let maxHopCount = 10
     
     // Multipeer
-    static let serviceType = "d10z-terra"
+    static let serviceType = "pyraclaw-terra"
 }
 
 // MARK: - Tipos Fundamentales
@@ -81,10 +81,10 @@ enum CoherenceLevel: String, Codable {
     
     static func from(phi: Double) -> CoherenceLevel {
         switch phi {
-        case D10ZConstants.phiOptimal...: return .optimal
-        case D10ZConstants.phiOperational...: return .operational
-        case D10ZConstants.phiDegraded...: return .degraded
-        case D10ZConstants.phiCritical...: return .critical
+        case PyraclawConstants.phiOptimal...: return .optimal
+        case PyraclawConstants.phiOperational...: return .operational
+        case PyraclawConstants.phiDegraded...: return .degraded
+        case PyraclawConstants.phiCritical...: return .critical
         default: return .isolated
         }
     }
@@ -126,7 +126,7 @@ struct NodalState: Codable {
     }
     
     var isOperational: Bool {
-        phi >= D10ZConstants.phiOperational
+        phi >= PyraclawConstants.phiOperational
     }
 }
 
@@ -150,7 +150,7 @@ struct NeighborInfo: Codable, Identifiable {
     var id: String { nodeId }
     
     var isActive: Bool {
-        Date().timeIntervalSince(lastSeen) < D10ZConstants.signalTimeout
+        Date().timeIntervalSince(lastSeen) < PyraclawConstants.signalTimeout
     }
     
     var weight: Double {
@@ -185,9 +185,9 @@ struct DataPacket: Codable, Identifiable {
     }
 }
 
-// MARK: - Nodo D10Z
+// MARK: - Nodo Pyraclaw
 
-class D10ZNode: ObservableObject {
+class PyraclawNode: ObservableObject {
     let nodeId: String
     
     @Published var state: NodalState = NodalState()
@@ -232,7 +232,7 @@ class D10ZNode: ObservableObject {
     
     func registerNeighbor(_ neighbor: NeighborInfo) {
         // Limitar vecinos
-        if neighbors.count >= D10ZConstants.maxNeighbors && neighbors[neighbor.nodeId] == nil {
+        if neighbors.count >= PyraclawConstants.maxNeighbors && neighbors[neighbor.nodeId] == nil {
             if let oldest = neighbors.values.min(by: { $0.lastSeen < $1.lastSeen }) {
                 neighbors.removeValue(forKey: oldest.nodeId)
             }
@@ -285,7 +285,7 @@ class IsisLawEngine {
     let alpha: Double
     let beta: Double
     
-    init(alpha: Double = D10ZConstants.alphaDecay, beta: Double = D10ZConstants.betaCoupling) {
+    init(alpha: Double = PyraclawConstants.alphaDecay, beta: Double = PyraclawConstants.betaCoupling) {
         self.alpha = alpha
         self.beta = beta
     }
@@ -316,7 +316,7 @@ class IsisLawEngine {
         return max(0, min(1, newPhi))
     }
     
-    func propagate(_ node: D10ZNode, dt: Double = 0.1) {
+    func propagate(_ node: PyraclawNode, dt: Double = 0.1) {
         let newPhi = computeNewPhi(
             currentPhi: node.state.phi,
             neighbors: Array(node.neighbors.values),
@@ -338,16 +338,16 @@ enum RouteResult {
 class CoherenceRouter {
     let minPhi: Double
     
-    init(minPhi: Double = D10ZConstants.phiOperational) {
+    init(minPhi: Double = PyraclawConstants.phiOperational) {
         self.minPhi = minPhi
     }
     
-    func route(_ packet: DataPacket, node: D10ZNode) -> RouteResult {
+    func route(_ packet: DataPacket, node: PyraclawNode) -> RouteResult {
         if packet.destinationId == node.nodeId {
             return .delivered
         }
         
-        if packet.hopCount >= D10ZConstants.maxHopCount {
+        if packet.hopCount >= PyraclawConstants.maxHopCount {
             return .failed(reason: "Max hop count exceeded")
         }
         
@@ -399,7 +399,7 @@ enum EngineState {
 }
 
 class TerraMeshEngine: ObservableObject {
-    let node: D10ZNode
+    let node: PyraclawNode
     private let isisEngine: IsisLawEngine
     private let router: CoherenceRouter
     
@@ -417,7 +417,7 @@ class TerraMeshEngine: ObservableObject {
     var onPacketDelivered: ((DataPacket) -> Void)?
     
     init() {
-        self.node = D10ZNode()
+        self.node = PyraclawNode()
         self.isisEngine = IsisLawEngine()
         self.router = CoherenceRouter()
     }
@@ -427,14 +427,14 @@ class TerraMeshEngine: ObservableObject {
         state = .starting
         
         // Heartbeat timer
-        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: D10ZConstants.heartbeatInterval, repeats: true) { [weak self] _ in
+        heartbeatTimer = Timer.scheduledTimer(withTimeInterval: PyraclawConstants.heartbeatInterval, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             let heartbeat = self.node.createHeartbeat()
             self.onSendHeartbeat?(heartbeat)
         }
         
         // Coherence timer
-        coherenceTimer = Timer.scheduledTimer(withTimeInterval: D10ZConstants.heartbeatInterval, repeats: true) { [weak self] _ in
+        coherenceTimer = Timer.scheduledTimer(withTimeInterval: PyraclawConstants.heartbeatInterval, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             self.node.pruneInactiveNeighbors()
             self.isisEngine.propagate(self.node)
@@ -442,7 +442,7 @@ class TerraMeshEngine: ObservableObject {
         }
         
         // Consensus timer
-        consensusTimer = Timer.scheduledTimer(withTimeInterval: D10ZConstants.consensusInterval, repeats: true) { [weak self] _ in
+        consensusTimer = Timer.scheduledTimer(withTimeInterval: PyraclawConstants.consensusInterval, repeats: true) { [weak self] _ in
             self?.runConsensusRound()
         }
         
@@ -531,7 +531,7 @@ class TerraMeshEngine: ObservableObject {
 // MARK: - Multipeer Network Manager
 
 class MultipeerNetworkManager: NSObject, ObservableObject {
-    private let serviceType = D10ZConstants.serviceType
+    private let serviceType = PyraclawConstants.serviceType
     private let myPeerId: MCPeerID
     private var session: MCSession?
     private var advertiser: MCNearbyServiceAdvertiser?

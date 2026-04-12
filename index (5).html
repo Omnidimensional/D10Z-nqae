@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0a0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>TERRA MESH - Nodo Resonante D10Z</title>
+    <title>TERRA MESH - Nodo Resonante Pyraclaw</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -411,7 +411,7 @@
             <div class="logo-icon" id="logoIcon"></div>
             <div>
                 <h1>TERRA MESH</h1>
-                <span>Nodo Resonante D10Z</span>
+                <span>Nodo Resonante Pyraclaw</span>
             </div>
         </div>
         <div class="status" id="status">
@@ -496,10 +496,10 @@
     
     <script>
         // ═══════════════════════════════════════════════════════════════════════
-        // D10Z-TTA TERRA MESH ENGINE
+        // Pyraclaw-TTA TERRA MESH ENGINE
         // ═══════════════════════════════════════════════════════════════════════
         
-        const D10Z = {
+        const Pyraclaw = {
             ALPHA: 0.05,
             BETA: 0.2,
             PHI_OPT: 0.9,
@@ -532,25 +532,25 @@
         let intervalId = null;
         
         // ─────────────────────────────────────────────────────────────────────
-        // FUNCIONES D10Z
+        // FUNCIONES Pyraclaw
         // ─────────────────────────────────────────────────────────────────────
         
         function getLevel(phi) {
-            if (phi >= D10Z.PHI_OPT) return 'optimal';
-            if (phi >= D10Z.PHI_OP) return 'operational';
-            if (phi >= D10Z.PHI_DEG) return 'degraded';
-            if (phi >= D10Z.PHI_CRIT) return 'critical';
+            if (phi >= Pyraclaw.PHI_OPT) return 'optimal';
+            if (phi >= Pyraclaw.PHI_OP) return 'operational';
+            if (phi >= Pyraclaw.PHI_DEG) return 'degraded';
+            if (phi >= Pyraclaw.PHI_CRIT) return 'critical';
             return 'isolated';
         }
         
         function propagateCoherence() {
             if (state.neighbors.length === 0) {
-                const decay = D10Z.ALPHA * state.phi;
+                const decay = Pyraclaw.ALPHA * state.phi;
                 state.phi = Math.max(0, state.phi - decay * 0.1);
                 return;
             }
             
-            const decay = D10Z.ALPHA * state.phi;
+            const decay = Pyraclaw.ALPHA * state.phi;
             let coupling = 0;
             
             state.neighbors.forEach(n => {
@@ -558,7 +558,7 @@
                 coupling += weight * n.phi;
             });
             
-            coupling = D10Z.BETA * coupling / state.neighbors.length;
+            coupling = Pyraclaw.BETA * coupling / state.neighbors.length;
             state.phi = Math.max(0, Math.min(1, state.phi + (-decay + coupling) * 0.1));
         }
         
@@ -736,7 +736,7 @@
                 state.tx++;
                 state.rx += Math.floor(Math.random() * 3);
                 updateUI();
-            }, D10Z.INTERVAL);
+            }, Pyraclaw.INTERVAL);
         }
         
         function stopEngine() {
@@ -767,7 +767,7 @@
         }
         
         function showInfo() {
-            addLog('ℹ️ TERRA MESH v1.0 - D10Z Institute');
+            addLog('ℹ️ TERRA MESH v1.0 - Byron Callaghan / Pyraclaw');
             addLog('   Ley Isis: ∂Φ/∂t = -αΦ + βΣwΦⱼ/|N|');
             addLog('   α=0.05, β=0.2, Φ≥0.7 operativo');
         }
