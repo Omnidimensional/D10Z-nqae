@@ -1,0 +1,27 @@
+name: D10Z Lean proof check
+
+on:
+  push:
+    paths:
+      - "formal/lean/**"
+      - ".github/workflows/lean-proof.yml"
+  pull_request:
+    paths:
+      - "formal/lean/**"
+      - ".github/workflows/lean-proof.yml"
+  workflow_dispatch:
+
+jobs:
+  lean-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: formal/lean
+          build: false
+          test: false
+          lint: false
+      - name: Compile all formal modules with Lean kernel
+        working-directory: formal/lean
+        run: lake build
