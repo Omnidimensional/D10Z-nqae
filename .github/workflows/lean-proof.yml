@@ -1,0 +1,36 @@
+name: D10Z Lean proof check
+
+on:
+  push:
+    paths:
+      - "formal/lean/**"
+      - ".github/workflows/lean-proof.yml"
+  pull_request:
+    paths:
+      - "formal/lean/**"
+      - ".github/workflows/lean-proof.yml"
+  workflow_dispatch:
+
+jobs:
+  lean-proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lean_version: leanprover/lean4:v4.19.0
+      - name: Compile core
+        working-directory: formal/lean
+        run: lake env lean D10ZCore.lean
+      - name: Compile refinement
+        working-directory: formal/lean
+        run: lake env lean D10ZRefinement.lean
+      - name: Compile system contracts
+        working-directory: formal/lean
+        run: lake env lean D10ZSystems.lean
+      - name: Compile composition laws
+        working-directory: formal/lean
+        run: lake env lean D10ZSystemsExtra.lean
+      - name: Build Lake library
+        working-directory: formal/lean
+        run: lake build
