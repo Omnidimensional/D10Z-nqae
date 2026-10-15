@@ -17,8 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-        with:
-          lean_version: leanprover/lean4:v4.19.0
       - name: Compile core
         working-directory: formal/lean
         run: lake env lean D10ZCore.lean
