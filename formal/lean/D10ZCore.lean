@@ -47,7 +47,11 @@ theorem setValue_other {n : Nat} (s : State n) (i j : Fin n) (v : Nat)
 theorem addEdge_preserves_other_edges {n : Nat} (s : State n)
     (src dst x y : Fin n) (h : ¬ (x = src ∧ y = dst)) :
     (addEdge s src dst).edge x y = s.edge x y := by
-  simp [addEdge, h]
+  by_cases hx : x = src
+  · by_cases hy : y = dst
+    · exact False.elim (h ⟨hx, hy⟩)
+    · simp [addEdge, hx, hy]
+  · simp [addEdge, hx]
 
 @[simp] theorem addEdge_preserves_values {n : Nat} (s : State n) (src dst x : Fin n) :
     (addEdge s src dst).value x = s.value x := by
@@ -64,7 +68,11 @@ theorem addEdge_preserves_other_edges {n : Nat} (s : State n)
 theorem removeEdge_preserves_other_edges {n : Nat} (s : State n)
     (src dst x y : Fin n) (h : ¬ (x = src ∧ y = dst)) :
     (removeEdge s src dst).edge x y = s.edge x y := by
-  simp [removeEdge, h]
+  by_cases hx : x = src
+  · by_cases hy : y = dst
+    · exact False.elim (h ⟨hx, hy⟩)
+    · simp [removeEdge, hx, hy]
+  · simp [removeEdge, hx]
 
 @[simp] theorem removeEdge_preserves_values {n : Nat} (s : State n) (src dst x : Fin n) :
     (removeEdge s src dst).value x = s.value x := by
