@@ -19,18 +19,9 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           lake-package-directory: formal/lean
-      - name: Compile core
-        working-directory: formal/lean
-        run: lake env lean D10ZCore.lean
-      - name: Compile refinement
-        working-directory: formal/lean
-        run: lake env lean D10ZRefinement.lean
-      - name: Compile system contracts
-        working-directory: formal/lean
-        run: lake env lean D10ZSystems.lean
-      - name: Compile composition laws
-        working-directory: formal/lean
-        run: lake env lean D10ZSystemsExtra.lean
-      - name: Build Lake library
+          build: false
+          test: false
+          lint: false
+      - name: Compile all formal modules with Lean kernel
         working-directory: formal/lean
         run: lake build
